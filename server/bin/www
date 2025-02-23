@@ -25,6 +25,23 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
+process.on("SIGTERM", () => {
+  console.log("Closing server...");
+  server.close(() => {
+    console.log("Server closed.");
+    process.exit(0);
+  });
+});
+
+process.on("SIGINT", () => {
+  console.log("Server shutting down...");
+  server.close(() => {
+    console.log("Server closed.");
+    process.exit(0);
+  });
+});
+
+
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
