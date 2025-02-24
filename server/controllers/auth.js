@@ -39,11 +39,13 @@ const login = async function (req, res) {
             res.send('Wrong credentials');
             return;
         }
-        res.send(user);
+        res.send(exist);
     } catch (error) {
         res.send('internal server error');
         res.send(error);
     }
 }
+
+
 
 module.exports = { register, login };
