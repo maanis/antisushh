@@ -1,8 +1,11 @@
 import React from 'react'
+import Register from './components/register'
 
 const App = () => {
   return (
-    <div className='text-red-500'>App</div>
+    <div >
+      <Register />
+    </div>
   )
 }
 
