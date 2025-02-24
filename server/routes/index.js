@@ -1,5 +1,5 @@
 var express = require('express');
-const { register } = require('../controllers/auth');
+const { register, login } = require('../controllers/auth');
 var router = express.Router();
 
 router.get('/', function (req, res) {
@@ -7,6 +7,8 @@ router.get('/', function (req, res) {
 });
 
 router.post('/register', register);
+
+router.post('/login', login);
 
 
 
