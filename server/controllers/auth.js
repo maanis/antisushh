@@ -62,12 +62,61 @@ const logout = async function (req, res) {
 
 const followOrUnfollow = async (req, res) => {
     try {
+        const currentUserId = req.id;
+        const targetUserId = req.params.id;
+        const currentUser = await userModel.findById(currentUserId);
+        const targetUser = await userModel.findById(targetUserId);
+        if (!targetUser) {
+            res.status(404).json({ message: 'User not found', success: false });
+            return;
+        }
+        if (currentUserId === targetUserId) {
+            res.status(400).json({ message: 'You can not follow yourself', success: false });
+            return;
+        }
+        const isFollowing = currentUser.following.includes(targetUserId);
+        {// if (isFollowing) {
+            //     await userModel.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId } });
+            //     await userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
+            //     res.status(200).json({ message: 'Unfollowed', success: true });
+            // }
+            // else {
+            //     await userModel.findByIdAndUpdate(currentUserId, { $push: { following: targetUserId } });
+            //     await userModel.findByIdAndUpdate(targetUserId, { $push: { followers: currentUserId } });
+            //     res.status(200).json({ message: 'Followed', success: true });
+            // }}
+        }
+
+        if (isFollowing) {
+            //unfollow
+            currentUser.following = currentUser.following.filter(id => id !== targetUserId);
+            targetUser.followers = targetUser.followers.filter(id => id !== currentUserId);
+            await currentUser.save();
+            await targetUser.save();
+            res.status(200).json({ message: 'Unfollowed', success: true });
+        } else {
+            // follow
+            currentUser.following.push(targetUserId);
+            targetUser.followers.push(currentUserId);
+            await currentUser.save();
+            await targetUser.save();
+            res.status(200).json({ message: 'Followed', success: true });
+        }
 
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
 }
 
+const suggestedUser = async (req, res) => {
+    const suggestedUsers = await userModel.find({ _id: { $ne: req.id } }).select('-password').limit(5);
+    res.status(200).json({ suggestedUsers, success: true });
+}
+
+const editProfile = async (req, res) => {
+
+}
 
 
-module.exports = { register, login, logout };
+
+module.exports = { register, login, logout, followOrUnfollow, suggestedUser };

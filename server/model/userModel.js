@@ -10,9 +10,12 @@ const userScheme = mongoose.Schema({
         type: String,
         required: true,
     },
-    connections: {
-        type: Array,
-    },
+    profilePic: { type: String, default: '' },
+    bio: { type: String, default: '' },
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
+
 })
 
 const userModel = mongoose.model('user', userScheme);
