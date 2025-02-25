@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const register = async function (req, res) {
-    const { name, username, password } = req.body;
+    const { username, password } = req.body;
     try {
-        if (!name || !username || !password) {
+        if (!username || !password) {
             res.status(400).json({ message: 'Please fill all the fields', success: false });
             return;
         }
@@ -17,7 +17,6 @@ const register = async function (req, res) {
         }
         const hassPass = await bcrypt.hash(password, 10);
         const user = await userModel.create({
-            name,
             username,
             password: hassPass
         });
@@ -34,7 +33,7 @@ const login = async function (req, res) {
             res.status(400).json({ message: 'Please fill all the fields', success: false });
             return;
         }
-        const exist = await userModel.findOne({ username }).select('-password');
+        const exist = await userModel.findOne({ username });
 
         if (!exist) {
             res.status(400).json({ message: 'User not exist', success: false });
@@ -45,9 +44,10 @@ const login = async function (req, res) {
             res.status(400).json({ message: 'Wrong credentials', success: false });
             return;
         }
+        const user = await userModel.findById(exist._id).select('-password');
         const token = jwt.sign({ userId: exist._id }, process.env.JWT_SECRET);
         res.cookie('token', token)
-        res.status(200).json({ message: 'Signed in', success: true, exist });
+        res.status(200).json({ message: 'Signed in', success: true, user });
 
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
@@ -75,31 +75,14 @@ const followOrUnfollow = async (req, res) => {
             return;
         }
         const isFollowing = currentUser.following.includes(targetUserId);
-        {// if (isFollowing) {
-            //     await userModel.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId } });
-            //     await userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
-            //     res.status(200).json({ message: 'Unfollowed', success: true });
-            // }
-            // else {
-            //     await userModel.findByIdAndUpdate(currentUserId, { $push: { following: targetUserId } });
-            //     await userModel.findByIdAndUpdate(targetUserId, { $push: { followers: currentUserId } });
-            //     res.status(200).json({ message: 'Followed', success: true });
-            // }}
-        }
-
         if (isFollowing) {
-            //unfollow
-            currentUser.following = currentUser.following.filter(id => id !== targetUserId);
-            targetUser.followers = targetUser.followers.filter(id => id !== currentUserId);
-            await currentUser.save();
-            await targetUser.save();
+            await userModel.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId } });
+            await userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
             res.status(200).json({ message: 'Unfollowed', success: true });
-        } else {
-            // follow
-            currentUser.following.push(targetUserId);
-            targetUser.followers.push(currentUserId);
-            await currentUser.save();
-            await targetUser.save();
+        }
+        else {
+            await userModel.findByIdAndUpdate(currentUserId, { $push: { following: targetUserId } });
+            await userModel.findByIdAndUpdate(targetUserId, { $push: { followers: currentUserId } });
             res.status(200).json({ message: 'Followed', success: true });
         }
 
@@ -109,14 +92,30 @@ const followOrUnfollow = async (req, res) => {
 }
 
 const suggestedUser = async (req, res) => {
-    const suggestedUsers = await userModel.find({ _id: { $ne: req.id } }).select('-password').limit(5);
-    res.status(200).json({ suggestedUsers, success: true });
+    try {
+        const suggestedUsers = await userModel.find({ _id: { $ne: req.id } }).select('-password').limit(5);
+        res.status(200).json({ suggestedUsers, success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
 }
 
 const editProfile = async (req, res) => {
-
+    try {
+        const { name, bio } = req.body;
+        const { image } = req.files;
+        // console.log(name, bio, image);
+        await userModel.findByIdAndUpdate(req.id, { name, bio })
+        // if (image) {
+        //     await userModel.findByIdAndUpdate(req.id, { pfp: image })
+        // }
+        const user = await userModel.findById(req.id).select('-password');
+        res.status(200).json({ user, success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
 }
 
 
 
-module.exports = { register, login, logout, followOrUnfollow, suggestedUser };
+module.exports = { register, login, logout, followOrUnfollow, suggestedUser, editProfile };

@@ -18,3 +18,5 @@ const isAuthenticated = async function (req, res, next) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
 }
+
+module.exports = isAuthenticated;

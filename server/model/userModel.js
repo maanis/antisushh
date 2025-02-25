@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const userScheme = mongoose.Schema({
-    name: String,
+    name: { type: String, default: '' },
     username: {
         type: String,
         required: true
@@ -10,7 +10,7 @@ const userScheme = mongoose.Schema({
         type: String,
         required: true,
     },
-    profilePic: { type: String, default: '' },
+    pfp: { type: String, default: '' },
     bio: { type: String, default: '' },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
