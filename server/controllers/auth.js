@@ -59,7 +59,6 @@ const logout = async function (req, res) {
     res.status(200).json({ message: 'Logged out', success: true });
 }
 
-
 const followOrUnfollow = async (req, res) => {
     try {
         const currentUserId = req.id;
@@ -114,7 +113,5 @@ const editProfile = async (req, res) => {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
 }
-
-
 
 module.exports = { register, login, logout, followOrUnfollow, suggestedUser, editProfile };
