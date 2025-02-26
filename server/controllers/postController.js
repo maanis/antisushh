@@ -27,7 +27,7 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
     try {
-        const allPosts = await postModel.find().populate('user', 'username, pfp, _id')
+        const allPosts = await postModel.find().populate('user', 'username, pfp, _id').populate('comments.user', 'username, pfp, _id')
         res.status(200).json({ posts: allPosts, success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
@@ -47,19 +47,43 @@ const getUserPosts = async (req, res) => {
 }
 
 const likeOrDislike = async (req, res) => {
-    const userId = req.id
-    const postId = req.params.id
-    if (!userId || postId) return res.status(401).json({ message: 'No user found', success: false })
-    const post = await postModel.findById(postId)
-    if (post.likes.includes(userId)) {
-        //dislike
-        await postModel.findByIdAndUpdate(postId, { $pull: { likes: userId } })
-        res.status(200).json({ message: 'liked', success: true });
-    } else {
-        //like
-        post.likes.push(userId)
-        await post.save()
-        res.status(200).json({ message: 'disliked', success: true });
+    try {
+        const userId = req.id
+        const postId = req.params.id
+        if (!userId || postId) return res.status(401).json({ message: 'No user found', success: false })
+        const post = await postModel.findById(postId)
+        if (post.likes.includes(userId)) {
+            //dislike
+            await postModel.findByIdAndUpdate(postId, { $pull: { likes: userId } })
+            res.status(200).json({ message: 'liked', success: true });
+        } else {
+            //like
+            post.likes.push(userId)
+            await post.save()
+            res.status(200).json({ message: 'disliked', success: true });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
     }
 }
 
+const addComments = async (req, res) => {
+    try {
+        const userId = req.id
+        const postId = req.params.id
+        const commentText = req.body
+        if (!commentText) return res.status(401).json({ message: 'Comment is required', success: false })
+        if (!userId || postId) return res.status(401).json({ message: 'No user found', success: false })
+        const post = await postModel.findById(postId)
+        if (!post) return res.status(401).json({ message: 'post not found', success: false })
+        post.comments.push({ user: userId, text: commentText })
+        await post.save()
+        res.status(200).json({ message: 'Comment posted', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+const deletePost = async (req, res) => {
+    
+}
