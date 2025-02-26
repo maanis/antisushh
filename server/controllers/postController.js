@@ -38,7 +38,7 @@ const getUserPosts = async (req, res) => {
     try {
         const userId = req.id
         const user = await userModel.findById(userId)
-        if (!user) return res.status(401).json({ message: 'No user found', success: false })
+        if (!user) return res.status(401).json({ message: 'Something is incorrect', success: false })
         const posts = await user.populate('posts')
         res.status(200).json({ posts: posts, message: 'All posts', success: true });
     } catch (error) {
@@ -50,7 +50,7 @@ const likeOrDislike = async (req, res) => {
     try {
         const userId = req.id
         const postId = req.params.id
-        if (!userId || postId) return res.status(401).json({ message: 'No user found', success: false })
+        if (!userId || postId) return res.status(401).json({ message: 'Something is incorrect', success: false })
         const post = await postModel.findById(postId)
         if (post.likes.includes(userId)) {
             //dislike
@@ -85,5 +85,44 @@ const addComments = async (req, res) => {
 }
 
 const deletePost = async (req, res) => {
-    
+    try {
+        const userId = req.id
+        const postId = req.params.id
+        if (!userId || !postId) return res.status(401).json({ message: 'Something is incorrect', success: false })
+        const post = await postModel.findById(postId)
+        if (!post) return res.status(401).json({ message: 'No post found', success: false })
+        if (post.user.toString() === userId.toString()) {
+            await postModel.findByIdAndDelete(postId)
+            return res.status(200).json({ message: 'Post Deleted', success: true });
+        } else {
+            res.status(500).json({ message: 'You cant delete', success: false });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+const addOrRemoveToBookmark = async (req, res) => {
+    try {
+        const userId = req.id
+        const postId = req.params.id
+        if (!userId || !postId) return res.status(401).json({ message: 'Something is incorrect', success: false })
+        const user = await userModel.findById(userId)
+        if (!user) return res.status(401).json({ message: 'No user found', success: false })
+        if (user.bookmarks.includes(postId)) {
+            //remove
+            await userModel.findByIdAndUpdate(userId, { $pull: { bookmarks: postId } })
+            res.status(200).json({ message: 'removed from bookmark', success: true });
+        } else {
+            //add
+            await userModel.findByIdAndUpdate(userId, { $push: { bookmarks: postId } })
+            res.status(200).json({ message: 'added to bookmark', success: true });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+const getBookmarks = async (req, res) => {
+
 }
