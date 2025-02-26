@@ -124,5 +124,16 @@ const addOrRemoveToBookmark = async (req, res) => {
 }
 
 const getBookmarks = async (req, res) => {
-
+    try {
+        const userId = req.id
+        if (!userId) return res.status(401).json({ message: 'Something is incorrect', success: false })
+        const user = await userModel.findById(userId)
+        if (!user) return res.status(401).json({ message: 'No user found', success: false })
+        const bookmarks = await userModel.findById(userId).populate('posts')
+        res.status(200).json({ bookmarks, message: 'retrieved bookmarks', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
 }
+
+module.exports = { createPost, getAllPosts, getUserPosts, likeOrDislike, addComments, deletePost, addOrRemoveToBookmark, getBookmarks }
