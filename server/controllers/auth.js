@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const register = async function (req, res) {
-    const { username, password } = req.body;
+    const { name, username, password } = req.body;
     try {
-        if (!username || !password) {
+        if (!name || !username || !password) {
             res.status(400).json({ message: 'Please fill all the fields', success: false });
             return;
         }
@@ -17,6 +17,7 @@ const register = async function (req, res) {
         }
         const hassPass = await bcrypt.hash(password, 10);
         const user = await userModel.create({
+            name,
             username,
             password: hassPass
         });

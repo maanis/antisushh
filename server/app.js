@@ -4,6 +4,7 @@ var express = require("express");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var mongoose_connection = require("./config/mongoose-config");
+var cors = require('cors')
 
 var indexRouter = require("./routes/index");
 var postsRouter = require("./routes/post");
@@ -13,9 +14,14 @@ const { connection } = require("mongoose");
 var app = express();
 
 app.use(logger("dev"));
-app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true
+}
+app.use(cors(corsOptions))
+app.use(express.json());
 
 // Routes
 app.use("/", indexRouter);
