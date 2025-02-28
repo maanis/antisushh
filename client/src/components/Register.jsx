@@ -4,6 +4,8 @@ import bg from '/bg.jpg'
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/userSlice';
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +14,7 @@ function Register() {
     const [username, setusername] = useState('');
     const [password, setpassword] = useState('');
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
         try {
@@ -50,6 +53,7 @@ function Register() {
                 console.log(data)
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
+                dispatch(setUser(data.user))
                 navigate('/feed')
             }
         } catch (error) {
