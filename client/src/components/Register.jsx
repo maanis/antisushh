@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Sparkles, Eye, EyeOff, Apple, Facebook } from 'lucide-react';
 import bg from '/bg.jpg'
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -9,37 +11,58 @@ function Register() {
     const [name, setname] = useState('');
     const [username, setusername] = useState('');
     const [password, setpassword] = useState('');
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (isSignUp && name === '') return toast('All fields are required')
-        if (username === '' || password === '') return toast('All fields are required')
-        if (password.length < 6) return toast('password must be atleast 6 digit long')
-
-        if (isSignUp) {
-            //register
-            const userData = { name, username, password }
-            const res = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify(userData)
-            })
-            const data = await res.json()
-            if (!data.success) return toast.error(data.message)
-            data.success && toast.success(data.message)
-            setisSignUp(false)
-            setusername('')
-            setname('')
-            setpassword('')
-        } else {
-            //login
-            
+        try {
+            e.preventDefault()
+            if (isSignUp && name === '') return toast('All fields are required')
+            if (username === '' || password === '') return toast('All fields are required')
+            if (password.length < 6) return toast('password must be atleast 6 digit long')
+            if (isSignUp) {
+                //register
+                const userData = { name, username, password }
+                const res = await fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(userData)
+                })
+                const data = await res.json()
+                if (!data.success) return toast.error(data.message)
+                data.success && toast.success(data.message)
+                setisSignUp(false)
+                setusername('')
+                setname('')
+                setpassword('')
+            } else {
+                //login
+                const userData = { username, password }
+                const res = await fetch('http://localhost:3000/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(userData)
+                })
+                const data = await res.json()
+                if (!data.success) return toast.error(data.message)
+                data.success && toast.success(data.message)
+                navigate('/feed')
+            }
+        } catch (error) {
+            toast.error(error.message)
         }
 
     }
+
+    useEffect(() => {
+        const token = Cookies.get("token");
+        if (token) {
+            navigate("/feed"); // Redirect to feed if token exists
+        }
+    }, []);
 
 
     return (
