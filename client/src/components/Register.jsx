@@ -47,6 +47,7 @@ function Register() {
                     body: JSON.stringify(userData)
                 })
                 const data = await res.json()
+                console.log(data)
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
                 navigate('/feed')

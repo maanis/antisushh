@@ -1,8 +1,11 @@
 import React from 'react'
+import Sidebar from './Sidebar'
 
 const Feed = () => {
     return (
-        <div>Feed</div>
+        <div className='h-screen bg-zinc-950 text-zinc-200 w-full'>
+            <Sidebar />
+        </div>
     )
 }
 
