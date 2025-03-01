@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Sparkles, Eye, EyeOff, Apple, Facebook } from 'lucide-react';
+import { Sparkles, Eye, EyeOff, Apple, Facebook, Loader2 } from 'lucide-react';
 import bg from '/bg.jpg'
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { setUser } from '@/store/userSlice';
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setloading] = useState(false);
     const [isSignUp, setisSignUp] = useState(false);
     const [name, setname] = useState('');
     const [username, setusername] = useState('');
@@ -17,8 +18,9 @@ function Register() {
     const dispatch = useDispatch()
 
     const handleSubmit = async (e) => {
+        e.preventDefault()
         try {
-            e.preventDefault()
+            setloading(true)
             if (isSignUp && name === '') return toast('All fields are required')
             if (username === '' || password === '') return toast('All fields are required')
             if (password.length < 6) return toast('password must be atleast 6 digit long')
@@ -58,6 +60,8 @@ function Register() {
             }
         } catch (error) {
             toast.error(error.message)
+        } finally {
+            setloading(false)
         }
 
     }
@@ -144,7 +148,7 @@ function Register() {
                             type="submit"
                             className="w-full bg-gradient-to-r from-blue-400 to-blue-500 transition-colors text-white rounded-lg p-3 mt-6 font-medium hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-purple-900"
                         >
-                            {isSignUp ? 'SIGN UP' : 'SIGN IN'}
+                            {loading ? (<h2 className='flex w-full justify-center gap-1'><Loader2 className='animate-spin font-bold' /><span>Please wait...</span></h2>) : isSignUp ? 'Sign Up' : 'Sign In'}
                         </button>
                     </form>
                 </div>
