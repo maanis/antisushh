@@ -38,7 +38,7 @@ const Sidebar = () => {
         }
     }
     return (
-        <div className='w-[15%] flex flex-col px-3 py-4 border-r border-zinc-700 h-full fixed'>
+        <div className='w-[15%] flex flex-col px-3 py-4 border-r border-zinc-700 h-full'>
             <h2 className='font-extralight text-3xl logoText my-5 mb-8'>AntiSush</h2>
             {data.map((e, i) => {
                 return <div className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
