@@ -1,4 +1,4 @@
-import { Ellipsis } from 'lucide-react'
+import { Bookmark, Ellipsis, Heart, MessageCircle, Send } from 'lucide-react'
 import React from 'react'
 
 const Post = () => {
@@ -22,7 +22,12 @@ const Post = () => {
                 </div>
                 <div class="box-b w-full border mt-2 flex justify-center border-zinc-600  ">
                     <img src="https://media.istockphoto.com/id/1477186301/photo/portrait-of-handsome-and-confident-young-man-looking-at-camera.jpg?s=2048x2048&w=is&k=20&c=CL7D_yiPDcH44yqVxE-oSncDzf2JM7RujyiO2JQPumI=" alt="" />
-
+                </div>
+                <div className="flex py-3 gap-3 ">
+                    <Heart size={'20px'} className='cursor-pointer' />
+                    <MessageCircle size={'20px'} className='cursor-pointer' />
+                    <Send size={'20px'} className='cursor-pointer' />
+                    <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
             </div>
         </div>
