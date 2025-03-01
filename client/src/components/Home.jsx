@@ -31,7 +31,7 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className='max-w-screen-md mx-auto bg-red-500'>
+            <div className='max-w-screen-md mx-auto'>
                 {[1, 2, 3, 4].map((e, i) => {
                     return <Post key={i} />
                 })}
