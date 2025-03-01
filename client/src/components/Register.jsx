@@ -23,9 +23,9 @@ function Register() {
             setloading(true)
             if (isSignUp && name === '') return toast('All fields are required')
             if (username === '' || password === '') return toast('All fields are required')
-            if (password.length < 6) return toast('password must be atleast 6 digit long')
             if (isSignUp) {
                 //register
+                if (password.length < 6) return toast('password must be atleast 6 digit long')
                 const userData = { name, username, password }
                 const res = await fetch('http://localhost:3000/register', {
                     method: 'POST',
