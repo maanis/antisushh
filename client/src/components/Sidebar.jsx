@@ -12,8 +12,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
-  
+} from "./ui/alert-dialog"
+
 
 const Sidebar = () => {
     const navigate = useNavigate('/')
@@ -51,10 +51,25 @@ const Sidebar = () => {
                     <img src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" className='w-8 h-8 object-cover rounded-full ' alt="" />
                     <h3>username</h3>
                 </div>
-                <div onClick={handleLogout} className="flex cursor-pointer mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
-                    <LogOut size={'20px'} />
-                    <h3>Logout</h3>
-                </div>
+                <AlertDialog>
+                    <AlertDialogTrigger className='w-full'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
+                        <LogOut size={'20px'} />
+                        <h3>Logout</h3>
+                    </div></AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                You want to logout your profile
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction className='bg-red-600 hover:bg-red-700 transition-all' onClick={handleLogout}>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
             </div>
         </div>
     )
