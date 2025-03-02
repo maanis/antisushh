@@ -1,7 +1,12 @@
 import { Bookmark, Ellipsis, Heart, MessageCircle, Send } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
+import CommentDialogBox from './CommentDialogBox'
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 
 const Post = () => {
+    const [open, setopen] = useState(false)
+    const [ismenuopen, setismenuopen] = useState(false)
+    console.log(ismenuopen)
     return (
         <div>
             <div className="post flex flex-col w-[60%] px-1 mx-auto mb-2 mt-4">
@@ -17,7 +22,7 @@ const Post = () => {
                         </p>
                     </div>
                     <div className="ml-auto relative dot cursor-pointer">
-                        <Ellipsis />
+                        <Ellipsis onClick={() => setismenuopen(true)} />
                     </div>
                 </div>
                 <div class="box-b w-full border mt-2 flex justify-center border-zinc-600  ">
@@ -25,10 +30,50 @@ const Post = () => {
                 </div>
                 <div className="flex py-3 gap-3 ">
                     <Heart size={'20px'} className='cursor-pointer' />
-                    <MessageCircle size={'20px'} className='cursor-pointer' />
+                    <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
+                <CommentDialogBox open={open} setopen={setopen} ismenuopen={setismenuopen} />
+
+
+                <Dialog open={ismenuopen}>
+                    <DialogContent className='p-0 border-none outline-none rounded-lg w-[380px] bg-neutral-900' onInteractOutside={() => setismenuopen(false)}>
+                        <DialogTitle className="hidden">Comment Dialog</DialogTitle>
+
+                        <div className="w-full overflow-hidden rounded-lg bg-neutral-900">
+                            <div className="flex flex-col">
+                                <button className="w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors text-red-500 hover:bg-neutral-800">
+                                    Report
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-red-500 hover:bg-neutral-800">
+                                    Unfollow
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    Add to favourites
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    Go to post
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    Share to...
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    Copy link
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    Embed
+                                </button>
+                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
+                                    About this account
+                                </button>
+                                <button onClick={() => setismenuopen(false)} className="w-full py-4 px-6 text-center transition-colors text-white hover:bg-neutral-800">
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     )

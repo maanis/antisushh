@@ -3,7 +3,7 @@ import Post from './Post'
 
 const Home = () => {
     return (
-        <div className='w-[80%]'>
+        <div className='w-[80%] border-r border-zinc-700'>
             <div className="pb-3 flex flex-col max-lg:w-[65%] max-md:w-[80%] border-b border-zinc-700 max-lg:bg-zinc-950
                 w-full bg-zinc-950 ">
                 <div className="w-full py-4 h-[25%] max-lg:hidden p-3 bg-zinc-900 rounded-md">
