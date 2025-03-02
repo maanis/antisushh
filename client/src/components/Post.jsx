@@ -34,7 +34,7 @@ const Post = () => {
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
-                <CommentDialogBox open={open} setopen={setopen} ismenuopen={setismenuopen} />
+                <CommentDialogBox open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
 
 
                 <Dialog open={ismenuopen}>

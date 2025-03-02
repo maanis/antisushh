@@ -2,11 +2,19 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Ellipsis } from "lucide-react";
 
-const CommentDialogBox = ({ open, setopen, ismenuopen }) => {
+const CommentDialogBox = ({ open, setopen, ismenuopen, setismenuopen }) => {
     const [comment, setcomment] = useState('')
+    const handleInteraction = (e) => {
+        if (ismenuopen) {
+            setopen(true)
+        } else {
+            setopen(false)
+        }
+
+    }
     return (
         <Dialog open={open} >
-            <DialogContent className=' w-[950px] max-h-[35rem] overflow-hidden max-w-full border-none outline-none rounded-none p-0' onInteractOutside={() => setopen(false)}>
+            <DialogContent className=' w-[950px] max-h-[35rem] overflow-hidden max-w-full border-none outline-none rounded-none p-0' onInteractOutside={handleInteraction}>
                 <DialogTitle className="hidden">Comment Dialog</DialogTitle>
 
                 <div className="flex">
@@ -24,7 +32,7 @@ const CommentDialogBox = ({ open, setopen, ismenuopen }) => {
                                 <p className="text-[12px] text-zinc-300">create</p>
                             </div>
                             <div className="ml-auto relative dot cursor-pointer">
-                                <Ellipsis onClick={() => ismenuopen(true)} />
+                                <Ellipsis onClick={(e) => setismenuopen(true)} />
                             </div>
                         </div>
 
