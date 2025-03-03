@@ -28,7 +28,6 @@ const Sidebar = () => {
         { icon: <PlusSquare size={'20px'} />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
-    console.log(user)
     const handleLogout = async () => {
         const res = await fetch('http://localhost:3000/logout', {
             method: 'GET',
@@ -52,7 +51,7 @@ const Sidebar = () => {
             })}
             <div className='mt-auto'>
                 <div className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
-                    <img src={userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
+                    <img src={user.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
                     <h3>username</h3>
                 </div>
                 <AlertDialog>

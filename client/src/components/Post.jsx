@@ -6,7 +6,14 @@ import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 const Post = () => {
     const [open, setopen] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
+    const data = ['unfollow', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
     console.log(ismenuopen)
+    const handleMenuClick = (e) => {
+        console.log(e)
+        if (e === 'cancel') {
+            setismenuopen(false)
+        }
+    }
     return (
         <div>
             <div className="post flex flex-col w-[60%] px-1 mx-auto mb-2 mt-4">
@@ -43,33 +50,12 @@ const Post = () => {
 
                         <div className="w-full overflow-hidden rounded-lg bg-neutral-900">
                             <div className="flex flex-col">
-                                <button className="w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors text-red-500 hover:bg-neutral-800">
-                                    Report
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-red-500 hover:bg-neutral-800">
-                                    Unfollow
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    Add to favourites
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    Go to post
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    Share to...
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    Copy link
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    Embed
-                                </button>
-                                <button className="w-full py-4 px-6 text-center border-b border-neutral-800 transition-colors text-white hover:bg-neutral-800">
-                                    About this account
-                                </button>
-                                <button onClick={() => setismenuopen(false)} className="w-full py-4 px-6 text-center transition-colors text-white hover:bg-neutral-800">
-                                    Cancel
-                                </button>
+                                {data.map((e, i) => {
+                                    return <button key={i} onClick={() => handleMenuClick(e)} className={`w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors ${i === 0 ? 'text-red-500' : 'text-white'} capitalize hover:bg-neutral-800`}>
+                                        {e}
+                                    </button>
+                                })}
+
                             </div>
                         </div>
                     </DialogContent>

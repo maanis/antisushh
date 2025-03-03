@@ -1,5 +1,6 @@
 import React from 'react'
 import Post from './Post'
+import { userDefaultPfp } from '@/utils/constant'
 
 const Home = () => {
     return (
@@ -8,7 +9,7 @@ const Home = () => {
                 w-full bg-zinc-950 ">
                 <div className="w-full py-4 h-[25%] max-lg:hidden p-3 bg-zinc-900 rounded-md">
                     <div className="flex py-3 items-center justify-center gap-4">
-                        <img src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        <img src={userDefaultPfp}
                             className="w-10 h-10 rounded-full object-cover object-top" alt="" />
                         <input type="text" placeholder="want to share thought of the day?"
                             className="createPost outline-none w-[75%] py-2 max-lg:w-[385px] max-[1024px]:w-[260px] max-md:hidden bg-zinc-950 rounded-md pl-4"
