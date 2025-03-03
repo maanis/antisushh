@@ -1,4 +1,4 @@
-import { Globe, HeartIcon, Home, LogOut, MessageCircle, PlusSquare, Search } from 'lucide-react'
+import { Cross, CrossIcon, Globe, HeartIcon, Home, LogOut, LucideCross, MessageCircle, PlusSquare, Search, X } from 'lucide-react'
 import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -13,7 +13,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "./ui/alert-dialog"
-import { userDefaultPfp } from '@/utils/constant'
+import { fileToUrl, userDefaultPfp } from '@/utils/constant'
 import { useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
@@ -23,6 +23,7 @@ const Sidebar = () => {
     const navigate = useNavigate('/')
     const imgRef = useRef('')
     const [createDialog, setcreateDialog] = useState(false)
+    const [preview, setpreview] = useState(false)
     const data = [
         { icon: <Home size={'20px'} />, text: 'home' },
         { icon: <Search size={'20px'} />, text: 'search' },
@@ -47,6 +48,15 @@ const Sidebar = () => {
     const handleMenuClick = (e) => {
         if (e === 'create') {
             setcreateDialog(true)
+        }
+    }
+
+    const handleImageUpload = () => {
+        const file = imgRef.current.files[0]
+        if (file) {
+            const url = fileToUrl(file);
+            console.log("After:", url); // Logs the temporary URL
+            setpreview(url);
         }
     }
     return (
@@ -85,7 +95,8 @@ const Sidebar = () => {
                         <DialogTitle className='hidden'>title</DialogTitle>
                         <div className='text-neutral-900  text-center text-xl font-semibold'>Create a Post</div>
                         <textarea className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2' placeholder='Enter a caption...'></textarea>
-                        <input ref={imgRef} type="file" className='hidden' />
+                        <input onChange={handleImageUpload} ref={imgRef} type="file" className='hidden' />
+                        {preview && <div className='w-full relative flex items-center justify-center'><img src={preview} className='rounded-md max-h-[45vh]' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
                         <button onClick={() => imgRef.current.click()} className='bg-blue-600 inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
                     </DialogContent>
                 </Dialog>
