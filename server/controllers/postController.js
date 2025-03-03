@@ -8,9 +8,11 @@ const createPost = async (req, res) => {
         let userId = req.id;
         if (!caption) return res.status(400).json({ message: 'Please fill all the fields', success: false });
         if (req.file) {
+            const img = req.file.buffer.toString('base64')
+            const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
             const post = await postModel.create({
                 caption,
-                image: req.file.buffer.toString('base64'),
+                image: base64Image,
                 user: userId
             })
             const user = await userModel.findById(userId);

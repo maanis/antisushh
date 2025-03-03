@@ -42,7 +42,6 @@ const Sidebar = () => {
             credentials: 'include'
         })
         const data = await res.json()
-        console.log(data)
         if (data.success) {
             navigate('/')
             toast.success(data.message)
@@ -59,7 +58,6 @@ const Sidebar = () => {
         if (file) {
             setimage(file)
             const url = fileToUrl(file);
-            console.log("After:", url); // Logs the temporary URL
             setpreview(url);
         }
     }

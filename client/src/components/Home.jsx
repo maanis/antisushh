@@ -1,9 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Post from './Post'
 import { userDefaultPfp } from '@/utils/constant'
+import { Loader2 } from 'lucide-react'
 
 const Home = () => {
-    return (
+    const [posts, setposts] = useState(null)
+    async function fetchPosts() {
+        try {
+            const res = await fetch('http://localhost:3000/post/getAllPosts', {
+                method: 'GET',
+                credentials: 'include'
+            })
+
+            const data = await res.json()
+            setposts(data.posts)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        fetchPosts()
+    }, [])
+    return posts ? (
         <div className='w-[80%] border-r border-zinc-700'>
             <div className="pb-3 flex flex-col max-lg:w-[65%] max-md:w-[80%] border-b border-zinc-700 max-lg:bg-zinc-950
                 w-full bg-zinc-950 ">
@@ -33,13 +51,13 @@ const Home = () => {
             </div>
 
             <div className='max-w-screen-md mx-auto'>
-                {[1, 2, 3, 4].map((e, i) => {
-                    return <Post key={i} />
+                {posts.map((e, i) => {
+                    return <Post posts={e} key={i} />
                 })}
             </div>
         </div>
 
-    )
+    ) : <h2><Loader2 /></h2>
 }
 
 export default Home

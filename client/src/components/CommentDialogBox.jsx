@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Ellipsis } from "lucide-react";
+import { userDefaultPfp } from "@/utils/constant";
 
-const CommentDialogBox = ({ open, setopen, ismenuopen, setismenuopen }) => {
+const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) => {
     const [comment, setcomment] = useState('')
     const handleInteraction = (e) => {
         if (ismenuopen) {
@@ -19,13 +20,13 @@ const CommentDialogBox = ({ open, setopen, ismenuopen, setismenuopen }) => {
 
                 <div className="flex">
                     <div className="flex flex-1">
-                        <img src="https://media.istockphoto.com/id/1477186301/photo/portrait-of-handsome-and-confident-young-man-looking-at-camera.jpg?s=2048x2048&w=is&k=20&c=CL7D_yiPDcH44yqVxE-oSncDzf2JM7RujyiO2JQPumI=" className="object-cover w-full flex flex-grow-0" alt="" />
+                        <img src={image} className="object-cover w-full flex flex-grow-0" alt="" />
 
                     </div>
                     <div className="flex h-[35rem] w-[35%] flex-col">
                         {/* Header */}
                         <div className="box-a h-[10%] px-3 border-b border-zinc-700 flex items-center gap-2">
-                            <img src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            <img src={userDefaultPfp}
                                 className="w-10 h-10 object-cover object-top rounded-full" alt="" />
                             <div className="dets">
                                 <h3 className="text-[16px]">username</h3>

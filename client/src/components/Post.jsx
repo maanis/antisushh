@@ -3,13 +3,15 @@ import React, { useState } from 'react'
 import CommentDialogBox from './CommentDialogBox'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 
-const Post = () => {
+const Post = ({ posts }) => {
+    const { caption, comments, image, likes, user } = posts
+    // console.log(posts)
+    console.log(caption)
+    // console.log(image)
     const [open, setopen] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
     const data = ['unfollow', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
-    console.log(ismenuopen)
     const handleMenuClick = (e) => {
-        console.log(e)
         if (e === 'cancel') {
             setismenuopen(false)
         }
@@ -22,7 +24,7 @@ const Post = () => {
                         className="w-10 h-10 object-cover object-top rounded-full" alt="" />
                     <div className="dets">
                         <h3 className="text-[16px]">
-                            username
+                            {user.username}
                         </h3>
                         <p className="text-[12px] text-zinc-300">
                             create
@@ -33,7 +35,7 @@ const Post = () => {
                     </div>
                 </div>
                 <div className="box-b w-full border mt-2 flex justify-center border-zinc-600  ">
-                    <img src="https://media.istockphoto.com/id/1477186301/photo/portrait-of-handsome-and-confident-young-man-looking-at-camera.jpg?s=2048x2048&w=is&k=20&c=CL7D_yiPDcH44yqVxE-oSncDzf2JM7RujyiO2JQPumI=" alt="" />
+                    <img src={image} alt="" />
                 </div>
                 <div className="flex py-3 gap-3 ">
                     <Heart size={'20px'} className='cursor-pointer' />
@@ -41,7 +43,7 @@ const Post = () => {
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
-                <CommentDialogBox open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
+                <CommentDialogBox image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
 
 
                 <Dialog open={ismenuopen}>
