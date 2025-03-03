@@ -1,5 +1,5 @@
 import { Globe, HeartIcon, Home, LogOut, MessageCircle, PlusSquare, Search } from 'lucide-react'
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -15,10 +15,14 @@ import {
 } from "./ui/alert-dialog"
 import { userDefaultPfp } from '@/utils/constant'
 import { useSelector } from 'react-redux'
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
+import { Button } from './ui/button'
 
 
 const Sidebar = () => {
     const navigate = useNavigate('/')
+    const imgRef = useRef('')
+    const [createDialog, setcreateDialog] = useState(false)
     const data = [
         { icon: <Home size={'20px'} />, text: 'home' },
         { icon: <Search size={'20px'} />, text: 'search' },
@@ -40,14 +44,19 @@ const Sidebar = () => {
             toast.success(data.message)
         }
     }
+    const handleMenuClick = (e) => {
+        if (e === 'create') {
+            setcreateDialog(true)
+        }
+    }
     return (
         <div className='w-[15%] flex flex-col px-3 py-4 border-r border-zinc-700 h-full'>
             <h2 className='font-extralight text-3xl logoText my-5 mb-8'>AntiSush</h2>
             {data.map((e, i) => {
-                return <div className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
+                return <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
                     <span className='text-sm'>{e.icon}</span>
                     <h3 className='capitalize'>{e.text}</h3>
-                </div>
+                </button>
             })}
             <div className='mt-auto'>
                 <div className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
@@ -60,18 +69,26 @@ const Sidebar = () => {
                         <h3>Logout</h3>
                     </div></AlertDialogTrigger>
                     <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                You want to logout your profile
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You want to logout your profile
+                        </AlertDialogDescription>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction className='bg-red-600 hover:bg-red-700 transition-all' onClick={handleLogout}>Continue</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
+
+                <Dialog open={createDialog}>
+                    <DialogContent onInteractOutside={() => setcreateDialog(false)} className='w-[90rem] bg-zinc-300 rounded-lg outline-none border-none'>
+                        <DialogTitle className='hidden'>title</DialogTitle>
+                        <div className='text-neutral-900  text-center text-xl font-semibold'>Create a Post</div>
+                        <textarea className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2' placeholder='Enter a caption...'></textarea>
+                        <input ref={imgRef} type="file" className='hidden' />
+                        <button onClick={() => imgRef.current.click()} className='bg-blue-600 inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
+                    </DialogContent>
+                </Dialog>
 
             </div>
         </div>
