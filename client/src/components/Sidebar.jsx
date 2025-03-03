@@ -13,6 +13,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "./ui/alert-dialog"
+import { userDefaultPfp } from '@/utils/constant'
+import { useSelector } from 'react-redux'
 
 
 const Sidebar = () => {
@@ -25,6 +27,8 @@ const Sidebar = () => {
         { icon: <HeartIcon size={'20px'} />, text: 'notifications' },
         { icon: <PlusSquare size={'20px'} />, text: 'create' },
     ]
+    const { user } = useSelector(state => state.userInfo)
+    console.log(user)
     const handleLogout = async () => {
         const res = await fetch('http://localhost:3000/logout', {
             method: 'GET',
@@ -48,7 +52,7 @@ const Sidebar = () => {
             })}
             <div className='mt-auto'>
                 <div className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
-                    <img src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" className='w-8 h-8 object-cover rounded-full ' alt="" />
+                    <img src={userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
                     <h3>username</h3>
                 </div>
                 <AlertDialog>
