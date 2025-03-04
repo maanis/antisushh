@@ -3,25 +3,47 @@ import React, { useState } from 'react'
 import CommentDialogBox from './CommentDialogBox'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { userDefaultPfp } from '@/utils/constant'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Button } from './ui/button'
+import { toast } from 'sonner'
+import { setposts } from '@/store/postSlice'
 
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
+    const reduxPosts = useSelector(state => state.posts.posts)
+    const dispatch = useDispatch()
     const createdAt = new Date(posts.createdAt).toLocaleString();
     const currentUser = useSelector(state => state.userInfo.user)
-    console.log(currentUser)
     const date = new Date(createdAt);
     const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
-    console.log(formattedTime);
-    // console.log(posts)
-    // console.log(caption)
     const [open, setopen] = useState(false)
+    const [delDialog, setdelDialog] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
     const data = ['unfollow', 'delete', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
     const handleMenuClick = (e) => {
         if (e === 'cancel') {
             setismenuopen(false)
+        } else if (e === 'delete') {
+            setdelDialog(true)
+        }
+    }
+    const handleDelete = async (id) => {
+        try {
+            const res = await fetch(`http://localhost:3000/post/deletePost/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            })
+            const data = await res.json()
+            if (data.success) {
+                setdelDialog(false)
+                toast.success(data.message)
+                dispatch(setposts(reduxPosts.filter(e => e._id !== id)))
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
     return (
@@ -65,12 +87,45 @@ const Post = ({ posts }) => {
                         <div className="w-full overflow-hidden rounded-lg bg-neutral-900">
                             <div className="flex flex-col">
                                 {data.map((e, i) => {
-                                    return <button key={i} onClick={() => handleMenuClick(e)} className={`w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors ${i === 0 || i === 1 ? 'text-red-500' : 'text-white'} capitalize hover:bg-neutral-800`}>
-                                        {e}
-                                    </button>
+                                    // Check if the current user is the post user
+                                    if (e === 'delete' && currentUser._id === user._id) {
+                                        return (
+                                            <button
+                                                key={i}
+                                                onClick={() => handleMenuClick(e)}
+                                                className="w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors text-red-500 capitalize hover:bg-neutral-800"
+                                            >
+                                                {e}
+                                            </button>
+                                        );
+                                    } else if (e !== 'delete') {
+                                        return (
+                                            <button
+                                                key={i}
+                                                onClick={() => handleMenuClick(e)}
+                                                className={`w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors capitalize hover:bg-neutral-800 ${e === 'unfollow' ? 'text-red-500' : 'text-white'}`}
+                                            >
+                                                {e}
+                                            </button>
+                                        );
+                                    }
+
+                                    return null;
                                 })}
 
+
                             </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog open={delDialog}>
+                    <DialogContent>
+                        <DialogTitle className='hidden'>Comment</DialogTitle>
+                        <div className='text-center text-lg font-semibold'>Are you sure you want to delete this post?</div>
+                        <div className='flex gap-2 w-full justify-end'>
+                            <Button onClick={() => setdelDialog(false)}>Cancel</Button>
+                            <Button className='bg-red-600 hover:bg-red-700' onClick={() => handleDelete(posts._id)}>Delete</Button>
                         </div>
                     </DialogContent>
                 </Dialog>

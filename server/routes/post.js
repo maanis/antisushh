@@ -18,7 +18,7 @@ router.post('/likeOrDislike/:id', isAuthenticated, likeOrDislike);
 
 router.post('/addComments/:id', isAuthenticated, addComments);
 
-router.post('/deletePost/:id', isAuthenticated, deletePost);
+router.delete('/deletePost/:id', isAuthenticated, deletePost);
 
 router.post('/addOrRemoveToBookmark/:id', isAuthenticated, addOrRemoveToBookmark);
 
