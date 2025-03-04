@@ -36,7 +36,7 @@ const Home = () => {
             </div>
 
             <div className='max-w-screen-md mx-auto'>
-                {posts.reverse().map((e, i) => {
+                {posts.slice().reverse().map((e, i) => {
                     return <Post posts={e} key={i} />
                 })}
             </div>

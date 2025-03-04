@@ -14,13 +14,15 @@ import {
     AlertDialogTrigger,
 } from "./ui/alert-dialog"
 import { fileToUrl, userDefaultPfp } from '@/utils/constant'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
+import { setposts } from '@/store/postSlice'
 
 
 const Sidebar = () => {
     const navigate = useNavigate('/')
+    const dispatch = useDispatch()
     const { posts } = useSelector(state => state.posts)
     const [loading, setloading] = useState(false);
     const imgRef = useRef('')
@@ -78,6 +80,7 @@ const Sidebar = () => {
             if (res.success) {
                 toast.success(res.message)
                 setcreateDialog(false)
+                dispatch(setposts([...posts, res.post]))
                 setcaption('')
                 setpreview(null)
                 setimage(null)
@@ -102,7 +105,7 @@ const Sidebar = () => {
             <div className='mt-auto'>
                 <div className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
                     <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
-                    <h3>username</h3>
+                    <h3>{user?.name}</h3>
                 </div>
                 <AlertDialog>
                     <AlertDialogTrigger className='w-full'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">

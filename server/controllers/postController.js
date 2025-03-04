@@ -18,7 +18,7 @@ const createPost = async (req, res) => {
             const user = await userModel.findById(userId);
             user.posts.push(post._id);
             await user.save();
-            res.status(200).json({ message: 'Post created', success: true });
+            res.status(200).json({ post, message: 'Post created', success: true });
         } else {
             res.status(400).json({ message: 'Please upload an image', success: false });
         }
