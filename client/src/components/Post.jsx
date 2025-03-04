@@ -33,7 +33,7 @@ const Post = ({ posts }) => {
                         <Ellipsis onClick={() => setismenuopen(true)} />
                     </div>
                 </div>
-                <div className="box-b w-full border mt-2 flex justify-center border-zinc-600  ">
+                <div className="box-b w-full border mt-2 flex justify-center border-zinc-800  ">
                     <img src={image} alt="" />
                 </div>
                 <div className="flex py-3 gap-3 ">
