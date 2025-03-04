@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react'
 
 const Home = () => {
     const [posts, setposts] = useState(null)
+    console.log(posts)
     async function fetchPosts() {
         try {
             const res = await fetch('http://localhost:3000/post/getAllPosts', {
@@ -21,6 +22,7 @@ const Home = () => {
     useEffect(() => {
         fetchPosts()
     }, [])
+
     return posts ? (
         <div className='w-[80%] border-r border-zinc-700'>
             <div className="pb-3 flex flex-col max-lg:w-[65%] max-md:w-[80%] border-b border-zinc-700 max-lg:bg-zinc-950

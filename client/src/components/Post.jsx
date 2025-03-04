@@ -6,8 +6,7 @@ import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
     // console.log(posts)
-    console.log(caption)
-    // console.log(image)
+    // console.log(caption)
     const [open, setopen] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
     const data = ['unfollow', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
