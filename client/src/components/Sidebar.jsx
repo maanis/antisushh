@@ -66,6 +66,9 @@ const Sidebar = () => {
     }
 
     const handleCreatePost = async () => {
+        if (!caption) return toast.error('Please fill all the fields')
+        if (!preview) return toast.error('Please upload an image')
+
         try {
             setloading(true)
             const formData = new FormData();
@@ -135,7 +138,6 @@ const Sidebar = () => {
 
                         <button
                             onClick={handleCreatePost}
-                            disabled={!caption || !preview}
                             type="submit"
                             className="w-full bg-gradient-to-r from-neutral-800 to-neutral-900 transition-colors text-white rounded-lg p-3 mt-6 font-medium hover:from-neutral-500 hover:to-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-purple-900"
                         >
