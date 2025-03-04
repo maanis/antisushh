@@ -80,7 +80,7 @@ const Sidebar = () => {
             if (res.success) {
                 toast.success(res.message)
                 setcreateDialog(false)
-                dispatch(setposts([...posts, res.post]))
+                dispatch(setposts([...posts, res.newPost]))
                 setcaption('')
                 setpreview(null)
                 setimage(null)

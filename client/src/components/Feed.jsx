@@ -26,7 +26,7 @@ const Feed = () => {
     }, [])
     const { posts } = useSelector(state => state.posts)
     console.log(posts)
-    return user && posts ? (
+    return  posts ? (
         <div className='h-full flex bg-zinc-950 text-zinc-200 w-full'>
             <Sidebar />
             <Main />
