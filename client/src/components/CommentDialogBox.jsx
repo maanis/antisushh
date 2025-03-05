@@ -55,7 +55,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
 
                         {/* Input Box */}
                         <div className="h-[10%] flex items-center justify-between border-b border-zinc-700">
-                            <input value={comment} onChange={(e) => setcomment(e.target.value)} type="text" className="w-full text-black px-2 py-2 outline-none bg-transparent" placeholder="add a comment..." />
+                            <input value={comment} onChange={(e) => setcomment(e.target.value)} type="text" className="w-full px-2 py-2 outline-none bg-transparent" placeholder="add a comment..." />
                             {comment.trim() && <button className="text-blue-500 pr-3">Post</button>}
                         </div>
                     </div>

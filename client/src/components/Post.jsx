@@ -1,4 +1,4 @@
-import { Bookmark, Ellipsis, Heart, MessageCircle, Send } from 'lucide-react'
+import { Bookmark, Ellipsis, Heart, HeartHandshake, MessageCircle, Send } from 'lucide-react'
 import React, { useState } from 'react'
 import CommentDialogBox from './CommentDialogBox'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
@@ -7,13 +7,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { setposts } from '@/store/postSlice'
+import { IoMdHeart } from "react-icons/io";
+import { IoMdHeartEmpty } from "react-icons/io";
 
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
+    const currentUser = useSelector(state => state.userInfo.user)
+    const [liked, setLiked] = useState(likes.includes(currentUser._id) || false)
+    const [likeCounter, setlikeCounter] = useState([...likes])
+    console.log(likes.includes(user._id))
+
     const reduxPosts = useSelector(state => state.posts.posts)
     const dispatch = useDispatch()
     const createdAt = new Date(posts.createdAt).toLocaleString();
-    const currentUser = useSelector(state => state.userInfo.user)
     const date = new Date(createdAt);
     const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
@@ -48,8 +54,28 @@ const Post = ({ posts }) => {
     }
 
     const handleLike = async () => {
-        console.log(posts._id)
-
+        try {
+            console.log(posts._id)
+            const res = await fetch(`http://localhost:3000/post/likeOrDislike/${posts._id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            const data = await res.json()
+            if (data.success) {
+                setLiked(!liked)
+                if (data.message === 'liked') {
+                    setlikeCounter([...likeCounter, currentUser._id])
+                } else {
+                    setlikeCounter(likeCounter.filter(e => e !== currentUser._id))
+                }
+                toast.success(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
     return (
         <div>
@@ -70,16 +96,16 @@ const Post = ({ posts }) => {
                     </div>
                 </div>
                 <div className="box-b w-full border mt-2 flex justify-center border-zinc-800  ">
-                    <img src={image} alt="" />
+                    <img className='select-none' src={image} alt="" />
                 </div>
 
-                <div className="flex pt-3 pb-2 gap-3 ">
-                    <Heart onClick={handleLike} size={'20px'} className='cursor-pointer' />
+                <div className="flex pt-3 pb-2 gap-3 items-center">
+                    {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='cursor-pointer' />}
                     <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
-                <h2>{posts.likes.length} {posts.likes.length <= 1 ? 'like' : 'likes'}</h2>
+                <h2>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
                 <div className="flex items-center">
                     <h2 className='font-semibold'>{user.username}</h2>
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
