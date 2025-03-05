@@ -71,6 +71,14 @@ const Post = ({ posts }) => {
                 } else {
                     setlikeCounter(likeCounter.filter(e => e !== currentUser._id))
                 }
+                const updatedReduxPosts = reduxPosts.map(e => {
+                    return e._id == posts._id ? {
+                        ...e,
+                        likes: data.message === 'liked' ? [...e.likes, currentUser._id] : e.likes.filter(e => e !== currentUser._id)
+                    } : e
+                })
+                dispatch(setposts(updatedReduxPosts))
+                console.log(reduxPosts)
                 toast.success(data.message)
             }
         } catch (error) {
