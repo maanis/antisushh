@@ -48,7 +48,7 @@ const Post = ({ posts }) => {
     }
     return (
         <div>
-            <div className="post flex flex-col w-[60%] px-1 mx-auto mb-2 mt-4">
+            <div className="post flex flex-col w-[60%] pb-8 px-1 mx-auto mb-2 mt-4">
                 <div className="box-a flex items-center gap-2">
                     <img src={user.pfp ? user.pfp : userDefaultPfp}
                         className="w-10 h-10 object-cover object-top rounded-full" alt="" />
@@ -67,17 +67,19 @@ const Post = ({ posts }) => {
                 <div className="box-b w-full border mt-2 flex justify-center border-zinc-800  ">
                     <img src={image} alt="" />
                 </div>
-                <div className="flex items-center mt-2">
-                    <h2 className='font-semibold'>{user.username}</h2>
-                    <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
-                </div>
-                <div className="flex py-3 gap-3 ">
+
+                <div className="flex pt-3 pb-2 gap-3 ">
                     <Heart size={'20px'} className='cursor-pointer' />
                     <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
                 </div>
-                <CommentDialogBox image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
+                <h2>{posts.likes.length} {posts.likes.length <= 1 ? 'like' : 'likes'}</h2>
+                <div className="flex items-center">
+                    <h2 className='font-semibold'>{user.username}</h2>
+                    <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
+                </div>
+                <CommentDialogBox post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
 
 
                 <Dialog open={ismenuopen}>

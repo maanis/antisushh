@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { setposts } from '@/store/postSlice'
+import { setUser } from '@/store/userSlice'
 
 
 const Sidebar = () => {
@@ -47,6 +48,8 @@ const Sidebar = () => {
         const data = await res.json()
         if (data.success) {
             navigate('/')
+            dispatch(setUser(null))
+            dispatch(setposts([]))
             toast.success(data.message)
         }
     }

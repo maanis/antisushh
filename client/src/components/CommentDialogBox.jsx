@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Ellipsis } from "lucide-react";
 import { userDefaultPfp } from "@/utils/constant";
 
-const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) => {
+const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuopen }) => {
+    console.log(post)
     const [comment, setcomment] = useState('')
+    const [postComments, setpostComments] = useState(post.comments)
     const handleInteraction = (e) => {
         if (ismenuopen) {
             setopen(true)
@@ -15,7 +17,7 @@ const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) =
     }
     return (
         <Dialog open={open} >
-            <DialogContent className=' w-[950px] max-h-[35rem] overflow-hidden max-w-full border-none outline-none rounded-none p-0' onInteractOutside={handleInteraction}>
+            <DialogContent className=' w-[950px] max-h-[35rem] overflow-hidden max-w-full border-none bg-neutral-900 text-white outline-none rounded-none p-0' onInteractOutside={handleInteraction}>
                 <DialogTitle className="hidden">Comment Dialog</DialogTitle>
 
                 <div className="flex">
@@ -29,7 +31,7 @@ const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) =
                             <img src={userDefaultPfp}
                                 className="w-10 h-10 object-cover object-top rounded-full" alt="" />
                             <div className="dets">
-                                <h3 className="text-[16px]">username</h3>
+                                <h3 className="text-[16px]">{post?.user.username}</h3>
                                 <p className="text-[12px] text-zinc-300">create</p>
                             </div>
                             <div className="ml-auto relative dot cursor-pointer">
@@ -37,8 +39,8 @@ const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) =
                             </div>
                         </div>
 
-                        <div className="h-[80%] py-5 px-3 overflow-y-auto border-b border-zinc-700">
-                            {Array(20).fill(0).map((_, index) => (
+                        <div className={`h-[80%] ${postComments.length < 1 && 'flex justify-center items-center'}  py-5 px-3 overflow-y-auto border-b border-zinc-700`}>
+                            {postComments.length < 1 ? 'Nothing to show!' : postComments.map((_, index) => (
                                 <div key={index} className="flex gap-2 mb-2">
                                     <img src="https://images.unsplash.com/photo-1628157588553-5eeea00af15c?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                                         className="w-10 h-10 object-cover object-top rounded-full" alt="" />
@@ -54,7 +56,7 @@ const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) =
 
                         {/* Input Box */}
                         <div className="h-[10%] flex items-center justify-between border-b border-zinc-700">
-                            <input value={comment} onChange={(e) => setcomment(e.target.value)} type="text" className="w-full px-2 py-2 outline-none bg-transparent" placeholder="add a comment..." />
+                            <input value={comment} onChange={(e) => setcomment(e.target.value)} type="text" className="w-full text-black px-2 py-2 outline-none bg-transparent" placeholder="add a comment..." />
                             {comment.trim() && <button className="text-blue-500 pr-3">Post</button>}
                         </div>
                     </div>
@@ -62,7 +64,7 @@ const CommentDialogBox = ({ open, image, setopen, ismenuopen, setismenuopen }) =
                 </div>
 
             </DialogContent>
-        </Dialog>
+        </Dialog >
     );
 };
 
