@@ -4,7 +4,6 @@ import { Ellipsis } from "lucide-react";
 import { userDefaultPfp } from "@/utils/constant";
 
 const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuopen }) => {
-    console.log(post)
     const [comment, setcomment] = useState('')
     const [postComments, setpostComments] = useState(post.comments)
     const handleInteraction = (e) => {

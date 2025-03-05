@@ -46,6 +46,11 @@ const Post = ({ posts }) => {
             console.log(error)
         }
     }
+
+    const handleLike = async () => {
+        console.log(posts._id)
+
+    }
     return (
         <div>
             <div className="post flex flex-col w-[60%] pb-8 px-1 mx-auto mb-2 mt-4">
@@ -69,7 +74,7 @@ const Post = ({ posts }) => {
                 </div>
 
                 <div className="flex pt-3 pb-2 gap-3 ">
-                    <Heart size={'20px'} className='cursor-pointer' />
+                    <Heart onClick={handleLike} size={'20px'} className='cursor-pointer' />
                     <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
                     <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
