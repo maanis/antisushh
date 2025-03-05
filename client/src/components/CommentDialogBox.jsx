@@ -41,7 +41,7 @@ const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuope
                     return e._id === post._id ? { ...e, comments: [...e.comments, { text: data.commentText, user: data.user }] } : e
                 })
                 dispatch(setposts(updatedPosts))
-
+                console.log(data)
                 toast.success(data.message)
 
             }
@@ -50,6 +50,10 @@ const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuope
 
         }
     }
+    const formatTime = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    };
     return (
         <Dialog open={open} >
             <DialogContent className=' w-[950px] max-h-[35rem] overflow-hidden max-w-full border-none bg-neutral-900 text-white outline-none rounded-none p-0' onInteractOutside={handleInteraction}>
@@ -83,7 +87,7 @@ const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuope
                                         <p className="text-[12px] text-zinc-400">
                                             <span className="font-semibold text-zinc-200 mr-1">{e.user.username}</span> {e.text}
                                         </p>
-                                        <p className="text-[12px] text-zinc-500">1d <span className="ml-2">Reply</span></p>
+                                        <p className="text-[12px] text-zinc-500">{formatTime(e.createdAt)} <span className="ml-2">Reply</span></p>
                                     </div>
                                 </div>
                             ))}
