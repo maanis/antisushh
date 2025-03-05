@@ -117,7 +117,7 @@ const Post = ({ posts }) => {
                     <h2 className='font-semibold'>{user.username}</h2>
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
                 </div>
-                <CommentDialogBox post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
+                <CommentDialogBox formattedTime={formattedTime} post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
 
 
                 <Dialog open={ismenuopen}>

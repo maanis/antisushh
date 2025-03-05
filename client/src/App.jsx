@@ -3,16 +3,20 @@ import Register from './components/Register'
 import { Routes, Route } from 'react-router-dom'
 import Feed from './components/Feed'
 import ProtectedRoute from './utils/ProtectedRoute'
+import { Scroll } from 'lucide-react'
+import ScrollRestoration from './utils/ScrollRestoration'
 
 const App = () => {
   return (
-    <div className='h-screen w-full'>
+    <>
+      <div className='h-screen w-full'>
 
-      <Routes>
-        <Route path='/' element={<Register />} />
-        <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
-      </Routes>
-    </div>
+        <Routes>
+          <Route path='/' element={<Register />} />
+          <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+        </Routes>
+      </div>
+    </>
   )
 }
 

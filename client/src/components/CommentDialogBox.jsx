@@ -3,11 +3,13 @@ import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 import { Ellipsis } from "lucide-react";
 import { userDefaultPfp } from "@/utils/constant";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { setposts } from "@/store/postSlice";
 
-const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuopen }) => {
+const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuopen, setismenuopen }) => {
     const currentUser = useSelector(state => state.userInfo.user)
     const reduxPosts = useSelector(state => state.posts.posts)
-
+    const dispatch = useDispatch()
     const [commentText, setcommentText] = useState('')
 
     const [postComments, setpostComments] = useState(post.comments)
@@ -35,7 +37,11 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
             if (data.success) {
                 setcommentText('');
                 setpostComments([...postComments, { text: data.commentText, user: data.user }])
-                console.log(data)
+                const updatedPosts = reduxPosts.map(e => {
+                    return e._id === post._id ? { ...e, comments: [...e.comments, { text: data.commentText, user: data.user }] } : e
+                })
+                dispatch(setposts(updatedPosts))
+
                 toast.success(data.message)
 
             }
@@ -58,10 +64,10 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                         {/* Header */}
                         <div className="box-a h-[10%] px-3 border-b border-zinc-700 flex items-center gap-2">
                             <img src={userDefaultPfp}
-                                className="w-10 h-10 object-cover object-top rounded-full" alt="" />
+                                className="w-8 h-8 object-cover object-top rounded-full" alt="" />
                             <div className="dets">
                                 <h3 className="text-[16px]">{post?.user.username}</h3>
-                                <p className="text-[12px] text-zinc-300">create</p>
+                                <p className="text-[10px] text-zinc-400">{formattedTime}</p>
                             </div>
                             <div className="ml-auto relative dot cursor-pointer">
                                 <Ellipsis onClick={(e) => setismenuopen(true)} />
@@ -69,10 +75,10 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                         </div>
 
                         <div className={`h-[80%] ${postComments.length < 1 && 'flex justify-center items-center'}  py-5 px-3 overflow-y-auto border-b border-zinc-700`}>
-                            {postComments.length < 1 ? 'Nothing to show!' : postComments.map((e, index) => (
-                                <div key={index} className="flex gap-2 mb-2">
+                            {postComments.length < 1 ? 'Nothing to show!' : postComments.slice().reverse().map((e, index) => (
+                                <div key={index} className="flex gap-3 mb-3">
                                     <img src={e.user.pfp ? e.user.pfp : userDefaultPfp}
-                                        className="w-10 h-10 object-cover object-top rounded-full" alt="" />
+                                        className="w-8 h-8 object-cover object-top rounded-full" alt="" />
                                     <div>
                                         <p className="text-[12px] text-zinc-400">
                                             <span className="font-semibold text-zinc-200 mr-1">{e.user.username}</span> {e.text}
