@@ -85,12 +85,13 @@ const addComments = async (req, res) => {
         console.log(commentText)
         if (!commentText) return res.status(401).json({ message: 'Comment is required', success: false })
         if (!userId || !postId) return res.status(401).json({ message: 'No user found', success: false })
+        const user = await userModel.findById(userId).select('username pfp')
         const post = await postModel.findById(postId)
         if (!post) return res.status(401).json({ message: 'post not found', success: false })
         post.comments.push({ user: userId, text: commentText })
         await post.save()
 
-        res.status(200).json({ commentText, post, message: 'Comment posted', success: true });
+        res.status(200).json({ commentText, user, message: 'Comment posted', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }

@@ -14,8 +14,7 @@ const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
     const currentUser = useSelector(state => state.userInfo.user)
     const [liked, setLiked] = useState(likes.includes(currentUser._id) || false)
-    const [likeCounter, setlikeCounter] = useState([...likes])
-    console.log(likes.includes(user._id))
+    const [likeCounter, setlikeCounter] = useState(likes)
 
     const reduxPosts = useSelector(state => state.posts.posts)
     const dispatch = useDispatch()
