@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 const Home = () => {
     const { posts } = useSelector(state => state.posts)
-    return (
+    return posts ? (
         <div className='w-[75%] border-r border-zinc-700'>
             <div className="pb-3 flex flex-col max-lg:w-[65%] max-md:w-[80%] border-b border-zinc-700 max-lg:bg-zinc-950
                 w-full bg-zinc-950 ">
@@ -42,7 +42,7 @@ const Home = () => {
             </div>
         </div>
 
-    )
+    ) : <h2 className='text-white'>Loading</h2>
 }
 
 export default Home
