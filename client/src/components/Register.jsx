@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/userSlice';
+import apiClient from '@/utils/apiClient';
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -27,15 +28,7 @@ function Register() {
                 //register
                 if (password.length < 6) return toast('password must be atleast 6 digit long')
                 const userData = { name, username, password }
-                const res = await fetch('http://localhost:3000/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(userData)
-                })
-                const data = await res.json()
+                const data = await apiClient('register', "POST", userData)
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
                 setisSignUp(false)
@@ -45,13 +38,8 @@ function Register() {
             } else {
                 //login
                 const userData = { username, password }
-                const res = await fetch('http://localhost:3000/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(userData)
-                })
-                const data = await res.json()
+                const data = await apiClient("/login", "POST", userData);
+
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
                 dispatch(setUser(data.user))
