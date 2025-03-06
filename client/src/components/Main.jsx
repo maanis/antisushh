@@ -2,11 +2,11 @@ import React from 'react'
 import RightSideBar from './RightSideBar'
 import Home from './Home'
 
-const Main = () => {
+const Main = ({ suggestedUsers }) => {
     return (
         <div className='flex w-[85%] overflow-y-auto'>
             <Home />
-            <RightSideBar />
+            <RightSideBar suggestedUsers={suggestedUsers} />
         </div>
     )
 }

@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { setposts } from '@/store/postSlice'
 import { setUser } from '@/store/userSlice'
+import apiClient from '@/utils/apiClient'
 
 
 const Sidebar = () => {
@@ -41,11 +42,7 @@ const Sidebar = () => {
     ]
     const { user } = useSelector(state => state.userInfo)
     const handleLogout = async () => {
-        const res = await fetch('http://localhost:3000/logout', {
-            method: 'GET',
-            credentials: 'include'
-        })
-        const data = await res.json()
+        const data = await apiClient('/logout')
         if (data.success) {
             navigate('/')
             dispatch(setUser(null))
@@ -100,7 +97,7 @@ const Sidebar = () => {
         }
     }
     return (
-        <div className='w-[15%] flex flex-col px-3 py-4 border-r border-zinc-700 h-full'>
+        <div className='w-[18%] flex flex-col px-3 py-4 border-r border-zinc-700 h-full'>
             <h2 className='font-extralight text-3xl logoText my-5 mb-8'>AntiSush</h2>
             {data.map((e, i) => {
                 return <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>

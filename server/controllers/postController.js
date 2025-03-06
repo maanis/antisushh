@@ -117,6 +117,7 @@ const deletePost = async (req, res) => {
     }
 }
 
+
 const addOrRemoveToBookmark = async (req, res) => {
     try {
         const userId = req.id
