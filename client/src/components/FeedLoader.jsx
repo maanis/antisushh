@@ -6,7 +6,7 @@ import { Skeleton } from './ui/skeleton'
 
 const FeedLoader = ({ suggestedUsers }) => {
     return (
-        <div className='h-full  flex overflow-y-auto text-zinc-200 w-full'>
+        <div className='h-full  flex overflow-y-hidden text-zinc-200 w-full'>
             <div className='w-[75%] border-r border-zinc-700'>
                 <div className="pb-3 flex flex-col max-lg:w-[65%] max-md:w-[80%] border-b border-zinc-700 max-lg:bg-zinc-950
                             w-full bg-zinc-950 ">
@@ -34,14 +34,24 @@ const FeedLoader = ({ suggestedUsers }) => {
                         </div>
                     </div>
                 </div>
-                <div className='max-w-screen-md mx-auto'>
-                    <div className="flex flex-col space-y-3">
-                        <Skeleton className="h-[125px]  w-[250px] rounded-xl" />
-                        <div className="space-y-2">
-                            <Skeleton className="h-4 w-[250px]" />
-                            <Skeleton className="h-4 w-[200px]" />
+                <div className='max-w-screen-md  mx-auto flex-col flex items-center'>
+                    {[1, 2].map((e, i) => {
+                        return <div className="flex flex-col mt-5 items-center w-[60%] space-y-3">
+                            <div className="flex items-center gap-2 w-full">
+                                <Skeleton className='w-10 h-10 rounded-full' />
+                                <Skeleton className='w-20 h-5 rounded-full' />
+                                <Skeleton className='w-10 ml-auto h-5 rounded-full' />
+
+                            </div>
+                            <div className="space-y-2 w-full items-center">
+                                <Skeleton className="h-[23rem] w-full" />
+                                <div className="flex">
+                                    <Skeleton className="h-4 w-[200px]" />
+                                    <Skeleton className='w-10 ml-auto h-5 rounded-full' />
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    })}
                 </div>
             </div>
 

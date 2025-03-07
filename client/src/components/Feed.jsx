@@ -33,6 +33,7 @@ const Feed = () => {
         fetchsuggestedUsers()
     }, [])
     const { posts } = useSelector(state => state.posts)
+    // const posts = null
     return posts ? (
         <div className='h-full  flex overflow-y-auto text-zinc-200 w-full'>
             <Home />
