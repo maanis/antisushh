@@ -4,6 +4,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Feed from './components/Feed'
 import ProtectedRoute from './utils/ProtectedRoute'
 import Sidebar from './components/Sidebar'
+import ProfilePage from './components/ProfilePage'
 
 const App = () => {
   const location = useLocation();
@@ -15,6 +16,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Register />} />
           <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+          <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         </Routes>
       </div>
     </>

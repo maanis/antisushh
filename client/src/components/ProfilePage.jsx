@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image } from 'lucide-react';
+
+function ProfilePage() {
+    const [activeTab, setActiveTab] = useState('posts');
+
+    const posts = [
+        {
+            id: 1,
+            image: "https://images.unsplash.com/photo-1682687220742-aba19b51f36e?w=500&auto=format&fit=crop&q=60",
+            type: "post"
+        },
+        {
+            id: 2,
+            image: "https://images.unsplash.com/photo-1682687220063-4742bd7c98d6?w=500&auto=format&fit=crop&q=60",
+            type: "post"
+        }
+    ];
+
+    return (
+        <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
+            {/* Header/Banner */}
+            <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+                <div className="absolute -bottom-16 left-10">
+                    <img
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        alt="Profile"
+                        className="w-40 select-none h-4w-40 rounded-full border-4 border-white shadow-lg"
+                    />
+                </div>
+            </div>
+
+            {/* Profile Content */}
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8">
+                <div className=" rounded-xl shadow-sm p-6 mb-8">
+                    {/* Profile Header */}
+                    <div className="flex justify-between items-start mb-6">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-2xl font-bold">John Developer</h1>
+                                <Verified className="w-5 h-5 text-blue-500" />
+                            </div>
+                            <p className="text-gray-600 mt-1">Senior Frontend Engineer</p>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                                <div className="flex items-center gap-1">
+                                    <Mail className="w-4 h-4" />
+                                    <span>john@example.com</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <Pencil className="w-4 h-4" />
+                            Edit Profile
+                        </button>
+                    </div>
+                    {/* Stats Bar */}
+                    <div className="flex gap-8 mb-4 py-2">
+                        <div className="text-center flex items-center gap-2">
+                            <span className="block font-bold text-xl text-white">2</span>
+                            <span className="text-sm text-gray-500">posts</span>
+                        </div>
+                        <div className="text-center flex items-center gap-2">
+                            <span className="block font-bold text-xl text-white">600</span>
+                            <span className="text-sm text-gray-500">followers</span>
+                        </div>
+                        <div className="text-center flex items-center gap-2">
+                            <span className="block font-bold text-xl text-white">20</span>
+                            <span className="text-sm text-gray-500">following</span>
+                        </div>
+                    </div>
+
+
+
+                    {/* Social Links */}
+                    <div>
+                        <h2 className="text-xl font-semibold mb-4">Connect</h2>
+                        <div className="flex gap-4">
+                            {['github', 'twitter', 'website'].map((e, i) => {
+                                return <a
+                                    href="#"
+                                    key={i}
+                                    className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 hover:text-black transition-colors"
+                                >
+                                    <Github className="w-5 h-5" />
+                                    <span className='capitalize'>{e}</span>
+                                    <ExternalLink className="w-4 h-4" />
+                                </a>
+                            })}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Posts Section */}
+                <div className="text-black rounded-xl shadow-sm">
+                    {/* Tabs */}
+                    <div className="border-b border-zinc-700">
+                        <div className="flex gap-8">
+                            {['posts', 'saved'].map((e, i) => {
+                                return <button
+                                    onClick={() => setActiveTab(e)}
+                                    className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === e
+                                        ? 'border-blue-500 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                        }`}
+                                >
+                                    <Image className="w-5 h-5" />
+                                    <span className='uppercase'>{e}</span>
+                                </button>
+                            })}
+
+                        </div>
+                    </div>
+
+                    {/* Grid of Posts */}
+                    <div className="p-4">
+                        <div className="grid grid-cols-3 gap-4">
+                            {posts.map((post) => (
+                                <div key={post.id} className="aspect-square relative group">
+                                    <img
+                                        src={post.image}
+                                        alt={`Post ${post.id}`}
+                                        className="w-full h-full object-cover rounded-lg"
+                                    />
+                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default ProfilePage;
