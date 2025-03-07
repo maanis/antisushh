@@ -1,42 +1,21 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
-import { Github, Twitter, Link as LinkIcon, Mail, User, FileText } from "lucide-react";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Github, Twitter, Link as LinkIcon, Mail, User, FileText } from 'lucide-react';
+
 
 export default function UpdateProfile() {
-    const navigate = useNavigate();
-    const [formData, setFormData] = useState({ name: "", bio: "", email: "" });
 
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        // Ensure all fields are filled
-        if (!formData.name || !formData.bio || !formData.email) {
-            alert("Please complete your profile before continuing.");
-            return;
-        }
-
-        console.log(formData)
-
-        // Mark profile as completed in cookies
-        Cookies.set("isProfileComplete", "true", { expires: 7 }); // Expires in 7 days
-
-        // Redirect to feed
-        navigate("/feed");
-    };
 
     return (
         <div
-            className="min-h-screen w-full overflow-y-auto mx-auto text-white bg-cover bg-center bg-no-repeat py-12 px-4 sm:px-6 lg:px-8 relative"
+            className="min-h-screen w-full overflow-y-auto  mx-auto text-white bg-cover bg-center bg-no-repeat py-12 px-4 sm:px-6 lg:px-8 relative"
             style={{
-                backgroundImage:
-                    "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')",
+                backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')"
             }}
         >
+            {/* Overlay with blur effect */}
+            {/* <div className="absolute inset-0 h-full bottom-0 backdrop-blur-sm bg-black/30" /> */}
+
             <div className="relative max-w-2xl mx-auto text-white">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-white">Complete Your Profile</h1>
@@ -44,7 +23,7 @@ export default function UpdateProfile() {
                 </div>
 
                 <div className="backdrop-blur-xl bg-zinc-600/45 rounded-2xl shadow-2xl p-8 transition-all duration-300">
-                    <form className="space-y-8" onSubmit={handleSubmit}>
+                    <form className="space-y-8">
                         {/* Basic Info Section */}
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
@@ -54,23 +33,21 @@ export default function UpdateProfile() {
 
                             <div className="space-y-5">
                                 <div>
-                                    <label htmlFor="name" className="block text-sm font-medium">
-                                        Name
+                                    <label htmlFor="profileTitle" className="block text-sm font-medium ">
+                                        Profile Title
                                     </label>
                                     <input
                                         type="text"
-                                        id="name"
-                                        name="name"
-                                        placeholder="Enter your name"
+                                        id="profileTitle"
+                                        name="profileTitle"
+                                        placeholder="e.g. Senior Frontend Developer"
                                         className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                                        value={formData.name}
-                                        onChange={handleInputChange}
                                         required
                                     />
                                 </div>
 
                                 <div>
-                                    <label htmlFor="bio" className="block text-sm font-medium">
+                                    <label htmlFor="bio" className="block text-sm font-medium ">
                                         Bio
                                     </label>
                                     <div className="mt-1 relative rounded-lg shadow-sm">
@@ -80,11 +57,10 @@ export default function UpdateProfile() {
                                         <textarea
                                             id="bio"
                                             name="bio"
+
                                             rows={4}
                                             placeholder="Tell us about yourself..."
                                             className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                                            value={formData.bio}
-                                            onChange={handleInputChange}
                                             required
                                         />
                                     </div>
@@ -102,10 +78,9 @@ export default function UpdateProfile() {
                                             type="email"
                                             id="email"
                                             name="email"
+
                                             className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="you@example.com"
-                                            value={formData.email}
-                                            onChange={handleInputChange}
                                             required
                                         />
                                     </div>
@@ -153,6 +128,24 @@ export default function UpdateProfile() {
                                             name="twitterUrl"
                                             className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="https://twitter.com/username"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-zinc-100">
+                                        Personal Website
+                                    </label>
+                                    <div className="mt-1 relative rounded-lg shadow-sm group">
+                                        <div className="absolute inset-y-0 left-3 flex items-center">
+                                            <LinkIcon className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" />
+                                        </div>
+                                        <input
+                                            type="url"
+                                            id="websiteUrl"
+                                            name="websiteUrl"
+                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            placeholder="https://yourwebsite.com"
                                         />
                                     </div>
                                 </div>

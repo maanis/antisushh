@@ -32,9 +32,11 @@ function Register() {
                 if (!data.success) return toast.error(data.message)
                 if (data.success) {
                     toast.success(data.message)
+                    localStorage.setItem("hasVisitedUpdateProfile", "false")
                     dispatch(setUser(data.user))
                     console.log(data)
                     navigate('/update-profile')
+
                 }
             } else {
                 //login

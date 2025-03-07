@@ -1,14 +1,15 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedUpdateProfile = () => {
-    const hasVisited = localStorage.getItem("hasVisitedUpdateProfile");
+    const isProfileComplete = localStorage.getItem("isProfileComplete") === "true";
+    const hasVisited = localStorage.getItem("hasVisitedUpdateProfile") === "true";
 
-    if (hasVisited) {
-        return <Navigate to="/feed" replace />; // Redirect to /feed instead of /dashboard
+    if (isProfileComplete || hasVisited) {
+        return <Navigate to="/feed" replace />; // Redirect if profile is completed or already visited
     }
 
     localStorage.setItem("hasVisitedUpdateProfile", "true"); // Mark as visited
-    return <Outlet />; // Allow access for the first time
+    return <Outlet />; // Allow access
 };
 
 export default ProtectedUpdateProfile;
