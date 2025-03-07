@@ -28,13 +28,14 @@ function Register() {
                 //register
                 if (password.length < 6) return toast('password must be atleast 6 digit long')
                 const userData = { name, username, password }
-                const data = await apiClient('register', "POST", userData)
+                const data = await apiClient('/register', "POST", userData)
                 if (!data.success) return toast.error(data.message)
-                data.success && toast.success(data.message)
-                setisSignUp(false)
-                setusername('')
-                setname('')
-                setpassword('')
+                if (data.success) {
+                    toast.success(data.message)
+                    dispatch(setUser(data.user))
+                    console.log(data)
+                    navigate('/update-profile')
+                }
             } else {
                 //login
                 const userData = { username, password }

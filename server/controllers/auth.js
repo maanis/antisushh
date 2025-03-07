@@ -21,7 +21,9 @@ const register = async function (req, res) {
             username,
             password: hassPass
         });
-        res.status(200).json({ message: 'user signed up', success: true });
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+        res.cookie('token', token)
+        res.status(200).json({ user, message: 'user signed up', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
