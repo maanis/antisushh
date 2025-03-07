@@ -82,7 +82,6 @@ const addComments = async (req, res) => {
             return res.status(400).json({ message: "Invalid Post ID", success: false });
         }
         const { commentText } = req.body
-        console.log(commentText)
         if (!commentText) return res.status(401).json({ message: 'Comment is required', success: false })
         if (!userId || !postId) return res.status(401).json({ message: 'No user found', success: false })
         const user = await userModel.findById(userId).select('username pfp')

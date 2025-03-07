@@ -29,8 +29,6 @@ const register = async function (req, res) {
 
 const login = async function (req, res) {
     const { username, password } = req.body;
-    console.log('recieving body:', req.body)
-    console.log('recieving session:', req.session)
     try {
         if (!username || !password) {
             res.status(400).json({ message: 'Please fill all the fields', success: false });
