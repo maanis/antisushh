@@ -1,31 +1,25 @@
 import React, { useState } from 'react';
 import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { userDefaultPfp } from '@/utils/constant';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
 
-    const posts = [
-        {
-            id: 1,
-            image: "https://images.unsplash.com/photo-1682687220742-aba19b51f36e?w=500&auto=format&fit=crop&q=60",
-            type: "post"
-        },
-        {
-            id: 2,
-            image: "https://images.unsplash.com/photo-1682687220063-4742bd7c98d6?w=500&auto=format&fit=crop&q=60",
-            type: "post"
-        }
-    ];
+    const posts = [];
 
-    return (
+    const { user } = useSelector(state => state.userInfo)
+    console.log(user)
+
+    return user ? (
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
             <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <div className="absolute -bottom-16 left-10">
                     <img
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={user.pfp ? user.pfp : userDefaultPfp}
                         alt="Profile"
-                        className="w-40 select-none h-4w-40 rounded-full border-4 border-white shadow-lg"
+                        className="w-40 select-none h-40 rounded-full border-4 border-white shadow-lg"
                     />
                 </div>
             </div>
@@ -37,14 +31,14 @@ function ProfilePage() {
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-2xl font-bold">John Developer</h1>
+                                <h1 className="text-2xl font-bold">{user.name}</h1>
                                 <Verified className="w-5 h-5 text-blue-500" />
                             </div>
-                            <p className="text-gray-600 mt-1">Senior Frontend Engineer</p>
+                            <p className="text-gray-600 mt-1">{user.profileTitle}</p>
                             <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                                 <div className="flex items-center gap-1">
                                     <Mail className="w-4 h-4" />
-                                    <span>john@example.com</span>
+                                    <span>{user.email}</span>
                                 </div>
                             </div>
                         </div>
@@ -56,15 +50,15 @@ function ProfilePage() {
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">2</span>
+                            <span className="block font-bold text-xl text-white">{user.posts.length}</span>
                             <span className="text-sm text-gray-500">posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">600</span>
+                            <span className="block font-bold text-xl text-white">{user.followers.length}</span>
                             <span className="text-sm text-gray-500">followers</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">20</span>
+                            <span className="block font-bold text-xl text-white">{user.following.length}</span>
                             <span className="text-sm text-gray-500">following</span>
                         </div>
                     </div>
@@ -96,7 +90,7 @@ function ProfilePage() {
                     <div className="border-b border-zinc-700">
                         <div className="flex gap-8">
                             {['posts', 'saved'].map((e, i) => {
-                                return <button
+                                return <button key={i}
                                     onClick={() => setActiveTab(e)}
                                     className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === e
                                         ? 'border-blue-500 text-blue-600'
@@ -129,7 +123,7 @@ function ProfilePage() {
                 </div>
             </div>
         </div>
-    );
+    ) : 'loading...'
 }
 
 export default ProfilePage;

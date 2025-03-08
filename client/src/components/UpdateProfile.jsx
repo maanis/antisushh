@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Github, Twitter, Link as LinkIcon, Mail, User, FileText } from 'lucide-react';
 import { toast } from 'sonner';
+import { fileToUrl, userDefaultPfp } from '@/utils/constant';
+import { Button } from './ui/button';
+import { useDispatch } from 'react-redux';
+import { setUser } from '@/store/userSlice';
 
 
 export default function UpdateProfile() {
-
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [preview, setpreview] = useState('')
+    const [profilePic, setprofilePic] = useState('')
+    const fileInput = useRef('')
     const [formData, setFormData] = useState({
         profileTitle: "",
         bio: "",
@@ -18,17 +26,54 @@ export default function UpdateProfile() {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e) => {
+    const handleFileChange = (e) => {
+        const file = fileInput.current.files[0]
+        if (file) {
+            setprofilePic(file)
+            const url = fileToUrl(file);
+            setpreview(url);
+        }
+    }
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
         console.log(formData)
-        if (Object.values(formData).some((value) => value.trim() === "")) {
+        if (!preview) return toast.error('Please upload an image')
+        const { profileTitle, bio, email, linkedinUrl, githubUrl } = formData
+        if ([profileTitle, bio, email].some((value) => value.trim() === "")) {
             toast.error("Please fill out all fields before submitting.")
             return;
         }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            toast.error()
+            toast.error('Please enter a valid email')
             return;
+        }
+
+        try {
+            const formData = new FormData();
+            formData.append("profileTitle", profileTitle);
+            formData.append("bio", bio);
+            formData.append("email", email);
+            formData.append("linkedinUrl", linkedinUrl);
+            formData.append("githubUrl", githubUrl);
+
+            if (preview) {
+                formData.append("profilePic", profilePic);
+            }
+            const data = await fetch('http://localhost:3000/user/updateProfile', {
+                credentials: 'include',
+                method: 'POST',
+                body: formData,
+            })
+            const res = await data.json()
+            if (res.success) {
+                toast.success(res.message)
+                dispatch(setUser(res.user))
+                navigate('/feed')
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -56,6 +101,11 @@ export default function UpdateProfile() {
                             </div>
 
                             <div className="space-y-5">
+                                <div className="flex justify-between w-full items-center">
+                                    <img src={preview ? preview : userDefaultPfp} className='w-24 h-24 rounded-full object-cover ' alt="" />
+                                    <input onChange={handleFileChange} type="file" ref={fileInput} className='hidden' />
+                                    <div className='px-4 cursor-pointer py-2 rounded-lg bg-black text-white font-semibold' onClick={() => fileInput.current.click()}>Upload Profile</div>
+                                </div>
                                 <div>
                                     <label htmlFor="profileTitle" className="block text-sm font-medium ">
                                         Profile Title
@@ -120,7 +170,7 @@ export default function UpdateProfile() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
                                 <LinkIcon className="w-5 h-5 text-blue-600" />
-                                <h2 className="text-xl font-semibold text-white">Social Links</h2>
+                                <h2 className="text-xl font-semibold text-white">Social Links <span className='text-xs'>(optional)</span></h2>
                             </div>
 
                             <div className="space-y-5">

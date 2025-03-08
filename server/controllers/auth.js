@@ -117,4 +117,23 @@ const editProfile = async (req, res) => {
     }
 }
 
-module.exports = { register, login, logout, followOrUnfollow, suggestedUser, editProfile };
+const updateProfile = async (req, res) => {
+    try {
+        console.log(req.body)
+        console.log(req.file)
+        const { profileTitle, bio, email, githubUrl, linkedinUrl } = req.body
+        if (req.file) {
+            const img = req.file.buffer.toString('base64');
+            const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
+            await userModel.findByIdAndUpdate(req.id, { pfp: base64Image })
+        }
+        await userModel.findByIdAndUpdate(req.id, { profileTitle, bio, email, githubUrl, linkedinUrl, hasCompleteProfile: true })
+        const user = await userModel.findById(req.id).select('-password');
+        res.status(200).json({ user, message: 'Profile upadated successfully', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error hai', success: false });
+    }
+
+}
+
+module.exports = { register, updateProfile, login, logout, followOrUnfollow, suggestedUser, editProfile };
