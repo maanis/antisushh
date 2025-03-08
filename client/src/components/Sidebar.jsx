@@ -1,6 +1,6 @@
 import { Cross, CrossIcon, Globe, HeartIcon, Home, Loader2, LogOut, LucideCross, MessageCircle, PlusSquare, Search, X } from 'lucide-react'
 import React, { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
     AlertDialog,
@@ -41,6 +41,7 @@ const Sidebar = () => {
         { icon: <PlusSquare size={'20px'} />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
+    console.log(user)
     const handleLogout = async () => {
         const data = await apiClient('/logout')
         if (data.success) {
@@ -53,6 +54,8 @@ const Sidebar = () => {
     const handleMenuClick = (e) => {
         if (e === 'create') {
             setcreateDialog(true)
+        } else if (e === 'home') {
+            navigate('/feed')
         }
     }
 
@@ -106,10 +109,10 @@ const Sidebar = () => {
                 </button>
             })}
             <div className='mt-auto'>
-                <div className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
+                <Link to={`/profile/${user?.username}`} className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
                     <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
                     <h3>{user?.name}</h3>
-                </div>
+                </Link>
                 <AlertDialog>
                     <AlertDialogTrigger className='w-full'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
                         <LogOut size={'20px'} />

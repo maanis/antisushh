@@ -136,4 +136,16 @@ const updateProfile = async (req, res) => {
 
 }
 
-module.exports = { register, updateProfile, login, logout, followOrUnfollow, suggestedUser, editProfile };
+const userProfile = async (req, res) => {
+    try {
+        const username = req.params.username
+        const user = await userModel.findOne({ username })
+        if (!user) return res.status(400).json({ message: 'No user found with this username', success: false });
+        res.status(200).json({ user, message: 'Found', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+
+    }
+}
+
+module.exports = { register, updateProfile, login, logout, userProfile, followOrUnfollow, suggestedUser, editProfile };

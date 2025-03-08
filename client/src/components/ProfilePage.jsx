@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { userDefaultPfp } from '@/utils/constant';
+import { useParams } from 'react-router-dom';
+import apiClient from '@/utils/apiClient';
+import ProfileSkeleton from './ProfileSkeleton';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
+    const [user, setuser] = useState(null)
 
     const posts = [];
 
-    const { user } = useSelector(state => state.userInfo)
-    console.log(user)
+    // const { user } = useSelector(state => state.userInfo)
+    const { username } = useParams()
+    console.log(username)
+
+    const fetchUserProfile = async () => {
+        const data = await apiClient(`/user/userProfile/${username}`)
+        console.log(data)
+        setuser(data.user)
+    }
+
+    useEffect(() => {
+        fetchUserProfile()
+        return () => {
+            setuser(null)
+        }
+    }, [username])
 
     return user ? (
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
@@ -123,7 +141,7 @@ function ProfilePage() {
                 </div>
             </div>
         </div>
-    ) : 'loading...'
+    ) : <ProfileSkeleton />
 }
 
 export default ProfilePage;

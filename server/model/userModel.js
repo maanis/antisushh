@@ -15,6 +15,7 @@ const userScheme = mongoose.Schema({
     githubUrl: { type: String, default: '' },
     linkedinUrl: { type: String, default: '' },
     pfp: { type: String, default: '' },
+    coverPhoto: { type: String, default: '' },
     bio: { type: String, default: '' },
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
