@@ -16,6 +16,7 @@ const userScheme = mongoose.Schema({
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
+    hasCompleteProfile: { type: Boolean, default: false }
 })
 
 const userModel = mongoose.model('user', userScheme);

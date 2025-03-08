@@ -1,15 +1,18 @@
+import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
 const ProtectedUpdateProfile = () => {
-    const isProfileComplete = localStorage.getItem("isProfileComplete") === "true";
-    const hasVisited = localStorage.getItem("hasVisitedUpdateProfile") === "true";
+    const { user } = useSelector(state => state.userInfo);
 
-    if (isProfileComplete || hasVisited) {
-        return <Navigate to="/feed" replace />; // Redirect if profile is completed or already visited
+    if (!user) {
+        return <p>Loading...</p>; // Prevent accessing undefined properties
+    }
+    console.log(user.hasCompleteProfile)
+    if (user.hasCompleteProfile === true) {
+        return <Navigate to="/feed" replace />;
     }
 
-    localStorage.setItem("hasVisitedUpdateProfile", "true"); // Mark as visited
-    return <Outlet />; // Allow access
+    return <Outlet />;
 };
 
 export default ProtectedUpdateProfile;
