@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { setposts } from '@/store/postSlice'
 import { IoMdHeart } from "react-icons/io";
 import { IoMdHeartEmpty } from "react-icons/io";
+import { Link } from 'react-router-dom'
 
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
@@ -88,12 +89,12 @@ const Post = ({ posts }) => {
         <div>
             <div className="post flex flex-col w-[60%] pb-8 px-1 mx-auto mb-2 mt-4">
                 <div className="box-a flex items-center gap-2">
-                    <img src={user.pfp ? user.pfp : userDefaultPfp}
-                        className="w-10 h-10 object-cover object-top rounded-full" alt="" />
+                    <Link to={`/profile/${user.username}`}><img src={user.pfp ? user.pfp : userDefaultPfp}
+                        className="w-10 h-10 object-cover object-top rounded-full" alt="" /></Link>
                     <div className="dets ml-1">
-                        <h3 className="text-[16px]">
+                        <Link to={`/profile/${user.username}`}><h3 className="text-[16px]">
                             {user.username}
-                        </h3>
+                        </h3></Link>
                         <p className="text-[12px] text-zinc-500">
                             {formattedTime}
                         </p>
