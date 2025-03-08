@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image } from 'lucide-react';
+import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image, Edit, Edit2, Edit3, Edit3Icon, FileEdit, ImageIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { userDefaultPfp } from '@/utils/constant';
+import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
@@ -9,6 +9,8 @@ import ProfileSkeleton from './ProfileSkeleton';
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [user, setuser] = useState(null)
+
+    const [showEditIcon, setshowEditIcon] = useState(false)
 
     const posts = [];
 
@@ -33,11 +35,17 @@ function ProfilePage() {
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
             <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative">
-                <div className="absolute -bottom-16 left-10">
+                <img src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
+                <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />
+                <div onMouseEnter={() => setshowEditIcon(true)} onMouseLeave={() => setshowEditIcon(false)} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
+                    <div className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
+                        <ImageIcon className='cursor-pointer text-black' />
+                    </div>
+
                     <img
                         src={user.pfp ? user.pfp : userDefaultPfp}
                         alt="Profile"
-                        className="w-40 select-none h-40 rounded-full border-4 border-white shadow-lg"
+                        className="w-40 select-none h-40 rounded-full object-cover border-4 border-white shadow-lg"
                     />
                 </div>
             </div>
@@ -140,7 +148,7 @@ function ProfilePage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     ) : <ProfileSkeleton />
 }
 
