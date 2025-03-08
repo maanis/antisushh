@@ -2,25 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image, Edit, Edit2, Edit3, Edit3Icon, FileEdit, ImageIcon } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
+import { toast } from 'sonner';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [user, setuser] = useState(null)
+    const navigate = useNavigate()
 
     const [showEditIcon, setshowEditIcon] = useState(false)
 
     const posts = [];
 
-    // const { user } = useSelector(state => state.userInfo)
+    const currentUser = useSelector(state => state.userInfo.user)
+
     const { username } = useParams()
-    console.log(username)
 
     const fetchUserProfile = async () => {
         const data = await apiClient(`/user/userProfile/${username}`)
-        console.log(data)
+        // console.log(data)
+        if (!data.success) {
+            toast.error(data.message)
+            navigate('/feed')
+            return
+        }
         setuser(data.user)
     }
 
@@ -36,11 +43,12 @@ function ProfilePage() {
             {/* Header/Banner */}
             <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <img src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
-                <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />
-                <div onMouseEnter={() => setshowEditIcon(true)} onMouseLeave={() => setshowEditIcon(false)} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
-                    <div className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
+                {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
+                <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
+                    onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
+                    {currentUser.username === username && <div className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
                         <ImageIcon className='cursor-pointer text-black' />
-                    </div>
+                    </div>}
 
                     <img
                         src={user.pfp ? user.pfp : userDefaultPfp}
@@ -68,10 +76,10 @@ function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                        {currentUser.username === username && <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
                             <Pencil className="w-4 h-4" />
                             Edit Profile
-                        </button>
+                        </button>}
                     </div>
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
