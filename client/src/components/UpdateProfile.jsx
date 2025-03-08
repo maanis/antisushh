@@ -1,9 +1,36 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Github, Twitter, Link as LinkIcon, Mail, User, FileText } from 'lucide-react';
+import { toast } from 'sonner';
 
 
 export default function UpdateProfile() {
+
+    const [formData, setFormData] = useState({
+        profileTitle: "",
+        bio: "",
+        email: "",
+        githubUrl: "",
+        linkedinUrl: "",
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log(formData)
+        if (Object.values(formData).some((value) => value.trim() === "")) {
+            toast.error("Please fill out all fields before submitting.")
+            return;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            toast.error()
+            return;
+        }
+    }
 
 
     return (
@@ -13,9 +40,6 @@ export default function UpdateProfile() {
                 backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')"
             }}
         >
-            {/* Overlay with blur effect */}
-            {/* <div className="absolute inset-0 h-full bottom-0 backdrop-blur-sm bg-black/30" /> */}
-
             <div className="relative max-w-2xl mx-auto text-white">
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold text-white">Complete Your Profile</h1>
@@ -40,8 +64,10 @@ export default function UpdateProfile() {
                                         type="text"
                                         id="profileTitle"
                                         name="profileTitle"
+                                        value={formData.profileTitle}
+                                        onChange={handleChange}
                                         placeholder="e.g. Senior Frontend Developer"
-                                        className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                        className=" mt-1 block w-full rounded-lg border text-black border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                         required
                                     />
                                 </div>
@@ -57,10 +83,11 @@ export default function UpdateProfile() {
                                         <textarea
                                             id="bio"
                                             name="bio"
-
+                                            value={formData.bio}
+                                            onChange={handleChange}
                                             rows={4}
                                             placeholder="Tell us about yourself..."
-                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            className=" block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             required
                                         />
                                     </div>
@@ -78,8 +105,9 @@ export default function UpdateProfile() {
                                             type="email"
                                             id="email"
                                             name="email"
-
-                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            className="block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="you@example.com"
                                             required
                                         />
@@ -108,15 +136,17 @@ export default function UpdateProfile() {
                                             type="url"
                                             id="githubUrl"
                                             name="githubUrl"
-                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            value={formData.githubUrl}
+                                            onChange={handleChange}
+                                            className="block w-full text-black rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="https://github.com/username"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label htmlFor="twitterUrl" className="block text-sm font-medium text-zinc-100">
-                                        Twitter Profile
+                                    <label htmlFor="linkedinUrl" className="block text-sm font-medium text-zinc-100">
+                                        Linkedin Profile
                                     </label>
                                     <div className="mt-1 relative rounded-lg shadow-sm group">
                                         <div className="absolute inset-y-0 left-3 flex items-center">
@@ -124,37 +154,23 @@ export default function UpdateProfile() {
                                         </div>
                                         <input
                                             type="url"
-                                            id="twitterUrl"
-                                            name="twitterUrl"
-                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                                            placeholder="https://twitter.com/username"
+                                            id="linkedinUrl"
+                                            value={formData.linkedinUrl}
+                                            onChange={handleChange}
+                                            name="linkedinUrl"
+                                            className="block w-full text-black rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            placeholder="https://linkedin.com/username"
                                         />
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label htmlFor="websiteUrl" className="block text-sm font-medium text-zinc-100">
-                                        Personal Website
-                                    </label>
-                                    <div className="mt-1 relative rounded-lg shadow-sm group">
-                                        <div className="absolute inset-y-0 left-3 flex items-center">
-                                            <LinkIcon className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors duration-200" />
-                                        </div>
-                                        <input
-                                            type="url"
-                                            id="websiteUrl"
-                                            name="websiteUrl"
-                                            className="block w-full rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
-                                            placeholder="https://yourwebsite.com"
-                                        />
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
                         <div className="pt-6">
                             <button
                                 type="submit"
+                                onClick={handleSubmit}
                                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
                                 Save Profile
