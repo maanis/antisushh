@@ -17,7 +17,7 @@ import { fileToUrl, userDefaultPfp } from '@/utils/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
-import { setposts } from '@/store/postSlice'
+import { addActiveProfilePosts, setActiveProfilePosts, setposts } from '@/store/postSlice'
 import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
 
@@ -35,6 +35,7 @@ const Sidebar = () => {
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
     const [searchDialog, setsearchDialog] = useState(false)
+
     const data = [
         { icon: <Home size={'20px'} />, text: 'home' },
         { icon: <Search size={'20px'} />, text: 'search' },
@@ -92,6 +93,7 @@ const Sidebar = () => {
                 setcreateDialog(false)
                 dispatch(setposts([...posts, res.newPost]))
                 dispatch(addPost(res.newPost._id))
+                dispatch(addActiveProfilePosts(res.newPost))
                 setcaption('')
                 setpreview(null)
                 setimage(null)

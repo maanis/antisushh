@@ -1,4 +1,4 @@
-import { Bookmark, Ellipsis, Heart, HeartHandshake, MessageCircle, Send } from 'lucide-react'
+import { Bookmark, BookmarkCheck, Ellipsis, Heart, HeartHandshake, MessageCircle, Send } from 'lucide-react'
 import React, { useState } from 'react'
 import CommentDialogBox from './CommentDialogBox'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
@@ -11,6 +11,8 @@ import { IoMdHeart } from "react-icons/io";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { Link } from 'react-router-dom'
 import EllipsisMenu from './EllipsisMenu'
+import apiClient from '@/utils/apiClient'
+import { addBookmark, removeBookmark } from '@/store/userSlice'
 
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
@@ -56,7 +58,6 @@ const Post = ({ posts }) => {
 
     const handleLike = async () => {
         try {
-            console.log(posts._id)
             const res = await fetch(`http://localhost:3000/post/likeOrDislike/${posts._id}`, {
                 method: 'POST',
                 headers: {
@@ -79,8 +80,23 @@ const Post = ({ posts }) => {
                     } : e
                 })
                 dispatch(setposts(updatedReduxPosts))
-                console.log(reduxPosts)
                 toast.success(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleBookmark = async () => {
+        try {
+            const data = await apiClient(`/post/addOrRemoveToBookmark/${posts._id}`, "POST")
+            if (data.success) {
+                toast.success(data.message)
+                if (data.message === 'added to bookmark') {
+                    dispatch(addBookmark(posts._id))
+                } else {
+                    dispatch(removeBookmark(posts._id))
+                }
             }
         } catch (error) {
             console.log(error)
@@ -112,7 +128,8 @@ const Post = ({ posts }) => {
                     {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='cursor-pointer' />}
                     <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
-                    <Bookmark className='ml-auto cursor-pointer' size={'20px'} />
+                    {currentUser.bookmarks.includes(posts._id) ? <BookmarkCheck onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} /> : <Bookmark onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} />}
+
                 </div>
                 <h2>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
                 <div className="flex items-center">
@@ -120,57 +137,6 @@ const Post = ({ posts }) => {
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
                 </div>
                 <CommentDialogBox post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
-
-
-                {/* <Dialog open={ismenuopen}>
-                    <DialogContent className='p-0 border-none outline-none rounded-lg w-[380px] bg-neutral-900' onInteractOutside={() => setismenuopen(false)}>
-                        <DialogTitle className="hidden">Comment Dialog</DialogTitle>
-
-                        <div className="w-full overflow-hidden rounded-lg bg-neutral-900">
-                            <div className="flex flex-col">
-                                {data.map((e, i) => {
-                                    // Check if the current user is the post user
-                                    if (e === 'delete' && currentUser._id === user._id) {
-                                        return (
-                                            <button
-                                                key={i}
-                                                onClick={() => handleMenuClick(e)}
-                                                className="w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors text-red-500 capitalize hover:bg-neutral-800"
-                                            >
-                                                {e}
-                                            </button>
-                                        );
-                                    } else if (e !== 'delete') {
-                                        return (
-                                            <button
-                                                key={i}
-                                                onClick={() => handleMenuClick(e)}
-                                                className={`w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors capitalize hover:bg-neutral-800 ${e === 'unfollow' ? 'text-red-500' : 'text-white'}`}
-                                            >
-                                                {e}
-                                            </button>
-                                        );
-                                    }
-
-                                    return null;
-                                })}
-
-
-                            </div>
-                        </div>
-                    </DialogContent>
-                </Dialog>
-
-                <Dialog open={delDialog}>
-                    <DialogContent className='max-w-lg'>
-                        <DialogTitle className='hidden'>Comment</DialogTitle>
-                        <div className='text-center text-lg font-semibold'>Are you sure you want to delete this post?</div>
-                        <div className='flex gap-2 justify-end'>
-                            <Button onClick={() => setdelDialog(false)}>Cancel</Button>
-                            <Button className='bg-red-600 hover:bg-red-700' onClick={() => handleDelete(posts._id)}>Delete</Button>
-                        </div>
-                    </DialogContent>
-                </Dialog> */}
 
                 <EllipsisMenu setposts={setposts} posts={posts} reduxPosts={reduxPosts} user={posts.user} ismenuopen={ismenuopen} setismenuopen={setismenuopen} delDialog={delDialog} setdelDialog={setdelDialog} />
             </div>

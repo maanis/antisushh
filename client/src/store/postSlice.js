@@ -14,9 +14,12 @@ const postSlice = createSlice({
         setActiveProfilePosts: (state, action) => {
             state.activeProfilePosts = action.payload
         },
-        
+        addActiveProfilePosts: (state, action) => {
+            state.activeProfilePosts.push(action.payload)
+        }
+
     }
 })
 
 export default postSlice.reducer
-export const { setposts, setActiveProfilePosts, } = postSlice.actions
+export const { setposts, setActiveProfilePosts, addActiveProfilePosts } = postSlice.actions

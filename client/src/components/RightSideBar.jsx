@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 
 const RightSideBar = ({ suggestedUsers }) => {
     const { user } = useSelector(state => state.userInfo)
-    console.log(suggestedUsers)
 
 
     return (

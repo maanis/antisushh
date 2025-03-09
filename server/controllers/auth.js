@@ -120,8 +120,6 @@ const editProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        console.log(req.body)
-        console.log(req.file)
         const { profileTitle, bio, email, githubUrl, linkedinUrl } = req.body
         if (req.file) {
             const img = req.file.buffer.toString('base64');

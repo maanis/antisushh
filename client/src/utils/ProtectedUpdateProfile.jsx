@@ -7,7 +7,6 @@ const ProtectedUpdateProfile = () => {
     if (!user) {
         return <p>Loading...</p>; // Prevent accessing undefined properties
     }
-    console.log(user.hasCompleteProfile)
     if (user.hasCompleteProfile === true) {
         return <Navigate to="/feed" replace />;
     }

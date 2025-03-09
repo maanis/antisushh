@@ -18,7 +18,6 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
     }
     const handleDelete = async (id) => {
         try {
-            console.log(id)
             const res = await fetch(`http://localhost:3000/post/deletePost/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'

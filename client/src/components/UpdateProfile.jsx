@@ -37,7 +37,6 @@ export default function UpdateProfile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(formData)
         if (!preview) return toast.error('Please upload an image')
         const { profileTitle, bio, email, linkedinUrl, githubUrl } = formData
         if ([profileTitle, bio, email].some((value) => value.trim() === "")) {

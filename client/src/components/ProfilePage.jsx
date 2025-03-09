@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image, Edit, Edit2, Edit3, Edit3Icon, FileEdit, ImageIcon, Heart, HeartIcon, MessageCircle } from 'lucide-react';
+import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
 import { toast } from 'sonner';
-import CommentDialogBox from './CommentDialogBox';
-import Post from './Post';
 import ProfilePost from './ProfilePost';
 import { setActiveProfilePosts } from '@/store/postSlice';
 
@@ -20,8 +18,6 @@ function ProfilePage() {
 
     const currentUser = useSelector(state => state.userInfo.user)
     const posts = useSelector(state => state.posts.activeProfilePosts)
-    // console.log(reduxPosts)
-    // const posts = reduxPosts.filter((e) => e._id === user._id)
 
     const { username } = useParams()
 
@@ -35,7 +31,6 @@ function ProfilePage() {
         setuser(data.user)
         dispatch(setActiveProfilePosts(data.allPosts))
     }
-    console.log(user)
 
     useEffect(() => {
         fetchUserProfile()
@@ -90,7 +85,7 @@ function ProfilePage() {
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{user.posts.length}</span>
+                            <span className="block font-bold text-xl text-white">{posts.length}</span>
                             <span className="text-sm text-gray-500">posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
@@ -148,7 +143,7 @@ function ProfilePage() {
                     {/* Grid of Posts */}
                     <div className="p-4">
                         <div className="grid grid-cols-3 gap-4">
-                            {posts.map((post) => (
+                            {posts.slice().reverse().map((post) => (
                                 <>
 
                                     <ProfilePost posts={post} key={post._id} />

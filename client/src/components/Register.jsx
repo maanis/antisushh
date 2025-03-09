@@ -34,7 +34,6 @@ function Register() {
                     toast.success(data.message)
                     localStorage.setItem("hasVisitedUpdateProfile", "false")
                     dispatch(setUser(data.user))
-                    console.log(data)
                     navigate('/update-profile')
 
                 }
