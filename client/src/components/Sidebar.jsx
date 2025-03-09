@@ -24,6 +24,8 @@ import apiClient from '@/utils/apiClient'
 
 const Sidebar = () => {
     const navigate = useNavigate('/')
+    const [querryResults, setquerryResults] = useState([])
+    const [input, setinput] = useState('')
     const dispatch = useDispatch()
     const { posts } = useSelector(state => state.posts)
     const [loading, setloading] = useState(false);
@@ -32,6 +34,7 @@ const Sidebar = () => {
     const [preview, setpreview] = useState(false)
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
+    const [searchDialog, setsearchDialog] = useState(false)
     const data = [
         { icon: <Home size={'20px'} />, text: 'home' },
         { icon: <Search size={'20px'} />, text: 'search' },
@@ -56,6 +59,8 @@ const Sidebar = () => {
             setcreateDialog(true)
         } else if (e === 'home') {
             navigate('/feed')
+        } else if (e === 'search') {
+            setsearchDialog(true)
         }
     }
 
@@ -131,7 +136,7 @@ const Sidebar = () => {
                 </AlertDialog>
 
                 <Dialog open={createDialog}>
-                    <DialogContent onInteractOutside={() => setcreateDialog(false)} className='w-[90rem] bg-zinc-300 rounded-lg outline-none border-none'>
+                    <DialogContent onInteractOutside={() => setcreateDialog(false)} className='w-[35rem] bg-zinc-300 rounded-lg outline-none border-none'>
                         <DialogTitle className='hidden'>title</DialogTitle>
                         <div className='text-neutral-900  text-center text-xl font-semibold'>Create a Post</div>
                         <textarea value={caption} onChange={(e) => setcaption(e.target.value)} className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2' placeholder='Enter a caption...'></textarea>
@@ -146,6 +151,29 @@ const Sidebar = () => {
                         >
                             {loading ? (<h2 className='flex w-full justify-center gap-1'><Loader2 className='animate-spin font-bold' /><span>Please wait...</span></h2>) : 'Post'}
                         </button>
+                    </DialogContent>
+                </Dialog>
+
+                <Dialog open={searchDialog}>
+                    <DialogContent className='h-[24rem] w-[35rem] p-0' onInteractOutside={() => setsearchDialog(false)}>
+                        <DialogTitle className='hidden'></DialogTitle>
+                        <div className='h-full p-3 w-full flex flex-col'>
+                            <h2 className='text-center font-semibold mb-2 text-2xl'>Search</h2>
+                            <div className='w-full mb-2 relative'>
+                                <input value={input} onChange={(e) => setinput(e.target.value)} type="text" className='w-full rounded-md px-3 py-1 border-none outline-none' placeholder='enter a username...' />
+                                {input.trim() != '' && <X onClick={() => setinput('')} className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer' />}
+                            </div>
+                            <hr />
+                            <hr />
+                            <div className='flex flex-col p-3 gap-3 overflow-y-auto h-[17rem]'>
+                                {querryResults.length > 0 ? querryResults.map((e) => <div className='w-full flex items-center gap-3'>
+                                    <img src={userDefaultPfp} className='w-10 h-10 rounded-full object-cover' alt="" />
+                                    <span>username</span>
+                                    <button className='ml-auto py-[2px] px-4 bg-blue-500 rounded-md text-white hover:bg-blue-700 transition-all '>Alias</button>
+                                </div>) : <h2 className='text-center text-zinc-400'>No user</h2>
+                                }
+                            </div>
+                        </div>
                     </DialogContent>
                 </Dialog>
 
