@@ -148,4 +148,18 @@ const userProfile = async (req, res) => {
     }
 }
 
-module.exports = { register, updateProfile, login, logout, userProfile, followOrUnfollow, suggestedUser, editProfile };
+const searchQuerry = async (req, res) => {
+    try {
+        const username = req.params.username
+        const regex = new RegExp(username, 'i')
+        const users = await userModel.find({ username: { $regex: regex }, _id: { $ne: req.id } })
+        if (users.length === 0) return res.status(404).json({ users, message: 'no user found', success: false });
+        res.status(200).json({ users, message: 'Found', success: true });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+
+}
+
+module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, followOrUnfollow, suggestedUser, editProfile };

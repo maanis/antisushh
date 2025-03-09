@@ -1,5 +1,5 @@
 import { Cross, CrossIcon, Globe, HeartIcon, Home, Loader2, LogOut, LucideCross, MessageCircle, PlusSquare, Search, X } from 'lucide-react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -44,7 +44,6 @@ const Sidebar = () => {
         { icon: <PlusSquare size={'20px'} />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
-    console.log(user)
     const handleLogout = async () => {
         const data = await apiClient('/logout')
         if (data.success) {
@@ -104,6 +103,30 @@ const Sidebar = () => {
             setloading(false)
         }
     }
+
+    const searchQuerry = async () => {
+        if (!input.trim()) return; // Prevent empty API calls
+
+        try {
+            const data = await apiClient(`/user/searchQuerry/${input}`);
+            setquerryResults(data.users)
+        } catch (error) {
+            console.error("Error fetching users:", error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await searchQuerry();
+        };
+
+        if (!input) {
+            setquerryResults([])
+        }
+
+        fetchData(); // Call the async function
+
+    }, [input]);
     return (
         <div className='w-[18%] flex flex-col px-3 py-4 border-r text-white border-zinc-700 h-full'>
             <h2 className='font-extralight text-3xl logoText my-5 mb-8'>AntiSush</h2>
@@ -155,7 +178,10 @@ const Sidebar = () => {
                 </Dialog>
 
                 <Dialog open={searchDialog}>
-                    <DialogContent className='h-[24rem] w-[35rem] p-0' onInteractOutside={() => setsearchDialog(false)}>
+                    <DialogContent className='h-[24rem] w-[35rem] p-0' onInteractOutside={() => {
+                        setsearchDialog(false)
+                        setinput('')
+                    }}>
                         <DialogTitle className='hidden'></DialogTitle>
                         <div className='h-full p-3 w-full flex flex-col'>
                             <h2 className='text-center font-semibold mb-2 text-2xl'>Search</h2>
@@ -167,8 +193,11 @@ const Sidebar = () => {
                             <hr />
                             <div className='flex flex-col p-3 gap-3 overflow-y-auto h-[17rem]'>
                                 {querryResults.length > 0 ? querryResults.map((e) => <div className='w-full flex items-center gap-3'>
-                                    <img src={userDefaultPfp} className='w-10 h-10 rounded-full object-cover' alt="" />
-                                    <span>username</span>
+                                    <Link onClick={() => {
+                                        setsearchDialog(false)
+                                        setinput('')
+                                    }} to={`/profile/${e.username}`} className='flex items-center gap-3'><img src={e.pfp ? e.pfp : userDefaultPfp} className='w-10 h-10 rounded-full object-cover' alt="" />
+                                        <span>{e.username}</span></Link>
                                     <button className='ml-auto py-[2px] px-4 bg-blue-500 rounded-md text-white hover:bg-blue-700 transition-all '>Alias</button>
                                 </div>) : <h2 className='text-center text-zinc-400'>No user</h2>
                                 }
