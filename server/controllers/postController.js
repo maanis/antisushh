@@ -145,8 +145,11 @@ const getBookmarks = async (req, res) => {
         if (!userId) return res.status(401).json({ message: 'Something is incorrect', success: false })
         const user = await userModel.findById(userId)
         if (!user) return res.status(401).json({ message: 'No user found', success: false })
-        const bookmarks = await userModel.findById(userId).populate('posts')
-        res.status(200).json({ bookmarks, message: 'retrieved bookmarks', success: true });
+        const userBookmark = await user.populate({
+            path: 'bookmarks',
+            populate: { path: 'user' } // This will populate the 'user' field inside each bookmark
+        });
+        res.status(200).json({ bookmarks: userBookmark.bookmarks, message: 'retrieved bookmarks', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }

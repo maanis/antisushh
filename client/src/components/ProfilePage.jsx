@@ -29,15 +29,25 @@ function ProfilePage() {
             return
         }
         setuser(data.user)
-        dispatch(setActiveProfilePosts(data.allPosts))
+        if (activeTab === 'posts') {
+            dispatch(setActiveProfilePosts(data.allPosts))
+        }
+    }
+
+    const fetchBookmarks = async () => {
+        const data = await apiClient('/post/getBookmarks')
+        if (activeTab === 'saved') {
+            dispatch(setActiveProfilePosts(data.bookmarks))
+        }
     }
 
     useEffect(() => {
         fetchUserProfile()
+        fetchBookmarks()
         return () => {
             setuser(null)
         }
-    }, [username])
+    }, [username, activeTab])
 
     return user ? (
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
@@ -124,18 +134,22 @@ function ProfilePage() {
                     {/* Tabs */}
                     <div className="border-b border-zinc-700">
                         <div className="flex gap-8">
-                            {['posts', 'saved'].map((e, i) => {
-                                return <button key={i}
-                                    onClick={() => setActiveTab(e)}
-                                    className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === e
-                                        ? 'border-blue-500 text-blue-600'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                                        }`}
-                                >
-                                    <Image className="w-5 h-5" />
-                                    <span className='uppercase'>{e}</span>
-                                </button>
-                            })}
+                            {['posts', 'saved'].map((e, i) => (
+                                (e === 'saved' && username === currentUser.username) || e === 'posts' ? (
+                                    <button
+                                        key={i}
+                                        onClick={() => setActiveTab(e)}
+                                        className={`flex items-center gap-2 px-4 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === e
+                                            ? 'border-blue-500 text-blue-600'
+                                            : 'border-transparent text-gray-500 hover:text-gray-700'
+                                            }`}
+                                    >
+                                        <Image src="/icon.png" alt={`${e} icon`} width={20} height={20} className="w-5 h-5" />
+                                        <span className="uppercase">{e}</span>
+                                    </button>
+                                ) : null
+                            ))}
+
 
                         </div>
                     </div>
