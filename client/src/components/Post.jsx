@@ -10,6 +10,7 @@ import { setposts } from '@/store/postSlice'
 import { IoMdHeart } from "react-icons/io";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { Link } from 'react-router-dom'
+import EllipsisMenu from './EllipsisMenu'
 
 const Post = ({ posts }) => {
     const { caption, comments, image, likes, user } = posts
@@ -24,8 +25,8 @@ const Post = ({ posts }) => {
     const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
 
     const [open, setopen] = useState(false)
-    const [delDialog, setdelDialog] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
+    const [delDialog, setdelDialog] = useState(false)
     const data = ['unfollow', 'delete', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
     const handleMenuClick = (e) => {
         if (e === 'cancel') {
@@ -118,10 +119,10 @@ const Post = ({ posts }) => {
                     <h2 className='font-semibold'>{user.username}</h2>
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
                 </div>
-                <CommentDialogBox formattedTime={formattedTime} post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
+                <CommentDialogBox post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
 
 
-                <Dialog open={ismenuopen}>
+                {/* <Dialog open={ismenuopen}>
                     <DialogContent className='p-0 border-none outline-none rounded-lg w-[380px] bg-neutral-900' onInteractOutside={() => setismenuopen(false)}>
                         <DialogTitle className="hidden">Comment Dialog</DialogTitle>
 
@@ -161,15 +162,17 @@ const Post = ({ posts }) => {
                 </Dialog>
 
                 <Dialog open={delDialog}>
-                    <DialogContent>
+                    <DialogContent className='max-w-lg'>
                         <DialogTitle className='hidden'>Comment</DialogTitle>
                         <div className='text-center text-lg font-semibold'>Are you sure you want to delete this post?</div>
-                        <div className='flex gap-2 w-full justify-end'>
+                        <div className='flex gap-2 justify-end'>
                             <Button onClick={() => setdelDialog(false)}>Cancel</Button>
                             <Button className='bg-red-600 hover:bg-red-700' onClick={() => handleDelete(posts._id)}>Delete</Button>
                         </div>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
+
+                <EllipsisMenu setposts={setposts} posts={posts} reduxPosts={reduxPosts} user={posts.user} ismenuopen={ismenuopen} setismenuopen={setismenuopen} delDialog={delDialog} setdelDialog={setdelDialog} />
             </div>
         </div>
     )

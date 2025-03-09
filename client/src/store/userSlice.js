@@ -9,9 +9,15 @@ const userSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             state.user = action.payload
+        },
+        addPost: (state, action) => {
+            state.user.posts.push(action.payload)
+        },
+        removePost: (state, action) => {
+            state.user.posts.filter(e => e != action.payload.toString())
         }
     }
 })
 
 export default userSlice.reducer
-export const { setUser } = userSlice.actions
+export const { setUser, addPost, removePost } = userSlice.actions

@@ -107,6 +107,7 @@ const deletePost = async (req, res) => {
         if (!post) return res.status(401).json({ message: 'No post found', success: false })
         if (post.user.toString() === userId.toString()) {
             await postModel.findByIdAndDelete(postId)
+            await userModel.findByIdAndUpdate(userId, { $pull: { posts: postId } })
             return res.status(200).json({ message: 'Post Deleted', success: true });
         } else {
             res.status(500).json({ message: 'You cant delete', success: false });

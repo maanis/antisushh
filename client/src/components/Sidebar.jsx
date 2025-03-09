@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { Button } from './ui/button'
 import { setposts } from '@/store/postSlice'
-import { setUser } from '@/store/userSlice'
+import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
 
 
@@ -91,6 +91,7 @@ const Sidebar = () => {
                 toast.success(res.message)
                 setcreateDialog(false)
                 dispatch(setposts([...posts, res.newPost]))
+                dispatch(addPost(res.newPost._id))
                 setcaption('')
                 setpreview(null)
                 setimage(null)

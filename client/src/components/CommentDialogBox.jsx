@@ -6,12 +6,14 @@ import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setposts } from "@/store/postSlice";
 
-const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuopen, setismenuopen }) => {
+const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuopen }) => {
     const currentUser = useSelector(state => state.userInfo.user)
     const reduxPosts = useSelector(state => state.posts.posts)
     const dispatch = useDispatch()
     const [commentText, setcommentText] = useState('')
-
+    const createdAt = new Date(post.createdAt).toLocaleString();
+    const date = new Date(createdAt);
+    const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const [postComments, setpostComments] = useState(post.comments)
     console.log(post.comments)
     const handleInteraction = (e) => {
@@ -22,6 +24,7 @@ const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuope
         }
 
     }
+    console.log(post)
 
     const handlePostComment = async () => {
         try {
@@ -67,14 +70,14 @@ const CommentDialogBox = ({ post, formattedTime, open, image, setopen, ismenuope
                     <div className="flex h-[35rem] w-[35%] flex-col">
                         {/* Header */}
                         <div className="box-a h-[10%] px-3 border-b border-zinc-700 flex items-center gap-2">
-                            <img src={userDefaultPfp}
+                            <img src={post.user.pfp ? post.user.pfp : userDefaultPfp}
                                 className="w-8 h-8 object-cover object-top rounded-full" alt="" />
                             <div className="dets">
                                 <h3 className="text-[16px]">{post?.user.username}</h3>
                                 <p className="text-[10px] text-zinc-400">{formattedTime}</p>
                             </div>
                             <div className="ml-auto relative dot cursor-pointer">
-                                <Ellipsis onClick={(e) => setismenuopen(true)} />
+                                <Ellipsis onClick={() => setismenuopen(true)} />
                             </div>
                         </div>
 

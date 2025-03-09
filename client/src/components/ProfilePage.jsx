@@ -1,35 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image, Edit, Edit2, Edit3, Edit3Icon, FileEdit, ImageIcon } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { Mail, MapPin, Pencil, Link as LinkIcon, Github, Twitter, Verified, ExternalLink, Bookmark, Image, Edit, Edit2, Edit3, Edit3Icon, FileEdit, ImageIcon, Heart, HeartIcon, MessageCircle } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
 import { toast } from 'sonner';
+import CommentDialogBox from './CommentDialogBox';
+import Post from './Post';
+import ProfilePost from './ProfilePost';
+import { setActiveProfilePosts } from '@/store/postSlice';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [user, setuser] = useState(null)
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const [showEditIcon, setshowEditIcon] = useState(false)
 
-    const posts = [];
-
     const currentUser = useSelector(state => state.userInfo.user)
+    const posts = useSelector(state => state.posts.activeProfilePosts)
+    // console.log(reduxPosts)
+    // const posts = reduxPosts.filter((e) => e._id === user._id)
 
     const { username } = useParams()
 
     const fetchUserProfile = async () => {
         const data = await apiClient(`/user/userProfile/${username}`)
-        // console.log(data)
         if (!data.success) {
             toast.error(data.message)
             navigate('/feed')
             return
         }
         setuser(data.user)
+        dispatch(setActiveProfilePosts(data.allPosts))
     }
+    console.log(user)
 
     useEffect(() => {
         fetchUserProfile()
@@ -100,7 +106,7 @@ function ProfilePage() {
 
 
                     {/* Social Links */}
-                    <div>
+                    {/* <div>
                         <h2 className="text-xl font-semibold mb-4">Connect</h2>
                         <div className="flex gap-4">
                             {['github', 'twitter', 'website'].map((e, i) => {
@@ -115,7 +121,7 @@ function ProfilePage() {
                                 </a>
                             })}
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
                 {/* Posts Section */}
@@ -143,14 +149,12 @@ function ProfilePage() {
                     <div className="p-4">
                         <div className="grid grid-cols-3 gap-4">
                             {posts.map((post) => (
-                                <div key={post.id} className="aspect-square relative group">
-                                    <img
-                                        src={post.image}
-                                        alt={`Post ${post.id}`}
-                                        className="w-full h-full object-cover rounded-lg"
-                                    />
-                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity rounded-lg" />
-                                </div>
+                                <>
+
+                                    <ProfilePost posts={post} key={post._id} />
+                                    {/* <img onClick={() => setopen(true)} src={post.image} alt="" className="w-full h-full object-cover rounded-lg" />
+                                    <CommentDialogBox post={post} open={open} setopen={setopen} /> */}
+                                </>
                             ))}
                         </div>
                     </div>
