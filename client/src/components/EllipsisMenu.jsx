@@ -23,7 +23,7 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
 
     const handleBookmark = async () => {
         try {
-            const data = await apiClient(`/post/addOrRemoveToBookmark/${posts._id}`, "POST")
+            const data = await apiClient(`/post/addOrRemoveToBookmark/${posts?._id}`, "POST")
             if (data.success) {
                 toast.success(data.message)
                 if (data.message === 'added to bookmark') {
@@ -68,7 +68,7 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
                         <div className="flex flex-col">
                             {data.map((e, i) => {
                                 // Check if the current user is the post user
-                                if (e === 'delete' && currentUser._id === user._id) {
+                                if (e === 'delete' && currentUser?._id === user?._id) {
                                     return (
                                         <button
                                             key={i}

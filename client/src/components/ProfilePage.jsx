@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, } from 'lucide-react';
+import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -76,24 +76,20 @@ function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        {currentUser.username === username && <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            <Pencil className="w-4 h-4" />
-                            Edit Profile
-                        </button>}
+                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            {currentUser.username === username ? <Pencil className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
+                            {currentUser.username === username ? 'Edit Profile' : 'Add pal'}
+                        </button>
                     </div>
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
                             <span className="block font-bold text-xl text-white">{user?.posts.length}</span>
-                            <span className="text-sm text-gray-500">posts</span>
+                            <span className="text-sm text-gray-500">Posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{user.followers.length}</span>
-                            <span className="text-sm text-gray-500">followers</span>
-                        </div>
-                        <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{user.following.length}</span>
-                            <span className="text-sm text-gray-500">following</span>
+                            <span className="block font-bold text-xl text-white">{user?.pals?.length}</span>
+                            <span className="text-sm text-gray-500">Pals</span>
                         </div>
                     </div>
 

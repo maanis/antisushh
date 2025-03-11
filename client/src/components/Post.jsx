@@ -106,11 +106,11 @@ const Post = ({ posts }) => {
         <div>
             <div className="post flex flex-col w-[60%] pb-8 px-1 mx-auto mb-2 mt-4">
                 <div className="box-a flex items-center gap-2">
-                    <Link to={`/profile/${user.username}`}><img src={user.pfp ? user.pfp : userDefaultPfp}
+                    <Link to={`/profile/${user?.username}`}><img src={user?.pfp ? user?.pfp : userDefaultPfp}
                         className="w-10 h-10 object-cover object-top rounded-full" alt="" /></Link>
                     <div className="dets ml-1">
-                        <Link to={`/profile/${user.username}`}><h3 className="text-[16px]">
-                            {user.username}
+                        <Link to={`/profile/${user?.username}`}><h3 className="text-[16px]">
+                            {user?.username}
                         </h3></Link>
                         <p className="text-[12px] text-zinc-500">
                             {formattedTime}
@@ -133,7 +133,7 @@ const Post = ({ posts }) => {
                 </div>
                 <h2>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
                 <div className="flex items-center">
-                    <h2 className='font-semibold'>{user.username}</h2>
+                    <h2 className='font-semibold'>{user?.username}</h2>
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
                 </div>
                 <CommentDialogBox post={posts} image={image} open={open} setopen={setopen} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />

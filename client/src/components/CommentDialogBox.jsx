@@ -70,10 +70,10 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                     <div className="flex h-[35rem] w-[35%] flex-col">
                         {/* Header */}
                         <div className="box-a h-[10%] px-3 border-b border-zinc-700 flex items-center gap-2">
-                            <img src={post.user.pfp ? post.user.pfp : userDefaultPfp}
+                            <img src={post?.user?.pfp ? post?.user?.pfp : userDefaultPfp}
                                 className="w-8 h-8 object-cover object-top rounded-full" alt="" />
                             <div className="dets">
-                                <h3 className="text-[16px]">{post?.user.username}</h3>
+                                <h3 className="text-[16px]">{post?.user?.username}</h3>
                                 <p className="text-[10px] text-zinc-400">{formattedTime}</p>
                             </div>
                             <div className="ml-auto relative dot cursor-pointer">
