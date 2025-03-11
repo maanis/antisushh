@@ -1,19 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button } from './ui/button'
 import { toast } from 'sonner'
-import { removePost } from '@/store/userSlice'
+import { addBookmark, removeBookmark, removePost } from '@/store/userSlice'
+import apiClient from '@/utils/apiClient'
 
 const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, delDialog, posts, setdelDialog }) => {
-    const data = ['unfollow', 'delete', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
     const currentUser = useSelector(state => state.userInfo.user)
+    const [data, setdata] = useState(['unfollow', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'copy link', 'about this account', 'cancel'])
     const dispatch = useDispatch()
     const handleMenuClick = (e) => {
         if (e === 'cancel') {
             setismenuopen(false)
         } else if (e === 'delete') {
             setdelDialog(true)
+        } else if (e === 'add to bookmarks' || e === 'remove from bookmarks') {
+            handleBookmark()
+            setismenuopen(false)
+        }
+    }
+
+    const handleBookmark = async () => {
+        try {
+            const data = await apiClient(`/post/addOrRemoveToBookmark/${posts._id}`, "POST")
+            if (data.success) {
+                toast.success(data.message)
+                if (data.message === 'added to bookmark') {
+                    dispatch(addBookmark(posts._id))
+                    setdata((data) => data.map(e => e === 'add to bookmarks' ? 'remove from bookmarks' : e))
+                    console.log(data)
+                } else {
+                    dispatch(removeBookmark(posts._id))
+                    setdata((data) => data.map(e => e === 'remove from bookmarks' ? 'add to bookmarks' : e))
+                }
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
     const handleDelete = async (id) => {
