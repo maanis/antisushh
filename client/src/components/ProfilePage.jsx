@@ -7,15 +7,18 @@ import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
 import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
-import { setActiveProfilePosts } from '@/store/postSlice';
+import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [user, setuser] = useState(null)
     const navigate = useNavigate()
     const [showEditIcon, setshowEditIcon] = useState(false)
+    const dispatch = useDispatch()
 
     const currentUser = useSelector(state => state.userInfo.user)
+
+    const posts = activeTab === 'posts' ? useSelector(state => state.posts.activeProfilePosts) : useSelector(state => state.posts.activeBookmarkPosts)
 
     const { username } = useParams()
 
@@ -28,9 +31,12 @@ function ProfilePage() {
         }
         console.log(data.user)
         setuser(data.user)
+        console.log(data.user.bookmarks)
+        dispatch(setActiveProfilePosts(data.user.posts))
+        dispatch(setActiveBookmarkPosts(data.user.bookmarks))
     }
 
-    const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
+    // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
     useEffect(() => {
         fetchUserProfile()
         return () => {
@@ -84,7 +90,7 @@ function ProfilePage() {
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{user?.posts.length}</span>
+                            <span className="block font-bold text-xl text-white">{currentUser?.posts.length}</span>
                             <span className="text-sm text-gray-500">Posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
@@ -142,7 +148,7 @@ function ProfilePage() {
                     {/* Grid of Posts */}
                     <div className="p-4">
                         <div className="grid grid-cols-3 gap-4">
-                            {posts.slice().reverse().map((post) => (
+                            {posts?.slice().reverse().map((post) => (
                                 <>
 
                                     <ProfilePost posts={post} key={post._id} />

@@ -16,7 +16,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
     const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const [postComments, setpostComments] = useState(post.comments)
     console.log(post.comments)
-    const handleInteraction = (e) => {
+    const handleInteraction = () => {
         if (ismenuopen) {
             setopen(true)
         } else {
