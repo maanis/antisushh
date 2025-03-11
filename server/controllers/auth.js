@@ -63,35 +63,74 @@ const logout = async function (req, res) {
     res.status(200).json({ message: 'Logged out', success: true });
 }
 
-const followOrUnfollow = async (req, res) => {
+
+const sendRequest = async (req, res) => {
     try {
-        const currentUserId = req.id;
-        const targetUserId = req.params.id;
-        const currentUser = await userModel.findById(currentUserId);
-        const targetUser = await userModel.findById(targetUserId);
-        if (!targetUser) {
-            res.status(404).json({ message: 'User not found', success: false });
-            return;
-        }
-        if (currentUserId === targetUserId) {
-            res.status(400).json({ message: 'You can not follow yourself', success: false });
-            return;
-        }
-        const isFollowing = currentUser.following.includes(targetUserId);
-        if (isFollowing) {
-            await userModel.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId } });
-            await userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
-            res.status(200).json({ message: 'Unfollowed', success: true });
-        }
-        else {
-            await userModel.findByIdAndUpdate(currentUserId, { $push: { following: targetUserId } });
-            await userModel.findByIdAndUpdate(targetUserId, { $push: { followers: currentUserId } });
-            res.status(200).json({ message: 'Followed', success: true });
+        const senderId = req.id
+        const recieverId = req.params.id
+        if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
+        const sender = await User.findById(senderId);
+        const receiver = await User.findById(recieverId);
+        if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
+
+        if (receiver.receivedRequests.includes(senderId) || sender.sentRequests.includes(recieverId)) {
+            return res.status(400).json({ message: 'Request already sent' });
         }
 
+        sender.sentRequests.push(recieverId);
+        receiver.receivedRequests.push(senderId);
+
+        await sender.save();
+        await receiver.save();
+
+        res.status(200).json({ message: 'Friend request sent successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error', success: false });
+        res.strecieverIdatus(500).json({ message: 'Internal server error', success: false });
     }
+}
+
+const declineRequest = async (req, res) => {
+    try {
+        const senderId = req.id
+        const recieverId = req.params.id
+        if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
+        const sender = await User.findById(senderId);
+        const receiver = await User.findById(recieverId);
+        if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
+
+        receiver.receivedRequests = receiver.receivedRequests.filter(id => id.toString() !== senderId);
+        sender.sentRequests = sender.sentRequests.filter(id => id.toString() !== recieverId);
+
+        await sender.save();
+        await receiver.save();
+
+        res.status(200).json({ message: 'Friend request declined' });
+    } catch (error) {
+        res.strecieverIdatus(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+const acceptRequest = async (req, res) => {
+    const senderId = req.id
+    const recieverId = req.params.id
+    if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById(recieverId);
+    if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
+    if (!receiver.receivedRequests.includes(senderId)) {
+        return res.status(400).json({ message: 'No friend request found' });
+    }
+
+    receiver.friends.push(senderId);
+    sender.friends.push(recieverId);
+
+    receiver.receivedRequests = receiver.receivedRequests.filter(id => id.toString() !== senderId);
+    sender.sentRequests = sender.sentRequests.filter(id => id.toString() !== recieverId);
+
+    await sender.save();
+    await receiver.save();
+
+    res.status(200).json({ message: 'Friend request accepted' });
 }
 
 const suggestedUser = async (req, res) => {
@@ -180,4 +219,4 @@ const searchQuerry = async (req, res) => {
 
 }
 
-module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, followOrUnfollow, suggestedUser, editProfile };
+module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendRequest, acceptRequest, declineRequest, suggestedUser, editProfile };

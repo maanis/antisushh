@@ -17,8 +17,9 @@ const userScheme = mongoose.Schema({
     pfp: { type: String, default: '' },
     coverPhoto: { type: String, default: '' },
     bio: { type: String, default: '' },
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    pals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    sentRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    recieveRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     hasCompleteProfile: { type: Boolean, default: false }

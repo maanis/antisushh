@@ -1,5 +1,5 @@
 var express = require('express');
-const { followOrUnfollow, suggestedUser, editProfile, updateProfile, userProfile, searchQuerry } = require('../controllers/auth');
+const { suggestedUser, editProfile, updateProfile, userProfile, searchQuerry, sendRequest, declineRequest, acceptRequest } = require('../controllers/auth');
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const upload = require('../config/multer');
 var router = express.Router();
@@ -8,7 +8,9 @@ router.get('/', function (req, res) {
     res.send('user');
 });
 
-router.post('/followorunfollow/:id', isAuthenticated, followOrUnfollow);
+router.post('/sendRequest/:id', isAuthenticated, sendRequest);
+router.post('/declineRequest/:id', isAuthenticated, declineRequest);
+router.post('/acceptRequest/:id', isAuthenticated, acceptRequest);
 
 router.get('/suggestedUser', isAuthenticated, suggestedUser);
 
