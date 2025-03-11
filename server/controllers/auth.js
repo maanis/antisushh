@@ -139,10 +139,27 @@ const userProfile = async (req, res) => {
     try {
         const username = req.params.username
         const user = await userModel.findOne({ username })
-        const allPosts = await postModel.find({ user: user._id }).populate('user', 'username pfp').populate('comments.user', 'username pfp')
+            .populate({
+                path: 'posts',
+                populate: [
+                    { path: 'user', select: 'name email' }, // Populate post author
+                    { path: 'comments.user', select: 'name email' } // Populate users in comments
+                ]
+            })
+            .populate({
+                path: 'bookmarks',
+                populate: [
+                    { path: 'user', select: 'name email' }, // Populate bookmarked post author
+                    { path: 'comments.user', select: 'name email' } // Populate users in comments of bookmarked posts
+                ]
+            });
+
+        console.log(user);
+
+        // const allPosts = await postModel.find({ user: user._id }).populate('user', 'username pfp').populate('comments.user', 'username pfp')
 
         if (!user) return res.status(400).json({ message: 'No user found with this username', success: false });
-        res.status(200).json({ allPosts, user, message: 'Found', success: true });
+        res.status(200).json({ user, message: 'Found', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
 

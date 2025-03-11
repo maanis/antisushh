@@ -13,11 +13,9 @@ function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
     const [user, setuser] = useState(null)
     const navigate = useNavigate()
-    const dispatch = useDispatch()
     const [showEditIcon, setshowEditIcon] = useState(false)
 
     const currentUser = useSelector(state => state.userInfo.user)
-    const posts = useSelector(state => state.posts.activeProfilePosts)
 
     const { username } = useParams()
 
@@ -28,26 +26,17 @@ function ProfilePage() {
             navigate('/feed')
             return
         }
+        console.log(data.user)
         setuser(data.user)
-        if (activeTab === 'posts') {
-            dispatch(setActiveProfilePosts(data.allPosts))
-        }
     }
 
-    const fetchBookmarks = async () => {
-        const data = await apiClient('/post/getBookmarks')
-        if (activeTab === 'saved') {
-            dispatch(setActiveProfilePosts(data.bookmarks))
-        }
-    }
-
+    const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
     useEffect(() => {
         fetchUserProfile()
-        fetchBookmarks()
         return () => {
             setuser(null)
         }
-    }, [username, activeTab])
+    }, [username])
 
     return user ? (
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
@@ -95,7 +84,7 @@ function ProfilePage() {
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{posts.length}</span>
+                            <span className="block font-bold text-xl text-white">{user?.posts.length}</span>
                             <span className="text-sm text-gray-500">posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
