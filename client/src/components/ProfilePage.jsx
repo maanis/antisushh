@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
 import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
+import { setUser } from '@/store/userSlice';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -77,10 +78,22 @@ function ProfilePage() {
         setUpdatedData({ ...updatedData, [e.target.name]: e.target.value })
     }
 
-    const handleUpdate = async () => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
-        const data = await apiClient('/user/editProfile', 'POST', updatedData)
-        console.log(data)
+        try {
+            const data = await apiClient('/user/editProfile', 'POST', updatedData)
+            if (data.success) {
+                toast.success(data.message)
+                dispatch(setUser(data.user))
+                setuser({ ...user, name: data.user.name, email: data.user.email, username: data.user.username, bio: data.user.bio, profileTitle: data.user.profileTitle })
+                seteditDialog(false)
+                navigate(`/profile/${data.user.username}`)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks

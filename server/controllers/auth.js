@@ -144,14 +144,23 @@ const suggestedUser = async (req, res) => {
 
 const editProfile = async (req, res) => {
     try {
+        const id = req.id
+        const currentUser = await userModel.findById(id)
         const { name, username, email, profileTitle, bio } = req.body;
         if (req.file) {
             const image = req.file.buffer.toString('base64');
             await userModel.findByIdAndUpdate(req.id, { pfp: image })
         }
+        if (username != currentUser.username) {
+            const exist = await userModel.findOne({ username })
+            if (exist) {
+                res.status(402).json({ success: false, message: 'User already exist with this username' });
+                return
+            }
+        }
         await userModel.findByIdAndUpdate(req.id, { name, username, email, profileTitle, bio })
         const user = await userModel.findById(req.id).select('-password');
-        res.status(200).json({ user, success: true });
+        res.status(200).json({ user, success: true, message: 'Profile updated successfully' });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
     }
