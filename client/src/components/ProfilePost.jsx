@@ -7,7 +7,6 @@ import { setActiveProfilePosts } from '@/store/postSlice'
 
 const ProfilePost = ({ posts }) => {
     const [open, setopen] = useState(false)
-    console.log(open)
 
     const [ismenuopen, setismenuopen] = useState(false)
     const [delDialog, setdelDialog] = useState(false)

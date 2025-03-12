@@ -144,12 +144,12 @@ const suggestedUser = async (req, res) => {
 
 const editProfile = async (req, res) => {
     try {
-        const { name, bio } = req.body;
+        const { name, username, email, profileTitle, bio } = req.body;
         if (req.file) {
             const image = req.file.buffer.toString('base64');
             await userModel.findByIdAndUpdate(req.id, { pfp: image })
         }
-        await userModel.findByIdAndUpdate(req.id, { name, bio })
+        await userModel.findByIdAndUpdate(req.id, { name, username, email, profileTitle, bio })
         const user = await userModel.findById(req.id).select('-password');
         res.status(200).json({ user, success: true });
     } catch (error) {

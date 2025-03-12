@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, } from 'lucide-react';
+import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, Save, } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,10 +8,18 @@ import ProfileSkeleton from './ProfileSkeleton';
 import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
 import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
+import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
+    const [updatedData, setUpdatedData] = useState({
+        name: '',
+        username: '',
+        email: '',
+        bio: ''
+    })
     const [user, setuser] = useState(null)
+    const [editDialog, seteditDialog] = useState(false)
     const navigate = useNavigate()
     const [showEditIcon, setshowEditIcon] = useState(false)
     const dispatch = useDispatch()
@@ -31,10 +39,49 @@ function ProfilePage() {
         }
         console.log(data.user)
         setuser(data.user)
+        setUpdatedData({
+            name: data.user.name || '',
+            username: data.user.username || '',
+            profileTitle: data.user.profileTitle || '',
+            email: data.user.email || '',
+            bio: data.user.bio || ''
+        });
         console.log(data.user.bookmarks)
         dispatch(setActiveProfilePosts(data.user.posts))
         dispatch(setActiveBookmarkPosts(data.user.bookmarks))
     }
+
+    const handlePrimaryButton = () => {
+        if (username === currentUser?.username) {
+            seteditDialog(true)
+        } else {
+            console.log('add friend')
+        }
+    }
+
+
+
+    console.log(updatedData)
+    const handleEditIntereactionOutside = () => {
+        seteditDialog(false)
+        setUpdatedData({
+            name: currentUser.name || '',
+            username: currentUser.username || '',
+            profileTitle: currentUser.profileTitle || '',
+            email: currentUser.email || '',
+            bio: currentUser.bio || ''
+        });
+    }
+
+    const handleChange = (e) => {
+        setUpdatedData({ ...updatedData, [e.target.name]: e.target.value })
+    }
+
+    const handleUpdate = async () => {
+        e.preventDefault();
+        const data = await apiClient('/user/editProfile', 'POST', updatedData)
+        console.log(data)
+    };
 
     // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
     useEffect(() => {
@@ -82,7 +129,7 @@ function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                        <button onClick={handlePrimaryButton} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
                             {currentUser.username === username ? <Pencil className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
                             {currentUser.username === username ? 'Edit Profile' : 'Add pal'}
                         </button>
@@ -158,7 +205,105 @@ function ProfilePage() {
                             ))}
                         </div>
                     </div>
+
+
+
+                    <Dialog open={editDialog}>
+                        <DialogContent className='max-w-md p-5 ' onInteractOutside={handleEditIntereactionOutside}>
+                            <DialogTitle className='hidden'></DialogTitle>
+                            <div className='h-full'>
+                                <h2 className='text-center'>Edit profile</h2>
+                                <form onSubmit={handleUpdate} className="space-y-4">
+                                    <div>
+                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            value={updatedData.name}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 select-none border border-gray-300 rounded-md"
+                                            placeholder="Enter your name"
+                                            autoFocus={false}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Username
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            value={updatedData.username}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                            placeholder="Choose a username"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="profileTitle" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Profile Title
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="profileTitle"
+                                            name="profileTitle"
+                                            value={updatedData.profileTitle}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                            placeholder="Choose a profileTitle"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Email
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={updatedData.email}
+                                            onChange={handleChange}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                            placeholder="Enter your email"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">
+                                            Bio
+                                        </label>
+                                        <textarea
+                                            id="bio"
+                                            name="bio"
+                                            value={updatedData.bio}
+                                            onChange={handleChange}
+                                            rows={4}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+                                            placeholder="Tell us about yourself"
+                                        />
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        // disabled={isSaving}
+                                        className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        <Save className="w-4 h-4 mr-2" />
+                                        save changes
+                                    </button>
+                                </form>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
                 </div>
+
             </div>
         </div >
     ) : <ProfileSkeleton />

@@ -26,6 +26,7 @@ export default function UpdateProfile() {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
+
     const handleFileChange = (e) => {
         const file = fileInput.current.files[0]
         if (file) {

@@ -24,7 +24,6 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
         }
 
     }
-    console.log(post)
 
     const handlePostComment = async () => {
         try {
