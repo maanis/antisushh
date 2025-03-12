@@ -14,7 +14,7 @@ const RightSideBar = ({ suggestedUsers }) => {
             {/* <div className="absolute w-full h-[1px] mt-7 bg-zinc-800 left-0"></div> */}
             <h2 className='text-sm font-medium mt-4 px-8 text-zinc-600'>Suggested Users:</h2>
             <div className='w-full px-8 py-4'>
-                {suggestedUsers.length > 0 ? suggestedUsers.map((e => {
+                {suggestedUsers?.length > 0 ? suggestedUsers.map((e => {
                     return <ProfileUtil key={e._id} text='follow' user={e} />
                 })) : 'nothing to show...'}
             </div>
