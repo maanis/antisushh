@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, Save, } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { userCoverPfp, userDefaultPfp } from '@/utils/constant';
+import { fileToUrl, userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
@@ -10,6 +10,7 @@ import ProfilePost from './ProfilePost';
 import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { setUser } from '@/store/userSlice';
+import { Button } from './ui/button';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -19,8 +20,12 @@ function ProfilePage() {
         email: '',
         bio: ''
     })
+    const [profilePic, setprofilePic] = useState(null)
+    const [preview, setpreview] = useState(null)
+    const fileInputRef = useRef(null)
     const [user, setuser] = useState(null)
     const [editDialog, seteditDialog] = useState(false)
+    const [pfpDialog, setpfpDialog] = useState(false)
     const navigate = useNavigate()
     const [showEditIcon, setshowEditIcon] = useState(false)
     const dispatch = useDispatch()
@@ -62,7 +67,6 @@ function ProfilePage() {
 
 
 
-    console.log(updatedData)
     const handleEditIntereactionOutside = () => {
         seteditDialog(false)
         setUpdatedData({
@@ -96,6 +100,19 @@ function ProfilePage() {
         }
     };
 
+    const handlePfpinteractionOutside = () => [
+        setpfpDialog(false)
+    ]
+
+    const handleFileChange = (e) => {
+        const file = fileInputRef.current.files[0]
+        if (file) {
+            setprofilePic(file)
+            const url = fileToUrl(file);
+            setpreview(url);
+        }
+    }
+
     // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
     useEffect(() => {
         fetchUserProfile()
@@ -112,7 +129,7 @@ function ProfilePage() {
                 {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
                     onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
-                    {currentUser.username === username && <div className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
+                    {currentUser.username === username && <div onClick={() => setpfpDialog(true)} className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
                         <ImageIcon className='cursor-pointer text-black' />
                     </div>}
 
@@ -312,6 +329,22 @@ function ProfilePage() {
                                         save changes
                                     </button>
                                 </form>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+
+                    <Dialog open={pfpDialog}>
+                        <DialogContent className='max-w-md' onInteractOutside={handlePfpinteractionOutside}>
+                            <DialogTitle className='hidden'></DialogTitle>
+                            <div className=' flex flex-col items-center gap-4'>
+                                <img src={preview ? preview : user.pfp ? user.pfp : userDefaultPfp} className='w-36 h-36 object-cover rounded-full' alt="" />
+                                <input type="file" onChange={handleFileChange} ref={fileInputRef} className='hidden' />
+                                <div className="flex border-b pb-3 border-zinc-600 gap-4">
+                                    <Button onClick={() => fileInputRef.current.click()}>Upload Image</Button>
+                                    <Button className='bg-red-600 hover:bg-red-800'>Remove</Button>
+                                </div>
+
+                                <Button className='bg-blue-500 hover:bg-blue-700'>Save Changes</Button>
                             </div>
                         </DialogContent>
                     </Dialog>
