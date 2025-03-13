@@ -1,5 +1,5 @@
 var express = require('express');
-const { suggestedUser, editProfile, updateProfile, userProfile, searchQuerry, sendRequest, declineRequest, acceptRequest } = require('../controllers/auth');
+const { suggestedUser, editProfile, updateProfile, userProfile, searchQuerry, sendRequest, declineRequest, acceptRequest, updatePfp, updatecoverPhoto } = require('../controllers/auth');
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const upload = require('../config/multer');
 var router = express.Router();
@@ -21,6 +21,10 @@ router.get('/searchQuerry/:username', isAuthenticated, searchQuerry);
 router.post('/updateProfile', isAuthenticated, upload.single('profilePic'), updateProfile);
 
 router.post('/editProfile', isAuthenticated, upload.single('image'), editProfile);
+
+router.post('/updatePfp', isAuthenticated, upload.single('profilePic'), updatePfp);
+
+router.post('/updateCoverPhoto', isAuthenticated, upload.single('coverPhoto'), updatecoverPhoto);
 
 
 

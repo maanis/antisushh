@@ -100,9 +100,10 @@ function ProfilePage() {
         }
     };
 
-    const handlePfpinteractionOutside = () => [
+    const handlePfpinteractionOutside = () => {
         setpfpDialog(false)
-    ]
+        setpreview(null)
+    }
 
     const handleFileChange = (e) => {
         const file = fileInputRef.current.files[0]
@@ -110,6 +111,30 @@ function ProfilePage() {
             setprofilePic(file)
             const url = fileToUrl(file);
             setpreview(url);
+        }
+    }
+
+    const handlePfpUpdate = async (e) => {
+        e.preventDefault()
+        if (!preview) return toast.error('Please upload an image')
+        try {
+            const formData = new FormData();
+            if (preview) {
+                formData.append("profilePic", profilePic);
+            }
+            const data = await fetch('http://localhost:3000/user/updatePfp', {
+                credentials: 'include',
+                method: 'POST',
+                body: formData,
+            })
+            const res = await data.json()
+            if (res.success) {
+                toast.success(res.message)
+                dispatch(setUser(res.user))
+                navigate('/feed')
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 
@@ -336,16 +361,16 @@ function ProfilePage() {
                     <Dialog open={pfpDialog}>
                         <DialogContent className='max-w-md' onInteractOutside={handlePfpinteractionOutside}>
                             <DialogTitle className='hidden'></DialogTitle>
-                            <div className=' flex flex-col items-center gap-4'>
+                            <form className=' flex flex-col items-center gap-4'>
                                 <img src={preview ? preview : user.pfp ? user.pfp : userDefaultPfp} className='w-36 h-36 object-cover rounded-full' alt="" />
                                 <input type="file" onChange={handleFileChange} ref={fileInputRef} className='hidden' />
                                 <div className="flex border-b pb-3 border-zinc-600 gap-4">
                                     <Button onClick={() => fileInputRef.current.click()}>Upload Image</Button>
-                                    <Button className='bg-red-600 hover:bg-red-800'>Remove</Button>
+                                    <Button onClick={() => setpreview(userDefaultPfp)} className='bg-red-600 hover:bg-red-800'>Remove</Button>
                                 </div>
 
-                                <Button className='bg-blue-500 hover:bg-blue-700'>Save Changes</Button>
-                            </div>
+                                <Button onClick={handlePfpUpdate} className='bg-blue-500 hover:bg-blue-700'>Save Changes</Button>
+                            </form>
                         </DialogContent>
                     </Dialog>
                 </div>

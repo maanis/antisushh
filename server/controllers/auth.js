@@ -183,6 +183,30 @@ const updateProfile = async (req, res) => {
 
 }
 
+const updatePfp = async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'file required', success: false });
+        const img = req.file.buffer.toString('base64');
+        const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
+        await userModel.findByIdAndUpdate(req.id, { pfp: base64Image })
+        res.status(200).json({ message: 'Pfp upadated successfully', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error hai', success: false });
+    }
+}
+
+const updatecoverPhoto = async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ message: 'file required', success: false });
+        const img = req.file.buffer.toString('base64');
+        const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
+        await userModel.findByIdAndUpdate(req.id, { coverPhoto: base64Image })
+        res.status(200).json({ message: 'Pfp upadated successfully', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error hai', success: false });
+    }
+}
+
 const userProfile = async (req, res) => {
     try {
         const username = req.params.username
@@ -228,4 +252,4 @@ const searchQuerry = async (req, res) => {
 
 }
 
-module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendRequest, acceptRequest, declineRequest, suggestedUser, editProfile };
+module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
