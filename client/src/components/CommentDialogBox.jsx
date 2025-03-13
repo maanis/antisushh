@@ -5,6 +5,7 @@ import { userDefaultPfp } from "@/utils/constant";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setposts } from "@/store/postSlice";
+import { Link } from "react-router-dom";
 
 const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuopen }) => {
     const currentUser = useSelector(state => state.userInfo.user)
@@ -15,7 +16,6 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
     const date = new Date(createdAt);
     const formattedTime = `${date.getHours()}:${date.getMinutes()}, ${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     const [postComments, setpostComments] = useState(post.comments)
-    console.log(post.comments)
     const handleInteraction = () => {
         if (ismenuopen) {
             setopen(true)
@@ -83,8 +83,8 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                         <div className={`h-[80%] ${postComments.length < 1 && 'flex justify-center items-center'}  py-5 px-3 overflow-y-auto border-b border-zinc-700`}>
                             {postComments.length < 1 ? 'Nothing to show!' : postComments.slice().reverse().map((e, index) => (
                                 <div key={index} className="flex gap-3 mb-3">
-                                    <img src={e.user.pfp ? e.user.pfp : userDefaultPfp}
-                                        className="w-8 h-8 object-cover object-top rounded-full" alt="" />
+                                    <Link to={`/profile/${e.user.username}`}><img src={e.user.pfp ? e.user.pfp : userDefaultPfp}
+                                        className="w-8 h-8 object-cover object-top rounded-full" alt="" /></Link>
                                     <div>
                                         <p className="text-[12px] text-zinc-400">
                                             <span className="font-semibold text-zinc-200 mr-1">{e.user.username}</span> {e.text}

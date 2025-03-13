@@ -185,23 +185,31 @@ const updateProfile = async (req, res) => {
 
 const updatePfp = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ message: 'file required', success: false });
-        const img = req.file.buffer.toString('base64');
-        const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
-        await userModel.findByIdAndUpdate(req.id, { pfp: base64Image })
-        res.status(200).json({ message: 'Pfp upadated successfully', success: true });
+        let base64Image = null;
+        if (req.file === undefined) {
+            base64Image = "";
+        } else {
+            base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        }
+        await userModel.findByIdAndUpdate(req.id, { pfp: base64Image });
+        const user = await userModel.findById(req.id);
+        return res.status(200).json({ user, message: 'Profile picture updated successfully', success: true });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error hai', success: false });
+        console.error("Error updating profile picture:", error);
+        return res.status(500).json({ message: 'Internal server error', success: false });
     }
-}
+};
+
 
 const updatecoverPhoto = async (req, res) => {
     try {
+        console.log(req.file)
         if (!req.file) return res.status(400).json({ message: 'file required', success: false });
         const img = req.file.buffer.toString('base64');
         const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
         await userModel.findByIdAndUpdate(req.id, { coverPhoto: base64Image })
-        res.status(200).json({ message: 'Pfp upadated successfully', success: true });
+        const user = await userModel.findById(req.id)
+        res.status(200).json({ user, message: 'Pfp upadated successfully', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error hai', success: false });
     }
@@ -214,15 +222,15 @@ const userProfile = async (req, res) => {
             .populate({
                 path: 'posts',
                 populate: [
-                    { path: 'user', select: 'name email' }, // Populate post author
-                    { path: 'comments.user', select: 'name email' } // Populate users in comments
+                    { path: 'user', select: 'name email username pfp' }, // Populate post author
+                    { path: 'comments.user', select: 'name email username pfp' } // Populate users in comments
                 ]
             })
             .populate({
                 path: 'bookmarks',
                 populate: [
-                    { path: 'user', select: 'name email' }, // Populate bookmarked post author
-                    { path: 'comments.user', select: 'name email' } // Populate users in comments of bookmarked posts
+                    { path: 'user', select: 'name email username pfp' }, // Populate bookmarked post author
+                    { path: 'comments.user', select: 'name email username pfp' } // Populate users in comments of bookmarked posts
                 ]
             });
 
@@ -234,7 +242,6 @@ const userProfile = async (req, res) => {
         res.status(200).json({ user, message: 'Found', success: true });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error', success: false });
-
     }
 }
 
