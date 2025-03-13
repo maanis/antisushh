@@ -20,6 +20,7 @@ function ProfilePage() {
         email: '',
         bio: ''
     })
+    const countPosts = useSelector(state => state.posts.activeProfilePosts)
     const [profilePic, setprofilePic] = useState("")
     const [preview, setpreview] = useState(null)
     const fileInputRef = useRef(null)
@@ -54,7 +55,9 @@ function ProfilePage() {
         });
         console.log(data.user.bookmarks)
         dispatch(setActiveProfilePosts(data.user.posts))
-        dispatch(setActiveBookmarkPosts(data.user.bookmarks))
+        if (currentUser.username === username) {
+            dispatch(setActiveBookmarkPosts(data.user.bookmarks))
+        }
     }
 
     const handlePrimaryButton = () => {
@@ -146,6 +149,7 @@ function ProfilePage() {
     useEffect(() => {
         fetchUserProfile()
         return () => {
+            setActiveTab('posts')
             setuser(null)
         }
     }, [username])
@@ -196,7 +200,7 @@ function ProfilePage() {
                     {/* Stats Bar */}
                     <div className="flex gap-8 mb-4 py-2">
                         <div className="text-center flex items-center gap-2">
-                            <span className="block font-bold text-xl text-white">{currentUser?.posts.length}</span>
+                            <span className="block font-bold text-xl text-white">{countPosts?.length}</span>
                             <span className="text-sm text-gray-500">Posts</span>
                         </div>
                         <div className="text-center flex items-center gap-2">
