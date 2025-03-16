@@ -44,7 +44,6 @@ function ProfilePage() {
             navigate('/feed')
             return
         }
-        console.log(data.user)
         setuser(data.user)
         setUpdatedData({
             name: data.user.name || '',
@@ -53,18 +52,21 @@ function ProfilePage() {
             email: data.user.email || '',
             bio: data.user.bio || ''
         });
-        console.log(data.user.bookmarks)
         dispatch(setActiveProfilePosts(data.user.posts))
         if (currentUser.username === username) {
             dispatch(setActiveBookmarkPosts(data.user.bookmarks))
         }
     }
 
-    const handlePrimaryButton = () => {
+    const handlePrimaryButton = async () => {
         if (username === currentUser?.username) {
             seteditDialog(true)
         } else {
-            console.log('add friend')
+            const data = await apiClient(`/user/sendOrRemoveRequest`, "POST", { recieverId: user._id })
+            if (data.success) {
+                toast.success(data.message)
+
+            }
         }
     }
 

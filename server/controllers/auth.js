@@ -64,28 +64,42 @@ const logout = async function (req, res) {
 }
 
 
-const sendRequest = async (req, res) => {
+const sendOrRemoveRequest = async (req, res) => {
     try {
         const senderId = req.id
-        const recieverId = req.params.id
+        const { recieverId } = req.body
+        console.log(recieverId)
         if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
-        const sender = await User.findById(senderId);
-        const receiver = await User.findById(recieverId);
+        const sender = await userModel.findById(senderId);
+        const receiver = await userModel.findById(recieverId);
         if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
+        if (receiver.recieveRequests.includes(senderId) || sender.sentRequests.includes(recieverId)) {
+            const index1 = receiver.recieveRequests.indexOf(senderId);
+            const index2 = sender.sentRequests.indexOf(recieverId);
+            if (index1 !== -1) {
+                receiver.recieveRequests.splice(index1, 1); // Remove senderId from receiver's requests
+            }
+            if (index2 !== -1) {
+                sender.sentRequests.splice(index2, 1);
+            }
+            await sender.save();
+            await receiver.save();
+            return res.status(200).json({ success: true, message: 'Request removed' });
 
-        if (receiver.receivedRequests.includes(senderId) || sender.sentRequests.includes(recieverId)) {
-            return res.status(400).json({ message: 'Request already sent' });
+        } else {
+            sender.sentRequests.push(recieverId);
+            receiver.recieveRequests.push(senderId);
+            await sender.save();
+            await receiver.save();
+            return res.status(200).json({ success: true, message: 'Request sent' });
         }
 
-        sender.sentRequests.push(recieverId);
-        receiver.receivedRequests.push(senderId);
 
-        await sender.save();
-        await receiver.save();
+
 
         res.status(200).json({ message: 'Friend request sent successfully' });
     } catch (error) {
-        res.strecieverIdatus(500).json({ message: 'Internal server error', success: false });
+        res.status(500).json({ message: 'Internal server error', success: false });
     }
 }
 
@@ -234,7 +248,6 @@ const userProfile = async (req, res) => {
                 ]
             });
 
-        console.log(user);
 
         // const allPosts = await postModel.find({ user: user._id }).populate('user', 'username pfp').populate('comments.user', 'username pfp')
 
@@ -259,4 +272,4 @@ const searchQuerry = async (req, res) => {
 
 }
 
-module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };

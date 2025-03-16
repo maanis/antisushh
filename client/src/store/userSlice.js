@@ -31,6 +31,17 @@ const userSlice = createSlice({
                 state.user.bookmarks.splice(index, 1)
             }
         },
+        addOrRemoveSentReq: (state, action) => {
+            if (state.user.sentRequests.include(action.payload)) {
+                // remove
+                const index = state.user.sentRequests.indexOf(action.payload)
+                if (index != -1) {
+                    state.user.sentRequests.splice(index, 1)
+                }
+            } else {
+                //add
+            }
+        }
 
     }
 })
