@@ -7,7 +7,6 @@ import RightSideBar from './RightSideBar'
 import Home from './Home'
 import FeedLoader from './FeedLoader'
 
-
 const Feed = () => {
     const { user } = useSelector(state => state.userInfo)
     const [suggestedUsers, setsuggestedUsers] = useState([])
