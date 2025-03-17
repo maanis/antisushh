@@ -22,7 +22,6 @@ const userSlice = createSlice({
             }
 
         },
-        
         addBookmark: (state, action) => {
             state.user.bookmarks.push(action.payload)
         },
