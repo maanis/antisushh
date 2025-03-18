@@ -20,7 +20,6 @@ const userSlice = createSlice({
             if (index != -1) {
                 state.user.posts.splice(index, 1)
             }
-
         },
         addBookmark: (state, action) => {
             state.user.bookmarks.push(action.payload)
