@@ -15,7 +15,6 @@ const userSlice = createSlice({
         },
         removePost: (state, action) => {
             // state.user.posts.filter(e => e != action.payload)
-            console.log(action.payload)
             const index = state.user.posts.indexOf(action.payload)
             if (index != -1) {
                 state.user.posts.splice(index, 1)
