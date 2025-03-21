@@ -11,14 +11,14 @@ const Feed = () => {
     const { user } = useSelector(state => state.userInfo)
     const [suggestedUsers, setsuggestedUsers] = useState([])
     const dispatch = useDispatch()
-    // async function fetchPosts() {
-    //     try {
-    //         const data = await apiClient('/post/getAllPosts')
-    //         dispatch(setposts(data.posts))
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+    async function fetchPosts() {
+        try {
+            const data = await apiClient('/post/getAllPosts')
+            dispatch(setposts(data.posts))
+        } catch (error) {
+            console.log(error)
+        }
+    }
     async function fetchsuggestedUsers() {
         try {
             const data = await apiClient('/user/suggestedUser')
