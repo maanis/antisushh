@@ -1,7 +1,7 @@
 import { userDefaultPfp } from '@/utils/constant'
 import React from 'react'
 
-const ProfileUtil = ({ user, text = 'switch' }) => {
+const ProfileUtil = ({ user, text = '' }) => {
     return (
         <div className='flex items-center justify-between py-2 w-full'>
             <div className="flex items-center gap-3">

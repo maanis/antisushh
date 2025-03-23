@@ -35,14 +35,15 @@ const Sidebar = () => {
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
     const [searchDialog, setsearchDialog] = useState(false)
+    const [isChatSection, setisChatSection] = useState(false)
 
     const data = [
-        { icon: <Home size={'20px'} />, text: 'home' },
-        { icon: <Search size={'20px'} />, text: 'search' },
-        { icon: <Globe size={'20px'} />, text: 'explore' },
-        { icon: <MessageCircle size={'20px'} />, text: 'messages' },
-        { icon: <HeartIcon size={'20px'} />, text: 'notifications' },
-        { icon: <PlusSquare size={'20px'} />, text: 'create' },
+        { icon: <Home size={'26px'} />, text: 'home' },
+        { icon: <Search size={'26px'} />, text: 'search' },
+        { icon: <Globe size={'26px'} />, text: 'explore' },
+        { icon: <MessageCircle size={'26px'} />, text: 'messages' },
+        { icon: <HeartIcon size={'26px'} />, text: 'notifications' },
+        { icon: <PlusSquare size={'26px'} />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
     const handleLogout = async () => {
@@ -58,9 +59,13 @@ const Sidebar = () => {
         if (e === 'create') {
             setcreateDialog(true)
         } else if (e === 'home') {
+            setisChatSection(false)
             navigate('/feed')
         } else if (e === 'search') {
             setsearchDialog(true)
+        } else if (e === 'messages') {
+            navigate('/chat')
+            setisChatSection(true)
         }
     }
 
@@ -131,23 +136,23 @@ const Sidebar = () => {
 
     }, [input]);
     return (
-        <div className='w-[18%] flex flex-col px-3 py-4 border-r text-white border-zinc-700 h-full'>
-            <h2 className='font-extralight text-3xl logoText my-5 mb-8'>AntiSush</h2>
+        <div className={`${isChatSection ? 'w-[5%]' : 'w-[18%]'}  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full`}>
+            <h2 className={`font-extralight text-3xl logoText my-5 mb-8 ${isChatSection && 'text-center'}`}>{isChatSection ? 'A' : 'AntiSush'}</h2>
             {data.map((e, i) => {
                 return <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
-                    <span className='text-sm'>{e.icon}</span>
-                    <h3 className='capitalize'>{e.text}</h3>
+                    <span className='text-sm' title={e.text}>{e.icon}</span>
+                    {!isChatSection && <h3 className='capitalize'>{e.text}</h3>}
                 </button>
             })}
             <div className='mt-auto'>
-                <Link to={`/profile/${user?.username}`} className="flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
+                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-2  py-3 gap-2 ${isChatSection && 'justify-center'}`}>
                     <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
-                    <h3>{user?.name}</h3>
+                    {!isChatSection && <h3>{user?.name}</h3>}
                 </Link>
                 <AlertDialog>
                     <AlertDialogTrigger className='w-full'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
-                        <LogOut size={'20px'} />
-                        <h3>Logout</h3>
+                        <LogOut size={'26px'} />
+                        {!isChatSection && <h3>Logout</h3>}
                     </div></AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>

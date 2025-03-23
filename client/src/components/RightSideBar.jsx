@@ -9,7 +9,7 @@ const RightSideBar = ({ suggestedUsers }) => {
     return (
         <div className='w-[25%] relative'>
             <div className='w-full  px-8 py-4 border-b border-zinc-700'>
-                <ProfileUtil user={user} />
+                <ProfileUtil user={user} text='switch' />
             </div>
             {/* <div className="absolute w-full h-[1px] mt-7 bg-zinc-800 left-0"></div> */}
             <h2 className='text-sm font-medium mt-4 px-8 text-zinc-600'>Suggested Users:</h2>
