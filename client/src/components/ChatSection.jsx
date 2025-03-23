@@ -17,9 +17,9 @@ const ChatSection = () => {
     }, [])
     return (
         <div className='text-white flex w-full'>
-            <div className='w-[20%] bg-red-600 px-3'>
+            <div className='w-[20%]  px-3'>
                 {suggestedUsers?.length > 0 ? suggestedUsers.map((e => {
-                    return <div className='flex items-center gap-3 py-2 px-1 bg-gray-800 my-2 rounded-md cursor-pointer'>
+                    return <div className='flex items-center gap-3 py-2 px-1 hover:bg-zinc-900 my-2 rounded-md cursor-pointer'>
                         <img src={e.pfp} className='w-10 h-10 object-cover rounded-full' alt="" />
                         <p>{e.username}</p>
                     </div>
