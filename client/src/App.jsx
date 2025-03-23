@@ -7,6 +7,7 @@ import Sidebar from './components/Sidebar'
 import ProfilePage from './components/ProfilePage'
 import UpdateProfile from './components/UpdateProfile'
 import ProtectedUpdateProfile from './utils/ProtectedUpdateProfile'
+import ChatSection from './components/ChatSection'
 
 const App = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const App = () => {
           <Route path='/' element={<Register />} />
           <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path='/profile/:username' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path='/chat' element={<ProtectedRoute><ChatSection /></ProtectedRoute>} />
           <Route element={<ProtectedUpdateProfile />}>
             <Route path='/update-profile' element={<UpdateProfile />} />
           </Route>
