@@ -12,8 +12,8 @@ var postsRouter = require("./routes/post");
 var usersRouter = require("./routes/user");
 var chatRouter = require("./routes/chat");
 const { connection } = require("mongoose");
+const { app } = require("./socket/socket.io");
 
-var app = express();
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
