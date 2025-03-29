@@ -8,6 +8,7 @@ const commentSchema = new mongoose.Schema(
     { timestamps: true } // This enables createdAt and updatedAt fields for comments
 );
 
+
 const postSchema = new mongoose.Schema(
     {
         user: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
