@@ -52,6 +52,7 @@ const Sidebar = () => {
             navigate('/')
             dispatch(setUser(null))
             dispatch(setposts([]))
+            localStorage.setItem('chatSection', false)
             toast.success(data.message)
         }
     }
