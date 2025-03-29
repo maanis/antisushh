@@ -4,9 +4,10 @@
  * Module dependencies.
  */
 
-import { app, server } from '../socket/socket.io';
+// import { server } from '../socket/socket.io';
+const server = require('../socket/socket.io').server;
 
-// var app = require('../app');
+var app = require('../app');
 var debug = require('debug')('server:server');
 // var http = require('http');
 
