@@ -10,6 +10,7 @@ var session = require("express-session");
 var indexRouter = require("./routes/index");
 var postsRouter = require("./routes/post");
 var usersRouter = require("./routes/user");
+var chatRouter = require("./routes/chat");
 const { connection } = require("mongoose");
 
 var app = express();
@@ -47,6 +48,7 @@ app.use(
 app.use("/", indexRouter);
 app.use("/user", usersRouter);
 app.use("/post", postsRouter);
+app.use("/chat", chatRouter);
 
 app.use((req, res, next) => {
   next(createError(404));

@@ -35,7 +35,7 @@ const Sidebar = () => {
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
     const [searchDialog, setsearchDialog] = useState(false)
-    const [isChatSection, setisChatSection] = useState(false)
+    const [isChatSection, setisChatSection] = useState(localStorage.getItem('chatSection') === 'true' ? true : false)
 
     const data = [
         { icon: <Home size={'26px'} />, text: 'home' },
@@ -61,10 +61,12 @@ const Sidebar = () => {
         } else if (e === 'home') {
             setisChatSection(false)
             navigate('/feed')
+            localStorage.setItem('chatSection', false)
         } else if (e === 'search') {
             setsearchDialog(true)
         } else if (e === 'messages') {
             navigate('/chat')
+            localStorage.setItem('chatSection', true)
             setisChatSection(true)
         }
     }
