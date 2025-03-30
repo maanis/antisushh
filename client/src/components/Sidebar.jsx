@@ -20,6 +20,7 @@ import { Button } from './ui/button'
 import { addActiveProfilePosts, setActiveProfilePosts, setposts } from '@/store/postSlice'
 import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
+import { setOnlineUsers } from '@/store/chatSlice'
 
 
 const Sidebar = () => {
@@ -53,6 +54,7 @@ const Sidebar = () => {
             dispatch(setUser(null))
             dispatch(setposts([]))
             localStorage.setItem('chatSection', false)
+            dispatch(setOnlineUsers(null));
             toast.success(data.message)
         }
     }

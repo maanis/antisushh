@@ -18,25 +18,33 @@ const App = () => {
   const { user } = useSelector(store => store.userInfo)
   const dispatch = useDispatch()
   useEffect(() => {
+    let socket = null;
     if (user) {
-      const socket = new io('http://localhost:3000', {
-        query: { userId: user._id },
+      socket = io('http://localhost:3000', {
+        query: { userId: user._id },  // For Socket.io v3
         transports: ['websocket'],
       });
       console.log('connected to socket:', socket);
 
       socket.on('getOnlineUsers', (users) => {
         console.log('Online users:', users);
-        dispatch(setOnlineUsers(users))
-      })
+        dispatch(setOnlineUsers(users));
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error('Socket connection failed:', err);
+      });
+
       return () => {
-        socket.off();
-        dispatch(setOnlineUsers(null))
-      }
+        socket.close();
+        dispatch(setOnlineUsers(null));
+      };
     } else {
-      dispatch(setOnlineUsers(null))
+      socket?.close()
+      dispatch(setOnlineUsers(null));
     }
-  }, [])
+  }, [user]);
+
   return (
     <>
       <div className='h-screen flex bg-zinc-950 w-full'>
