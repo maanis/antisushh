@@ -9,7 +9,7 @@ const conversationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'message',
     }]
-}, { timestamps: true }) // This enables createdAt and updatedAt fields for conversations
+}, { timestamps: true })
 
 const conversationModel = mongoose.model('Conversation', conversationSchema);
 

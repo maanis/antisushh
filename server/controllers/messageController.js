@@ -1,4 +1,8 @@
-export const sendMessage = async (req, res) => {
+const conversationModel = require('../model/conversationModel');
+const messageModel = require('../model/messageModel');
+
+
+const sendMessage = async (req, res) => {
     try {
         const senderId = req.id;
         const recieverId = req.params.id;
@@ -33,7 +37,7 @@ export const sendMessage = async (req, res) => {
     }
 }
 
-export const getMessages = async (req, res) => {
+const getMessages = async (req, res) => {
     try {
         const senderId = req.id;
         const recieverId = req.params.id;
@@ -51,3 +55,5 @@ export const getMessages = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+module.exports = { sendMessage, getMessages };
