@@ -9,12 +9,14 @@ import UpdateProfile from './components/UpdateProfile'
 import ProtectedUpdateProfile from './utils/ProtectedUpdateProfile'
 import ChatSection from './components/ChatSection'
 import { io } from 'socket.io-client'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { setOnlineUsers } from './store/chatSlice'
 
 const App = () => {
   const location = useLocation();
   const showSidebar = location.pathname !== "/";
   const { user } = useSelector(store => store.userInfo)
+  const dispatch = useDispatch()
   useEffect(() => {
     if (user) {
       const socket = new io('http://localhost:3000', {
@@ -25,14 +27,14 @@ const App = () => {
 
       socket.on('getOnlineUsers', (users) => {
         console.log('Online users:', users);
+        dispatch(setOnlineUsers(users))
       })
       return () => {
-        socket.disconnect();
-        console.log('Socket disconnected on cleanup:', socket.id);
-        socket.on('getOnlineUsers', (users) => {
-          console.log('Online users:', users);
-        })
+        socket.off();
+        dispatch(setOnlineUsers(null))
       }
+    } else {
+      dispatch(setOnlineUsers(null))
     }
   }, [])
   return (

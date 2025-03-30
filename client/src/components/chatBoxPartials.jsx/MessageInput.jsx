@@ -1,7 +1,7 @@
 import { Paperclip, Send, Smile } from 'lucide-react'
 import React from 'react'
 
-const MessageInput = ({ newMessage, setNewMessage, handleSendMessage }) => {
+const MessageInput = ({ newMessage, inputRef, setNewMessage, handleSendMessage }) => {
     return (
         <div className="p-4 border-t border-zinc-600 w-full bg-zinc-950">
             <form onSubmit={handleSendMessage} className="flex items-center gap-4">
@@ -9,6 +9,7 @@ const MessageInput = ({ newMessage, setNewMessage, handleSendMessage }) => {
                     <Smile className="w-6 h-6 text-gray-500" />
                 </button>
                 <input
+                    ref={inputRef}
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}

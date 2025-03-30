@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import ProfileUtil from './ProfileUtil'
+import React, { useEffect, useRef, useState } from 'react'
 import apiClient from '@/utils/apiClient'
-import { MessageSquare, Send, Image, Smile, Paperclip, Search, Settings, Edit2, Phone, Video, Info } from 'lucide-react';
+import { Search, Settings, Edit2, } from 'lucide-react';
 import ChatHeader from './chatBoxPartials.jsx/ChatHeader';
 import ChatMessages from './chatBoxPartials.jsx/ChatMessages';
 import MessageInput from './chatBoxPartials.jsx/MessageInput';
 import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedUser } from '@/store/chatSlice';
+import { setMessages, setSelectedUser } from '@/store/chatSlice';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
+    const [newMessage, setNewMessage] = useState('')
+    const [suggestedUsers, setsuggestedUsers] = useState([])
+    const inputRef = useRef(null)
     const dispatch = useDispatch()
-    const messages = [
-        {
-            id: 1,
-            name: "Ananya",
-            message: "You sent an attachment.",
-            time: "24m",
-            avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-        },
-        {
-            id: 2,
-            name: "Anurag",
-            message: "Reacted 👍 to your message",
-            time: "48m",
-            avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-        },
-        {
-            id: 3,
-            name: "Aditya Jha",
-            message: "You sent an attachment.",
-            time: "4h",
-            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-        },
-    ];
+    const { selectedUser, onlineUsers, messages } = useSelector((state) => state.chat)
+
     const chatHistory = [
         { id: 1, text: "Tumlog ka hain nhi", sender: "them", time: "10:30 AM" },
         { id: 2, text: "Isliye nhi bani", sender: "them", time: "10:31 AM" },
@@ -53,9 +34,6 @@ const ChatSection = () => {
         setSearchQuery(e.target.value)
         setsuggestedUsers(prev => prev.filter(user => user.username.toLowerCase().includes(e.target.value.toLowerCase())))
     }
-    const [newMessage, setNewMessage] = useState('')
-    const [suggestedUsers, setsuggestedUsers] = useState([])
-    console.log(suggestedUsers)
     async function fetchsuggestedUsers() {
         try {
             const data = await apiClient('/user/suggestedUser')
@@ -65,12 +43,29 @@ const ChatSection = () => {
         }
     }
     const handleSendMessage = (e) => { }
-    const { selectedUser } = useSelector((state) => state.chat)
+
+    const handleSetSelectedUser = async (user) => {
+        dispatch(setSelectedUser(null))
+        dispatch(setSelectedUser(user))
+        try {
+            const res = await apiClient(`/chat/getMessages/${user._id}`)
+            console.log(res)
+            if (res.success) {
+                dispatch(setMessages(res.messages))
+                setNewMessage('')
+                inputRef.current.focus()
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         searchQuerry === '' && fetchsuggestedUsers()
     }, [searchQuerry])
 
     useEffect(() => {
+        localStorage.setItem('chatSection', true)
         return () => {
             dispatch(setSelectedUser(null))
             localStorage.setItem('chatSection', false)
@@ -106,7 +101,7 @@ const ChatSection = () => {
                 </div>
 
                 {/* Stories */}
-                <div className="p-4 border-zinc-600 border-b overflow-x-auto">
+                {/* <div className="p-4 border-zinc-600 border-b overflow-x-auto">
                     <div className="flex gap-4">
                         {messages.map((story) => (
                             <div key={story.id} className="flex-shrink-0">
@@ -121,20 +116,20 @@ const ChatSection = () => {
                             </div>
                         ))}
                     </div>
-                </div>
+                </div> */}
 
                 {/* user List */}
                 <div className="overflow-y-auto">
                     {suggestedUsers.map((user) => (
                         <div
-                            onClick={() => dispatch(setSelectedUser(user))}
+                            onClick={() => handleSetSelectedUser(user)}
                             key={user._id}
                             className={`flex border-b border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
                         >
                             <img
                                 src={user.pfp}
                                 alt={user.name}
-                                className="w-12 h-12 rounded-full object-cover"
+                                className={`w-12 h-12 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
                             />
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold">{user.username}</h3>
@@ -157,7 +152,7 @@ const ChatSection = () => {
                         <ChatMessages chatHistory={chatHistory} />
 
                         {/* Message Input */}
-                        <MessageInput newMessage={newMessage} setNewMessage={setNewMessage} handleSendMessage={handleSendMessage} />
+                        <MessageInput inputRef={inputRef} newMessage={newMessage} setNewMessage={setNewMessage} handleSendMessage={handleSendMessage} />
                     </>
                 ) : (
                     <DefaultChat />

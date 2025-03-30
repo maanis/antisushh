@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
         socketIoMap[userId] = socket.id;
         console.log(`user connected, socketId: ${socket.id}, userID: ${userId}`);
 
-        socket.emit('getOnlineUsers', Object.keys(socketIoMap));
+        io.emit('getOnlineUsers', Object.keys(socketIoMap));
 
     } else {
         console.error('User ID not provided in handshake query');
