@@ -6,8 +6,11 @@ import ChatHeader from './chatBoxPartials.jsx/ChatHeader';
 import ChatMessages from './chatBoxPartials.jsx/ChatMessages';
 import MessageInput from './chatBoxPartials.jsx/MessageInput';
 import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedUser } from '@/store/chatSlice';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
+    const dispatch = useDispatch()
     const messages = [
         {
             id: 1,
@@ -51,7 +54,6 @@ const ChatSection = () => {
         setsuggestedUsers(prev => prev.filter(user => user.username.toLowerCase().includes(e.target.value.toLowerCase())))
     }
     const [newMessage, setNewMessage] = useState('')
-    const selectedUser = true
     const [suggestedUsers, setsuggestedUsers] = useState([])
     console.log(suggestedUsers)
     async function fetchsuggestedUsers() {
@@ -63,9 +65,17 @@ const ChatSection = () => {
         }
     }
     const handleSendMessage = (e) => { }
+    const { selectedUser } = useSelector((state) => state.chat)
     useEffect(() => {
         searchQuerry === '' && fetchsuggestedUsers()
     }, [searchQuerry])
+
+    useEffect(() => {
+        return () => {
+            dispatch(setSelectedUser(null))
+            localStorage.setItem('chatSection', false)
+        }
+    }, [])
     return (
         <div className="flex h-screen w-full bg-zinc-900">
             {/* Left Sidebar */}
@@ -113,12 +123,13 @@ const ChatSection = () => {
                     </div>
                 </div>
 
-                {/* Messages List */}
+                {/* user List */}
                 <div className="overflow-y-auto">
                     {suggestedUsers.map((user) => (
                         <div
+                            onClick={() => dispatch(setSelectedUser(user))}
                             key={user._id}
-                            className="flex items-center gap-3 p-3 hover:bg-zinc-700 cursor-pointer"
+                            className={`flex border-b border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
                         >
                             <img
                                 src={user.pfp}
@@ -137,7 +148,7 @@ const ChatSection = () => {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center bg-zinc-900 text-white">
-                {!selectedUser ? (
+                {selectedUser ? (
                     <>
                         {/* Chat Header */}
                         <ChatHeader selectedUser={selectedUser} />

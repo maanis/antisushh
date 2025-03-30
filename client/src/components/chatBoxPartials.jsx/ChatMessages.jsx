@@ -2,7 +2,7 @@ import React from 'react'
 
 const ChatMessages = ({ chatHistory }) => {
     return (
-        <div className="flex-1 overflow-y-auto w-full p-4 bg-zinc-900">
+        <div className="flex-1 overflow-y-auto w-full p-4 bg-neutral-900">
             <div className="w-full px-[24px] space-y-4">
                 {chatHistory.map((msg) => (
                     <div
