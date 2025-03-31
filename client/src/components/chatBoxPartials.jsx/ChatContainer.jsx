@@ -55,7 +55,15 @@ const ChatContainer = () => {
             fetchMessages()
         }
         inputRef.current.focus()
+
     }, [username])
+
+    // useEffect(() => {
+    //     return () => {
+    //         dispatch(setMessages(null))
+    //         dispatch(setSelectedUser(null))
+    //     }
+    // }, [])
 
     useEffect(() => {
         if (bottomRef.current) {

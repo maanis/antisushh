@@ -49,6 +49,11 @@ const App = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    localStorage.setItem('chatSection', false)
+
+  }, [])
+
   return (
     <>
       <div className='h-screen flex bg-zinc-950 w-full'>

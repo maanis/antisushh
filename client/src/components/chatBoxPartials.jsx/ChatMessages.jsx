@@ -88,23 +88,21 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                                     </div>
                                 </div>
 
-                                <ContextMenuContent className='p-0 border-none shadow-lg outline-none overflow-hidden'>
-                                    <div className="py-1 bg-neutral-800">
-                                        <button className="w-full px-4 py-2 text-left flex items-center gap-3 text-gray-200 hover:bg-gray-700">
-                                            <Forward size={18} />
-                                            <span>Forward</span>
-                                        </button>
+                                <ContextMenuContent className='p-0 bg-neutral-800 border-none shadow-lg outline-none overflow-hidden'>
+                                    <button className="w-full px-4 py-2 text-left flex items-center gap-3 text-gray-200 hover:bg-neutral-700">
+                                        <Forward size={18} />
+                                        <span>Forward</span>
+                                    </button>
 
-                                        <button className="w-full px-4 py-2 text-left flex items-center gap-3 text-gray-200 hover:bg-gray-700">
-                                            <Copy size={18} />
-                                            <span>Copy</span>
-                                        </button>
+                                    <button className="w-full px-4 py-2 text-left flex items-center gap-3 text-gray-200 hover:bg-neutral-700">
+                                        <Copy size={18} />
+                                        <span>Copy</span>
+                                    </button>
 
-                                        <button onClick={() => handleUnsend(msg._id)} className="w-full px-4 py-2 text-left flex items-center gap-3 text-red-400 hover:bg-gray-700">
-                                            <Undo size={18} />
-                                            <span>Unsend</span>
-                                        </button>
-                                    </div>
+                                    <button onClick={() => handleUnsend(msg._id)} className="w-full px-4 py-2 text-left flex items-center gap-3 text-red-400 hover:bg-neutral-700">
+                                        <Undo size={18} />
+                                        <span>Unsend</span>
+                                    </button>
                                 </ContextMenuContent>
                             </ContextMenu>
                         </>
