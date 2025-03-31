@@ -1,6 +1,7 @@
 const postModel = require('../model/postModel');
 const userModel = require('../model/userModel');
 const { isValidObjectId } = require('mongoose');
+const createNotification = require('../utils/createNotification');
 
 const createPost = async (req, res) => {
     try {
@@ -58,7 +59,7 @@ const likeOrDislike = async (req, res) => {
             return res.status(400).json({ message: "Invalid Post ID", success: false });
         }
         if (!userId) return res.status(401).json({ message: 'Something is incorrect', success: false })
-        const post = await postModel.findById(postId)
+        const post = await postModel.findById(postId).populate('user', 'username pfp _id')
         if (post.likes.includes(userId)) {
             //dislike
             await postModel.findByIdAndUpdate(postId, { $pull: { likes: userId } })
@@ -67,6 +68,7 @@ const likeOrDislike = async (req, res) => {
             //like
             post.likes.push(userId)
             await post.save()
+            await createNotification('like', userId, post.user._id, postId);
             res.status(200).json({ message: 'liked', success: true });
         }
     } catch (error) {
@@ -85,9 +87,10 @@ const addComments = async (req, res) => {
         if (!commentText) return res.status(401).json({ message: 'Comment is required', success: false })
         if (!userId || !postId) return res.status(401).json({ message: 'No user found', success: false })
         const user = await userModel.findById(userId).select('username pfp')
-        const post = await postModel.findById(postId)
+        const post = await postModel.findById(postId).populate('user', 'username pfp _id')
         if (!post) return res.status(401).json({ message: 'post not found', success: false })
         post.comments.push({ user: userId, text: commentText })
+        createNotification('comment', userId, post.user._id, postId);
         await post.save()
 
         res.status(200).json({ commentText, user, message: 'Comment posted', success: true });

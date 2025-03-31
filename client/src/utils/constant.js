@@ -7,3 +7,7 @@ export const fileToUrl = (file) => {
     if (!file) return null;
     return URL.createObjectURL(file);
 };
+
+export const extractTime = (createdAt) => new Date(createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+

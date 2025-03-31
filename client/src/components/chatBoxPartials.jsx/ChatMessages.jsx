@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '../ui/context-menu';
 import { handleUnsendMsg } from '@/store/chatSlice';
 import apiClient from '@/utils/apiClient';
+import { extractTime } from '@/utils/constant';
 
 const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const { user } = useSelector((state) => state.userInfo);
@@ -62,14 +63,14 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                                     className={`flex gap-3 relative items-center ${msg.senderId === user._id ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <ContextMenuTrigger
-                                        className={`max-w-[70%] px-4 rounded-2xl ${msg.senderId === user._id
+                                        className={`max-w-[70%] px-4 py-1 rounded-2xl ${msg.senderId === user._id
                                             ? 'bg-blue-500 text-white order-2 rounded-br-none'
                                             : 'bg-gray-200 text-gray-900 order-1 rounded-bl-none'
                                             }`}
                                     >
                                         <p>{msg.message}</p>
-                                        <p className={`text-xs mt-1 ${msg.senderId === user._id ? 'text-blue-100' : 'text-gray-500'}`}>
-                                            10:29
+                                        <p className={`text-[10px] mt-[2px] ${msg.senderId === user._id ? 'text-blue-100' : 'text-gray-500'}`}>
+                                            {extractTime(msg.createdAt)}
                                         </p>
                                     </ContextMenuTrigger>
 

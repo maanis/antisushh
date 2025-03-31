@@ -58,13 +58,6 @@ const ChatContainer = () => {
 
     }, [username])
 
-    // useEffect(() => {
-    //     return () => {
-    //         dispatch(setMessages(null))
-    //         dispatch(setSelectedUser(null))
-    //     }
-    // }, [])
-
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollTop = bottomRef.current.scrollHeight;

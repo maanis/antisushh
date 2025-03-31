@@ -21,6 +21,7 @@ import { addActiveProfilePosts, setActiveProfilePosts, setposts } from '@/store/
 import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
 import { setOnlineUsers } from '@/store/chatSlice'
+import NotificationDialog from './NotificationDialog'
 
 
 const Sidebar = () => {
@@ -36,6 +37,7 @@ const Sidebar = () => {
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
     const [searchDialog, setsearchDialog] = useState(false)
+    const [notificationDialog, setnotificationDialog] = useState(false)
     const [isChatSection, setisChatSection] = useState(localStorage.getItem('chatSection') === 'true' ? true : false)
 
     const data = [
@@ -71,6 +73,8 @@ const Sidebar = () => {
             navigate('/chat')
             localStorage.setItem('chatSection', true)
             setisChatSection(true)
+        } else if (e === 'notifications') {
+            setnotificationDialog(true)
         }
     }
 
@@ -218,6 +222,8 @@ const Sidebar = () => {
                         </div>
                     </DialogContent>
                 </Dialog>
+
+                <NotificationDialog open={notificationDialog} setOpen={setnotificationDialog} />
 
             </div>
         </div>
