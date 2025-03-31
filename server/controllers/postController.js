@@ -2,6 +2,8 @@ const postModel = require('../model/postModel');
 const userModel = require('../model/userModel');
 const { isValidObjectId } = require('mongoose');
 const createNotification = require('../utils/createNotification');
+const notificationModel = require('../model/notificationModel');
+const { io } = require('../socket/socket.io');
 
 const createPost = async (req, res) => {
     try {
@@ -63,6 +65,7 @@ const likeOrDislike = async (req, res) => {
         if (post.likes.includes(userId)) {
             //dislike
             await postModel.findByIdAndUpdate(postId, { $pull: { likes: userId } })
+            await notificationModel.deleteOne({ type: 'like', sender: userId, receiver: post.user._id, post: postId })
             res.status(200).json({ message: 'disliked', success: true });
         } else {
             //like

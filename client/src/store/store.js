@@ -5,6 +5,7 @@ import userReducer from './userSlice';
 import postReducer from './postSlice';
 import chatReducer from './chatSlice';
 import socketReducer from './socketSlice';
+import notificationReducer from './notificationsSlice';
 
 const userPersistConfig = {
     key: 'user',
@@ -18,7 +19,8 @@ const store = configureStore({
         userInfo: persistedUserReducer,
         posts: postReducer,
         chat: chatReducer,
-        socket: socketReducer
+        socket: socketReducer,
+        notifications: notificationReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

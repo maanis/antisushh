@@ -2,6 +2,7 @@ const userModel = require("../model/userModel");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const postModel = require("../model/postModel");
+const notificationModel = require('../model/notificationModel');
 
 const register = async function (req, res) {
     const { name, username, password } = req.body;
@@ -283,4 +284,14 @@ const getUser = async (req, res) => {
     }
 }
 
-module.exports = { register, updateProfile, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+const getNotifications = async (req, res) => {
+    try {
+        const userId = req.id
+        const notifications = await notificationModel.find({ receiver: userId }).populate('sender', 'username pfp').populate('post', 'image').sort({ createdAt: -1 });
+        res.status(200).json({ notifications, success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+module.exports = { register, updateProfile, getNotifications, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };

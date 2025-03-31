@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setOnlineUsers } from './store/chatSlice'
 import { setSocket } from './store/socketSlice'
 import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
+import apiClient from './utils/apiClient'
+import { setNotifications } from './store/notificationsSlice'
 
 const App = () => {
   const location = useLocation();
@@ -20,9 +22,22 @@ const App = () => {
   const { user } = useSelector(store => store.userInfo)
   const { socketIo } = useSelector(store => store.socket)
   const dispatch = useDispatch()
+  const { notifications } = useSelector(store => store.notifications)
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await apiClient('/user/getNotifications')
+      if (res.success) {
+        dispatch(setNotifications(res.notifications))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
     let socket = null;
     if (user) {
+      fetchNotifications()
       socket = io('http://localhost:3000', {
         query: { userId: user._id },
         transports: ['websocket'],
@@ -53,6 +68,18 @@ const App = () => {
     localStorage.setItem('chatSection', false)
 
   }, [])
+
+  useEffect(() => {
+    if (socketIo) {
+      socketIo.on('newNotification', (notification) => {
+        console.log(notification)
+        dispatch(setNotifications([notification, ...notifications]))
+      })
+    }
+    return () => {
+      socketIo?.off('newNotification')
+    }
+  }, [dispatch, notifications, setNotifications, socketIo])
 
   return (
     <>
