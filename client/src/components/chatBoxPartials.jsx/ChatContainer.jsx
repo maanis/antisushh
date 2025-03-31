@@ -8,8 +8,9 @@ import { useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 
 const ChatContainer = () => {
-
+    const bottomRef = useRef(null);
     const { messages } = useSelector((state) => state.chat)
+    const { socketIo } = useSelector((state) => state.socket)
     const inputRef = useRef(null)
 
     const dispatch = useDispatch()
@@ -29,7 +30,6 @@ const ChatContainer = () => {
         }
     }
     const { selectedUser } = useSelector((state) => state.chat)
-    const { socketIo } = useSelector((state) => state.socket)
     const { username } = useParams()
     console.log(username)
     const fetchUser = async () => {
@@ -47,19 +47,36 @@ const ChatContainer = () => {
     }
 
     useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollTop = bottomRef.current.scrollHeight;
+        }
         fetchUser()
         if (selectedUser) {
             fetchMessages()
         }
         inputRef.current.focus()
     }, [username])
+
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollTop = bottomRef.current.scrollHeight;
+        }
+        if (socketIo) {
+            socketIo.on('newMsg', (msg) => {
+                dispatch(setMessages([...messages, msg]))
+            })
+            return () => {
+                socketIo.off('newMsg')
+            }
+        }
+    }, [messages, setMessages, socketIo])
     return (
         <>
             {/* Chat Header */}
             <ChatHeader selectedUser={selectedUser} />
 
             {/* Chat Messages */}
-            <ChatMessages messages={messages} selectedUser={selectedUser} />
+            <ChatMessages bottomRef={bottomRef} messages={messages} selectedUser={selectedUser} />
 
             {/* Message Input */}
             <MessageInput inputRef={inputRef} newMessage={newMessage} setNewMessage={setNewMessage} handleSendMessage={handleSendMessage} />

@@ -1,9 +1,10 @@
 import { Info, Phone, Video } from 'lucide-react'
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 const ChatHeader = ({ selectedUser }) => {
-    // console.log(selectedUser)
+    const { onlineUsers } = useSelector((state) => state.chat)
     return (
         <div className="p-4 border-b border-zinc-600 w-full flex items-center justify-between bg-zinc-950">
             <Link to={`/profile/${selectedUser?.username}`} className="flex items-center gap-3">
@@ -14,7 +15,7 @@ const ChatHeader = ({ selectedUser }) => {
                 />
                 <div>
                     <h2 className="font-semibold">{selectedUser?.name}</h2>
-                    <p className="text-sm text-gray-500">Active now</p>
+                    <p className={`text-sm ${onlineUsers.includes(selectedUser._id) ? 'text-green-600' : 'text-red-600'}`}>{onlineUsers.includes(selectedUser._id) ? 'Active now' : 'Inactive'}</p>
                 </div>
             </Link>
             <div className="flex gap-4">

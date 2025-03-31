@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
-const ChatMessages = ({ messages, selectedUser }) => {
+const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const { user } = useSelector((state) => state.userInfo)
     return (
-        <div className="flex-1 overflow-y-auto w-full p-4 bg-neutral-900">
+        <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} ref={bottomRef} className="flex-1 overflow-y-auto w-full p-4 bg-neutral-900">
             <div className="w-full px-[24px] space-y-4">
                 <div className="w-full  text-white">
                     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -30,7 +30,7 @@ const ChatMessages = ({ messages, selectedUser }) => {
                         </div>
                     </div>
                 </div>
-                {messages?.map((msg) => (
+                {messages ? messages?.map((msg) => (
                     <div
                         key={msg.id}
                         className={`flex ${msg.senderId === user._id ? 'justify-end' : 'justify-start'}`}
@@ -47,7 +47,7 @@ const ChatMessages = ({ messages, selectedUser }) => {
                             </p>
                         </div>
                     </div>
-                ))}
+                )) : 'loading...'}
             </div>
         </div>
     )

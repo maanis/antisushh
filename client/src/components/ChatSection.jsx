@@ -29,7 +29,6 @@ const ChatSection = () => {
             console.log(error)
         }
     }
-    const handleSendMessage = (e) => { }
 
     const handleSetSelectedUser = async (user) => {
         dispatch(setSelectedUser(null))
