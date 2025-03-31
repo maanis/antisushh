@@ -272,4 +272,15 @@ const searchQuerry = async (req, res) => {
 
 }
 
-module.exports = { register, updateProfile, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+const getUser = async (req, res) => {
+    try {
+        const username = req.params.username
+        const user = await userModel.findOne({ username }).select('-password -email -sentRequests -recieveRequests -friends -bookmarks -posts -coverPhoto')
+        if (!user) return res.status(400).json({ message: 'No user found with this username', success: false });
+        res.status(200).json({ user, message: 'Found', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
+module.exports = { register, updateProfile, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };

@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const ChatHeader = ({ selectedUser }) => {
-    console.log(selectedUser)
+    // console.log(selectedUser)
     return (
         <div className="p-4 border-b border-zinc-600 w-full flex items-center justify-between bg-zinc-950">
             <Link to={`/profile/${selectedUser?.username}`} className="flex items-center gap-3">

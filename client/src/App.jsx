@@ -11,19 +11,23 @@ import ChatSection from './components/ChatSection'
 import { io } from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
 import { setOnlineUsers } from './store/chatSlice'
+import { setSocket } from './store/socketSlice'
+import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 
 const App = () => {
   const location = useLocation();
   const showSidebar = location.pathname !== "/";
   const { user } = useSelector(store => store.userInfo)
+  const { socketIo } = useSelector(store => store.socket)
   const dispatch = useDispatch()
   useEffect(() => {
     let socket = null;
     if (user) {
       socket = io('http://localhost:3000', {
-        query: { userId: user._id },  // For Socket.io v3
+        query: { userId: user._id },
         transports: ['websocket'],
       });
+      dispatch(setSocket(socket));
       console.log('connected to socket:', socket);
 
       socket.on('getOnlineUsers', (users) => {
@@ -53,7 +57,9 @@ const App = () => {
           <Route path='/' element={<Register />} />
           <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
           <Route path='/profile/:username' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path='/chat' element={<ProtectedRoute><ChatSection /></ProtectedRoute>} />
+          <Route path='/chat' element={<ProtectedRoute><ChatSection /></ProtectedRoute>} >
+            <Route path='/chat/:username' element={<ProtectedRoute><ChatContainer /></ProtectedRoute>} />
+          </Route>
           <Route element={<ProtectedUpdateProfile />}>
             <Route path='/update-profile' element={<UpdateProfile />} />
           </Route>

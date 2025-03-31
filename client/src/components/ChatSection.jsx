@@ -7,6 +7,7 @@ import MessageInput from './chatBoxPartials.jsx/MessageInput';
 import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
 import { useDispatch, useSelector } from 'react-redux';
 import { setMessages, setSelectedUser } from '@/store/chatSlice';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
     const [newMessage, setNewMessage] = useState('')
@@ -14,22 +15,8 @@ const ChatSection = () => {
     const inputRef = useRef(null)
     const dispatch = useDispatch()
     const { selectedUser, onlineUsers, messages } = useSelector((state) => state.chat)
+    const navigate = useNavigate()
 
-    const chatHistory = [
-        { id: 1, text: "Tumlog ka hain nhi", sender: "them", time: "10:30 AM" },
-        { id: 2, text: "Isliye nhi bani", sender: "them", time: "10:31 AM" },
-        { id: 3, text: "koi ni", sender: "user", time: "10:32 AM" },
-        { id: 4, text: "Yes", sender: "them", time: "10:33 AM" },
-        { id: 5, text: "Fairwell meh lemge", sender: "them", time: "10:34 AM" },
-        { id: 6, text: "Lenge", sender: "user", time: "10:35 AM" },
-        { id: 7, text: "ofc", sender: "user", time: "10:36 AM" },
-        { id: 8, text: "Ya", sender: "them", time: "10:37 AM" },
-        { id: 9, text: "Tu ananya ke sth nhi bnaya", sender: "them", time: "10:38 AM" },
-        { id: 10, text: "soja ab", sender: "user", time: "10:39 AM" },
-        { id: 11, text: "nahi toh bhoot aayega", sender: "user", time: "10:40 AM" },
-        { id: 12, text: "soja ab", sender: "them", time: "10:41 AM" },
-        { id: 13, text: "Bartan dhorai bro", sender: "them", time: "10:42 AM" },
-    ];
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
         setsuggestedUsers(prev => prev.filter(user => user.username.toLowerCase().includes(e.target.value.toLowerCase())))
@@ -49,11 +36,10 @@ const ChatSection = () => {
         dispatch(setSelectedUser(user))
         try {
             const res = await apiClient(`/chat/getMessages/${user._id}`)
-            console.log(res)
             if (res.success) {
                 dispatch(setMessages(res.messages))
                 setNewMessage('')
-                inputRef.current.focus()
+                console.log(res.messages)
             }
         } catch (error) {
             console.log(error)
@@ -65,10 +51,11 @@ const ChatSection = () => {
     }, [searchQuerry])
 
     useEffect(() => {
+        navigate('/chat')
         localStorage.setItem('chatSection', true)
         return () => {
-            dispatch(setSelectedUser(null))
             localStorage.setItem('chatSection', false)
+            dispatch(setSelectedUser(null))
         }
     }, [])
     return (
@@ -121,7 +108,8 @@ const ChatSection = () => {
                 {/* user List */}
                 <div className="overflow-y-auto">
                     {suggestedUsers.map((user) => (
-                        <div
+                        <Link
+                            to={`/chat/${user.username}`}
                             onClick={() => handleSetSelectedUser(user)}
                             key={user._id}
                             className={`flex border-b border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
@@ -136,7 +124,7 @@ const ChatSection = () => {
                                 <p className="text-xs text-gray-500 truncate">click to see messages</p>
                             </div>
                             <span className="text-xs text-gray-400">10:29</span>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
@@ -144,16 +132,7 @@ const ChatSection = () => {
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center bg-zinc-900 text-white">
                 {selectedUser ? (
-                    <>
-                        {/* Chat Header */}
-                        <ChatHeader selectedUser={selectedUser} />
-
-                        {/* Chat Messages */}
-                        <ChatMessages chatHistory={chatHistory} />
-
-                        {/* Message Input */}
-                        <MessageInput inputRef={inputRef} newMessage={newMessage} setNewMessage={setNewMessage} handleSendMessage={handleSendMessage} />
-                    </>
+                    <Outlet />
                 ) : (
                     <DefaultChat />
                 )}
