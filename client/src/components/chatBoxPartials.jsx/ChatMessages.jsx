@@ -1,14 +1,24 @@
 import { Copy, EllipsisVertical, Forward, Smile, Undo } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '../ui/context-menu';
+import { handleUnsendMsg } from '@/store/chatSlice';
+import apiClient from '@/utils/apiClient';
 
 const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const { user } = useSelector((state) => state.userInfo);
-
-    const handleUnsend = (msg) => {
-        console.log(msg)
+    const dispatch = useDispatch()
+    const handleUnsend = async (msgId) => {
+        try {
+            const res = await apiClient(`/chat/unsend/${msgId}`, "POST")
+            console.log(res)
+            if (res.success) {
+                dispatch(handleUnsendMsg(msgId))
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (

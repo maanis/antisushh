@@ -20,8 +20,13 @@ const chatSlice = createSlice({
         setOnlineUsers: (state, action) => {
             state.onlineUsers = action.payload;
         },
+        handleUnsendMsg: (state, action) => {
+            state.messages = state.messages.filter(
+                (msg) => msg._id !== action.payload
+            );
+        }
     },
 })
 
 export default chatSlice.reducer;
-export const { setSelectedUser, setMessages, addMessage, setOnlineUsers } = chatSlice.actions;
+export const { setSelectedUser, setMessages, addMessage, setOnlineUsers, handleUnsendMsg } = chatSlice.actions;

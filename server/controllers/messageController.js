@@ -63,4 +63,24 @@ const getMessages = async (req, res) => {
     }
 }
 
-module.exports = { sendMessage, getMessages };
+const deleteMessage = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const userId = req.id; // Assuming you have a way to get the user ID from the request
+
+        // Find the message by ID and check if it belongs to the user
+        const message = await messageModel.findById(messageId);
+        if (!message) return res.status(404).json({ message: 'Message not found' });
+        if (message.senderId.toString() !== userId) return res.status(403).json({ message: 'Unauthorized' });
+
+        // Delete the message
+        await messageModel.findByIdAndDelete(messageId);
+
+        res.status(200).json({ success: true, message: 'Message deleted successfully' });
+    } catch (error) {
+        console.log(error); // Add logging for debugging
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports = { sendMessage, getMessages, deleteMessage };
