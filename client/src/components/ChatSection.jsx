@@ -34,16 +34,6 @@ const ChatSection = () => {
     const handleSetSelectedUser = async (user) => {
         dispatch(setSelectedUser(null))
         dispatch(setSelectedUser(user))
-        try {
-            const res = await apiClient(`/chat/getMessages/${user._id}`)
-            if (res.success) {
-                dispatch(setMessages(res.messages))
-                setNewMessage('')
-                console.log(res.messages)
-            }
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     useEffect(() => {

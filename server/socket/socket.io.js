@@ -13,7 +13,7 @@ var io = new Server(server, {
 
 const socketIoMap = {};
 
-export const userSocketId = (userId) => {
+const userSocketId = (userId) => {
     return socketIoMap[userId] || null;
 }
 
@@ -40,4 +40,4 @@ io.on('connection', (socket) => {
     });
 });
 
-module.exports = { io, server, app };
+module.exports = { io, server, app, userSocketId };
