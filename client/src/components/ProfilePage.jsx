@@ -63,6 +63,7 @@ function ProfilePage() {
             seteditDialog(true)
         } else {
             const data = await apiClient(`/user/sendOrRemoveRequest`, "POST", { recieverId: user._id })
+            console.log(data)
             if (data.success) {
                 dispatch(addOrRemoveSentReq({ data: data.data, type: data.message }))
                 toast.success(data.message)

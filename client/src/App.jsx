@@ -16,6 +16,7 @@ import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 import apiClient from './utils/apiClient'
 import { removeNotification, setNotifications } from './store/notificationsSlice'
 import Notifications from './components/Notifications'
+import { addRecieveReq } from './store/userSlice'
 
 const App = () => {
   const location = useLocation();
@@ -78,6 +79,9 @@ const App = () => {
       })
       socketIo.on('deleteNotifications', (id) => {
         dispatch(removeNotification(id))
+      })
+      socketIo.on('sendReq', (data) => {
+        dispatch(addRecieveReq(data))
       })
     }
     return () => {

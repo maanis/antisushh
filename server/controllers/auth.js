@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const postModel = require("../model/postModel");
 const notificationModel = require('../model/notificationModel');
+const { userSocketId, io } = require("../socket/socket.io");
 
 const register = async function (req, res) {
     const { name, username, password } = req.body;
@@ -67,10 +68,9 @@ const logout = async function (req, res) {
 
 const sendOrRemoveRequest = async (req, res) => {
     try {
-        const senderId = req.id;  // Sender is the logged-in user (req.id)
-        const { recieverId } = req.body;  // Reciever is the ID of the user receiving the request
+        const senderId = req.id;
+        const { recieverId } = req.body;
 
-        // Check if sender is trying to send a request to themselves
         if (senderId === recieverId) {
             return res.status(400).json({ message: "You can't send a request to yourself" });
         }
@@ -82,6 +82,11 @@ const sendOrRemoveRequest = async (req, res) => {
         // Check if both users exist
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (sender.pals.includes(recieverId) || receiver.pals.includes(senderId)) {
+            return res.status(400).json({ message: "You are already friends" });
+
         }
 
         // Debugging logs to check the structure of requests
@@ -107,6 +112,11 @@ const sendOrRemoveRequest = async (req, res) => {
             await sender.save();
             await receiver.save();
 
+            const recieverSocketId = userSocketId(recieverId)
+            if (recieverSocketId) {
+                io.to(recieverSocketId).emit('removeReq',)
+            }
+
             return res.status(200).json({ success: true, message: 'Request removed', data: recieverId });
         } else {
             // Otherwise, send the request by adding it to both sentRequests and recieveRequests
@@ -115,6 +125,13 @@ const sendOrRemoveRequest = async (req, res) => {
 
             await sender.save();
             await receiver.save();
+
+            const populatedReciever = await userModel.findById(receiver._id).populate('recieveRequests.user', 'username pfp')
+
+            const recieverSocketId = userSocketId(recieverId)
+            if (recieverSocketId) {
+                io.to(recieverSocketId).emit('sendReq', populatedReciever.recieveRequests[populatedReciever.recieveRequests.length - 1])
+            }
 
             return res.status(200).json({ success: true, message: 'Request sent', data: sender.sentRequests[0] });
         }
@@ -204,7 +221,7 @@ const acceptRequest = async (req, res) => {
         await receiver.save();
 
         // Send response
-        res.status(200).json({ success: true, message: 'Friend request accepted' });
+        res.status(200).json({ success: true, message: 'Friend request accepted', data: senderId });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', success: false });

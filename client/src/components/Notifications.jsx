@@ -1,4 +1,5 @@
 import { markNotificationsAsRead } from '@/store/notificationsSlice';
+import { addToPal, removeRecieveReq } from '@/store/userSlice';
 import apiClient from '@/utils/apiClient';
 import { timeAgo } from '@/utils/constant';
 import React, { useEffect, useState } from 'react';
@@ -36,6 +37,10 @@ function Notifications() {
         try {
             const res = await apiClient(`/user/acceptRequest/${id}`, "POST")
             console.log(res)
+            if (res.success) {
+                dispatch(removeRecieveReq(res.data))
+                dispatch(addToPal(res.data))
+            }
         } catch (error) {
             console.log(error)
         }
