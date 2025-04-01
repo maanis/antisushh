@@ -71,13 +71,13 @@ function Notifications() {
                                 <div className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
                                         <img
-                                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces"
+                                            src={e.user?.pfp}
                                             alt="Profile"
                                             className="w-10 h-10 rounded-full object-cover"
                                         />
                                         <div>
-                                            <p className="font-medium">raju_ansari0786</p>
-                                            <p className="text-sm text-gray-500">requested to follow you <span className="text-gray-400">1h</span></p>
+                                            <p className="font-medium">{e.user?.username}</p>
+                                            <p className="text-[16px] text-gray-500">requested you to become their pal <span className=" text-zinc-500 text-[12px] ml-1">1h</span></p>
                                         </div>
                                     </div>
                                     <div className="flex space-x-2">

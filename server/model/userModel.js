@@ -18,8 +18,18 @@ const userScheme = mongoose.Schema({
     coverPhoto: { type: String, default: '' },
     bio: { type: String, default: '' },
     pals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
-    sentRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
-    recieveRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }],
+    sentRequests: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+            timestamp: { type: Date, default: Date.now }
+        }
+    ],
+    recieveRequests: [
+        {
+            user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+            timestamp: { type: Date, default: Date.now }
+        }
+    ],
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'post' }],
     hasCompleteProfile: { type: Boolean, default: false }

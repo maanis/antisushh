@@ -49,7 +49,7 @@ const login = async function (req, res) {
             res.status(400).json({ message: 'Wrong credentials', success: false });
             return;
         }
-        const user = await userModel.findById(exist._id).select('-password');
+        const user = await userModel.findById(exist._id).select('-password').populate('recieveRequests.user', 'username pfp');
         const token = jwt.sign({ userId: exist._id }, process.env.JWT_SECRET);
         res.cookie('token', token)
         res.status(200).json({ message: 'Signed in', success: true, user });
@@ -67,86 +67,149 @@ const logout = async function (req, res) {
 
 const sendOrRemoveRequest = async (req, res) => {
     try {
-        const senderId = req.id
-        const { recieverId } = req.body
-        console.log(recieverId)
-        if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
+        const senderId = req.id;  // Sender is the logged-in user (req.id)
+        const { recieverId } = req.body;  // Reciever is the ID of the user receiving the request
+
+        // Check if sender is trying to send a request to themselves
+        if (senderId === recieverId) {
+            return res.status(400).json({ message: "You can't send a request to yourself" });
+        }
+
+        // Fetch sender and receiver from the database
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
-        if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
-        if (receiver.recieveRequests.includes(senderId) || sender.sentRequests.includes(recieverId)) {
-            const index1 = receiver.recieveRequests.indexOf(senderId);
-            const index2 = sender.sentRequests.indexOf(recieverId);
-            if (index1 !== -1) {
-                receiver.recieveRequests.splice(index1, 1); // Remove senderId from receiver's requests
-            }
-            if (index2 !== -1) {
-                sender.sentRequests.splice(index2, 1);
-            }
-            await sender.save();
-            await receiver.save();
-            return res.status(200).json({ success: true, message: 'Request removed' });
 
-        } else {
-            sender.sentRequests.push(recieverId);
-            receiver.recieveRequests.push(senderId);
+        // Check if both users exist
+        if (!sender || !receiver) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Debugging logs to check the structure of requests
+        console.log('Sender Sent Requests:', sender.sentRequests);
+        console.log('Receiver Receive Requests:', receiver.recieveRequests);
+
+        // Ensure we are correctly accessing the user field in sentRequests and recieveRequests
+        const alreadySent = sender.sentRequests.some(request => request.user && request.user.toString() === recieverId.toString());
+        const alreadyReceived = receiver.recieveRequests?.some(request => request.user && request.user.toString() === senderId.toString());
+
+        // Debugging logs to verify if we found any requests
+        console.log('Already Sent:', alreadySent);
+        console.log('Already Received:', alreadyReceived);
+
+        if (alreadySent || alreadyReceived) {
+            // If request is already sent or received, remove it
+            if (alreadySent) {
+                // Remove from sender's sentRequests and receiver's recieveRequests
+                sender.sentRequests = sender.sentRequests.filter(request => request.user && request.user.toString() !== recieverId.toString());
+                receiver.recieveRequests = receiver.recieveRequests.filter(request => request.user && request.user.toString() !== senderId.toString());
+            }
+
             await sender.save();
             await receiver.save();
+
+            return res.status(200).json({ success: true, message: 'Request removed' });
+        } else {
+            // Otherwise, send the request by adding it to both sentRequests and recieveRequests
+            sender.sentRequests.push({ user: recieverId });
+            receiver.recieveRequests.push({ user: senderId });
+
+            await sender.save();
+            await receiver.save();
+
             return res.status(200).json({ success: true, message: 'Request sent' });
         }
 
-
-
-
-        res.status(200).json({ message: 'Friend request sent successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error', success: false });
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error', success: false });
     }
-}
+};
+
+
+
+
 
 const declineRequest = async (req, res) => {
     try {
-        const senderId = req.id
-        const recieverId = req.params.id
-        if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
-        const sender = await User.findById(senderId);
-        const receiver = await User.findById(recieverId);
-        if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
+        const senderId = req.id;  // Sender is the logged-in user (req.id)
+        const recieverId = req.params.id;  // Reciever is the ID of the user receiving the request
 
-        receiver.receivedRequests = receiver.receivedRequests.filter(id => id.toString() !== senderId);
-        sender.sentRequests = sender.sentRequests.filter(id => id.toString() !== recieverId);
+        // Check if sender is trying to send a request to themselves
+        if (senderId === recieverId) {
+            return res.status(400).json({ message: "You can't send a request to yourself" });
+        }
 
+        // Fetch sender and receiver from the database
+        const sender = await userModel.findById(senderId);
+        const receiver = await userModel.findById(recieverId);
+
+        // Check if both users exist
+        if (!sender || !receiver) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Remove the request from receiver's receivedRequests and sender's sentRequests
+        receiver.receivedRequests = receiver.receivedRequests.filter(request => request.user.toString() !== senderId.toString());
+        sender.sentRequests = sender.sentRequests.filter(request => request.user.toString() !== recieverId.toString());
+
+        // Save the updated sender and receiver objects
         await sender.save();
         await receiver.save();
 
         res.status(200).json({ message: 'Friend request declined' });
     } catch (error) {
-        res.strecieverIdatus(500).json({ message: 'Internal server error', success: false });
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', success: false });
     }
-}
+};
+
 
 const acceptRequest = async (req, res) => {
-    const senderId = req.id
-    const recieverId = req.params.id
-    if (senderId === recieverId) return res.status(400).json({ message: "You can't send a request to yourself" });
-    const sender = await User.findById(senderId);
-    const receiver = await User.findById(recieverId);
-    if (!sender || !receiver) return res.status(404).json({ message: 'User not found' });
-    if (!receiver.receivedRequests.includes(senderId)) {
-        return res.status(400).json({ message: 'No friend request found' });
+    try {
+        const senderId = req.id;  // Sender is the logged-in user (req.id)
+        const recieverId = req.params.id;  // Receiver is the ID of the user receiving the request
+
+        // Check if sender is trying to send a request to themselves
+        if (senderId === recieverId) {
+            return res.status(400).json({ message: "You can't send a request to yourself" });
+        }
+
+        // Fetch sender and receiver from the database
+        const sender = await userModel.findById(senderId);
+        const receiver = await userModel.findById(recieverId);
+
+        // Check if both users exist
+        if (!sender || !receiver) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Ensure that the receiver has received a friend request from the sender
+        const requestIndex = receiver.receivedRequests.findIndex(request => request.user.toString() === senderId.toString());
+        if (requestIndex === -1) {
+            return res.status(400).json({ message: 'No friend request found' });
+        }
+
+        // Add sender and receiver to each other's friends array
+        receiver.friends.push(senderId);
+        sender.friends.push(recieverId);
+
+        // Remove the request from both the sender's sentRequests and the receiver's receivedRequests
+        receiver.receivedRequests.splice(requestIndex, 1);
+        const senderRequestIndex = sender.sentRequests.findIndex(request => request.user.toString() === recieverId.toString());
+        sender.sentRequests.splice(senderRequestIndex, 1);
+
+        // Save the updated sender and receiver objects
+        await sender.save();
+        await receiver.save();
+
+        // Send response
+        res.status(200).json({ message: 'Friend request accepted' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', success: false });
     }
+};
 
-    receiver.friends.push(senderId);
-    sender.friends.push(recieverId);
-
-    receiver.receivedRequests = receiver.receivedRequests.filter(id => id.toString() !== senderId);
-    sender.sentRequests = sender.sentRequests.filter(id => id.toString() !== recieverId);
-
-    await sender.save();
-    await receiver.save();
-
-    res.status(200).json({ message: 'Friend request accepted' });
-}
 
 const suggestedUser = async (req, res) => {
     try {
