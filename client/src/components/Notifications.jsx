@@ -32,7 +32,14 @@ function Notifications() {
         }
     }
 
-    const toRead = notifications?.filter(e => !e.isRead)
+    const handleAcceptRequest = async (id) => {
+        try {
+            const res = await apiClient(`/user/acceptRequest/${id}`, "POST")
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         return () => {
@@ -83,7 +90,7 @@ function Notifications() {
                                         </div>
                                     </div>
                                     <div className="flex space-x-2">
-                                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
+                                        <button onClick={() => handleAcceptRequest(e.user?._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
                                             Confirm
                                         </button>
                                         <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors">

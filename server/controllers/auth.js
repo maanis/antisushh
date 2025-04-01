@@ -166,8 +166,8 @@ const declineRequest = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
     try {
-        const senderId = req.id;  // Sender is the logged-in user (req.id)
-        const recieverId = req.params.id;  // Receiver is the ID of the user receiving the request
+        const recieverId = req.id;  // Sender is the logged-in user (req.id)
+        const senderId = req.params.id;  // Receiver is the ID of the user receiving the request
 
         // Check if sender is trying to send a request to themselves
         if (senderId === recieverId) {
@@ -178,6 +178,7 @@ const acceptRequest = async (req, res) => {
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
 
+        console.log('running')
         // Check if both users exist
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'User not found' });
@@ -203,7 +204,7 @@ const acceptRequest = async (req, res) => {
         await receiver.save();
 
         // Send response
-        res.status(200).json({ message: 'Friend request accepted' });
+        res.status(200).json({ success: true, message: 'Friend request accepted' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', success: false });
