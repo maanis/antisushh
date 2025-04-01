@@ -14,7 +14,7 @@ import { setOnlineUsers } from './store/chatSlice'
 import { setSocket } from './store/socketSlice'
 import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 import apiClient from './utils/apiClient'
-import { setNotifications } from './store/notificationsSlice'
+import { removeNotification, setNotifications } from './store/notificationsSlice'
 import Notifications from './components/Notifications'
 
 const App = () => {
@@ -76,9 +76,13 @@ const App = () => {
         console.log(notification)
         dispatch(setNotifications([notification, ...notifications]))
       })
+      socketIo.on('deleteNotifications', (id) => {
+        dispatch(removeNotification(id))
+      })
     }
     return () => {
       socketIo?.off('newNotification')
+      socketIo?.off('deleteNotifications')
     }
   }, [dispatch, notifications, setNotifications, socketIo])
 

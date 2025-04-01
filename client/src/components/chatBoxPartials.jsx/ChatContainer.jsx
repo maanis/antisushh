@@ -3,7 +3,7 @@ import ChatHeader from './ChatHeader';
 import ChatMessages from './ChatMessages';
 import MessageInput from './MessageInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMessages, setSelectedUser } from '@/store/chatSlice';
+import { handleUnsendMsg, setMessages, setSelectedUser } from '@/store/chatSlice';
 import { useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 
@@ -66,11 +66,14 @@ const ChatContainer = () => {
             socketIo.on('newMsg', (msg) => {
                 dispatch(setMessages([...messages, msg]))
             })
+            socketIo.on('unsendMsg', (id) => {
+                dispatch(handleUnsendMsg(id))
+            })
             return () => {
                 socketIo.off('newMsg')
             }
         }
-    }, [messages, setMessages, socketIo])
+    }, [messages, setMessages, socketIo, handleUnsendMsg])
     return (
         <>
             {/* Chat Header */}

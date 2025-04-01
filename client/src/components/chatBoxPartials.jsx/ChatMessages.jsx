@@ -9,6 +9,7 @@ import { extractTime } from '@/utils/constant';
 
 const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const { user } = useSelector((state) => state.userInfo);
+    const { socketIo } = useSelector(state => state.socket)
     const dispatch = useDispatch()
     const handleUnsend = async (msgId) => {
         try {

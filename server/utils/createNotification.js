@@ -10,13 +10,17 @@ const createNotification = async (type, senderId, receiverId, postId) => {
         sender: senderId,
         receiver: receiverId,
         post: postId,
-    });
+    })
 
     await notification.save();
 
+    const populatedNotification = await Notification.findById(notification._id)
+        .populate('sender', 'username pfp')
+        .populate('post', 'image');
+
     const receiverSocketId = userSocketId(receiverId.toString());
     if (receiverSocketId) {
-        io.to(receiverSocketId).emit('newNotification', notification);
+        io.to(receiverSocketId).emit('newNotification', populatedNotification);
     }
 };
 

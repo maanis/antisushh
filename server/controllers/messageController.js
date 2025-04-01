@@ -73,10 +73,11 @@ const deleteMessage = async (req, res) => {
         if (message.senderId.toString() !== userId) return res.status(403).json({ message: 'Unauthorized' });
 
         await messageModel.findByIdAndDelete(messageId);
+        io.emit('unsendMsg', messageId)
 
         res.status(200).json({ success: true, message: 'Message deleted successfully' });
     } catch (error) {
-        console.log(error); 
+        console.log(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

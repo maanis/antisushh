@@ -294,4 +294,25 @@ const getNotifications = async (req, res) => {
     }
 }
 
-module.exports = { register, updateProfile, getNotifications, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+const markNotificationsAsRead = async (req, res) => {
+    try {
+        const { notificationIds } = req.body; // Array of notification IDs
+
+        if (!Array.isArray(notificationIds) || notificationIds.length === 0) {
+            return res.status(400).json({ message: "No notifications provided", success: false });
+        }
+
+        await notificationModel.updateMany(
+            { _id: { $in: notificationIds } },
+            { $set: { isRead: true } }
+        );
+
+        res.status(200).json({ message: "Notifications marked as read", success: true });
+    } catch (error) {
+        console.error("Error updating notifications:", error);
+        res.status(500).json({ message: "Internal server error", success: false });
+    }
+};
+
+
+module.exports = { register, updateProfile, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
