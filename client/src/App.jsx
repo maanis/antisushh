@@ -15,6 +15,7 @@ import { setSocket } from './store/socketSlice'
 import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 import apiClient from './utils/apiClient'
 import { setNotifications } from './store/notificationsSlice'
+import Notifications from './components/Notifications'
 
 const App = () => {
   const location = useLocation();
@@ -88,6 +89,7 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Register />} />
           <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />
+          <Route path='/notifications' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path='/profile/:username' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path='/chat' element={<ProtectedRoute><ChatSection /></ProtectedRoute>} >
             <Route path='/chat/:username' element={<ProtectedRoute><ChatContainer /></ProtectedRoute>} />

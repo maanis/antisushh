@@ -74,7 +74,7 @@ const Sidebar = () => {
             localStorage.setItem('chatSection', true)
             setisChatSection(true)
         } else if (e === 'notifications') {
-            setnotificationDialog(true)
+            navigate('/notifications')
         }
     }
 
@@ -223,7 +223,7 @@ const Sidebar = () => {
                     </DialogContent>
                 </Dialog>
 
-                <NotificationDialog open={notificationDialog} setOpen={setnotificationDialog} />
+                {/* <NotificationDialog open={notificationDialog} setOpen={setnotificationDialog} /> */}
 
             </div>
         </div>
