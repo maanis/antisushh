@@ -29,14 +29,11 @@ const userSlice = createSlice({
             }
         },
         addOrRemoveSentReq: (state, action) => {
-            if (state.user.sentRequests.include(action.payload)) {
-                // remove
-                const index = state.user.sentRequests.indexOf(action.payload)
-                if (index != -1) {
-                    state.user.sentRequests.splice(index, 1)
-                }
+            console.log(action.payload)
+            if (action.payload.type === 'Request removed') {
+                state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.data.toString())
             } else {
-                //add
+                state.user.sentRequests.push(action.payload.data)
             }
         }
 
@@ -44,4 +41,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { setUser, addPost, removePost, addBookmark, removeBookmark } = userSlice.actions
+export const { setUser, addPost, removePost, addBookmark, addOrRemoveSentReq, removeBookmark } = userSlice.actions

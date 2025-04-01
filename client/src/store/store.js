@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import localForage from 'localforage';
 import userReducer from './userSlice';
 import postReducer from './postSlice';
 import chatReducer from './chatSlice';
@@ -9,7 +9,7 @@ import notificationReducer from './notificationsSlice';
 
 const userPersistConfig = {
     key: 'user',
-    storage,
+    storage: localForage, // Use IndexedDB instead of localStorage
 };
 
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);

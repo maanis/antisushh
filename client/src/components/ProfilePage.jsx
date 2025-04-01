@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
 import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
-import { setUser } from '@/store/userSlice';
+import { addOrRemoveSentReq, setUser } from '@/store/userSlice';
 import { Button } from './ui/button';
 
 function ProfilePage() {
@@ -64,8 +64,8 @@ function ProfilePage() {
         } else {
             const data = await apiClient(`/user/sendOrRemoveRequest`, "POST", { recieverId: user._id })
             if (data.success) {
+                dispatch(addOrRemoveSentReq({ data: data.data, type: data.message }))
                 toast.success(data.message)
-
             }
         }
     }

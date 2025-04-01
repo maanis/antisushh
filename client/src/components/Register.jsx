@@ -44,6 +44,7 @@ function Register() {
                 console.log(data)
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
+                console.log(data.user)
                 dispatch(setUser(data.user))
                 navigate('/feed')
             }
@@ -56,7 +57,9 @@ function Register() {
     }
 
     useEffect(() => {
+        localStorage.clear()
         const token = Cookies.get("token");
+
         if (token) {
             navigate("/feed"); // Redirect to feed if token exists
         }

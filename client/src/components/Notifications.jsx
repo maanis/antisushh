@@ -3,6 +3,7 @@ import apiClient from '@/utils/apiClient';
 import { timeAgo } from '@/utils/constant';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function Notifications() {
     const dispatch = useDispatch()
@@ -70,14 +71,14 @@ function Notifications() {
                             return activeTab === 'requests' ? (<div className="border-b border-zinc-800">
                                 <div className="flex items-center justify-between py-4">
                                     <div className="flex items-center space-x-3">
-                                        <img
+                                        <Link to={`/profile/${e.user?.username}`}><img
                                             src={e.user?.pfp}
                                             alt="Profile"
                                             className="w-10 h-10 rounded-full object-cover"
-                                        />
+                                        /></Link>
                                         <div>
                                             <p className="font-medium">{e.user?.username}</p>
-                                            <p className="text-[16px] text-gray-500">requested you to become their pal <span className=" text-zinc-500 text-[12px] ml-1">1h</span></p>
+                                            <p className="text-[16px] text-gray-500">requested you to become their pal <span className=" text-zinc-500 text-[12px] ml-1">{timeAgo(e.timestamp)}</span></p>
                                         </div>
                                     </div>
                                     <div className="flex space-x-2">
@@ -93,11 +94,12 @@ function Notifications() {
                                 <div className="flex items-center justify-between  py-4">
                                     <div className="flex items-center space-x-3">
                                         <div className="flex">
-                                            <img
+
+                                            <Link to={`/profile/${e.sender?.username}`}><img
                                                 src={e.sender?.pfp}
                                                 alt="Profile 1"
                                                 className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                                            />
+                                            /></Link>
                                         </div>
                                         <div>
                                             <p className="font-medium">{e.sender?.username}</p>

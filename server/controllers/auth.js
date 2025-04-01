@@ -107,16 +107,16 @@ const sendOrRemoveRequest = async (req, res) => {
             await sender.save();
             await receiver.save();
 
-            return res.status(200).json({ success: true, message: 'Request removed' });
+            return res.status(200).json({ success: true, message: 'Request removed', data: recieverId });
         } else {
             // Otherwise, send the request by adding it to both sentRequests and recieveRequests
-            sender.sentRequests.push({ user: recieverId });
+            sender.sentRequests.unshift({ user: recieverId });
             receiver.recieveRequests.push({ user: senderId });
 
             await sender.save();
             await receiver.save();
 
-            return res.status(200).json({ success: true, message: 'Request sent' });
+            return res.status(200).json({ success: true, message: 'Request sent', data: sender.sentRequests[0] });
         }
 
     } catch (error) {
@@ -148,8 +148,8 @@ const declineRequest = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Remove the request from receiver's receivedRequests and sender's sentRequests
-        receiver.receivedRequests = receiver.receivedRequests.filter(request => request.user.toString() !== senderId.toString());
+        // Remove the request from receiver's recieveRequests and sender's sentRequests
+        receiver.recieveRequests = receiver.recieveRequests.filter(request => request.user.toString() !== senderId.toString());
         sender.sentRequests = sender.sentRequests.filter(request => request.user.toString() !== recieverId.toString());
 
         // Save the updated sender and receiver objects
@@ -184,17 +184,17 @@ const acceptRequest = async (req, res) => {
         }
 
         // Ensure that the receiver has received a friend request from the sender
-        const requestIndex = receiver.receivedRequests.findIndex(request => request.user.toString() === senderId.toString());
+        const requestIndex = receiver.recieveRequests.findIndex(request => request.user.toString() === senderId.toString());
         if (requestIndex === -1) {
             return res.status(400).json({ message: 'No friend request found' });
         }
 
-        // Add sender and receiver to each other's friends array
-        receiver.friends.push(senderId);
-        sender.friends.push(recieverId);
+        // Add sender and receiver to each other's pals array
+        receiver.pals.push(senderId);
+        sender.pals.push(recieverId);
 
-        // Remove the request from both the sender's sentRequests and the receiver's receivedRequests
-        receiver.receivedRequests.splice(requestIndex, 1);
+        // Remove the request from both the sender's sentRequests and the receiver's recieveRequests
+        receiver.recieveRequests.splice(requestIndex, 1);
         const senderRequestIndex = sender.sentRequests.findIndex(request => request.user.toString() === recieverId.toString());
         sender.sentRequests.splice(senderRequestIndex, 1);
 
@@ -339,7 +339,7 @@ const searchQuerry = async (req, res) => {
 const getUser = async (req, res) => {
     try {
         const username = req.params.username
-        const user = await userModel.findOne({ username }).select('-password -email -sentRequests -recieveRequests -friends -bookmarks -posts -coverPhoto')
+        const user = await userModel.findOne({ username }).select('-password -email -sentRequests -recieveRequests -pals -bookmarks -posts -coverPhoto')
         if (!user) return res.status(400).json({ message: 'No user found with this username', success: false });
         res.status(200).json({ user, message: 'Found', success: true });
     } catch (error) {
