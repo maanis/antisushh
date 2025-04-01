@@ -42,7 +42,6 @@ const Sidebar = () => {
     const toRead = notifications?.filter(e => !e.isRead)
 
 
-
     const data = [
         { icon: <Home size={'26px'} />, text: 'home' },
         { icon: <Search size={'26px'} />, text: 'search' },
@@ -152,7 +151,7 @@ const Sidebar = () => {
             <h2 className={`font-extralight text-3xl logoText my-5 mb-8 ${isChatSection && 'text-center'}`}>{isChatSection ? 'A' : 'AntiSush'}</h2>
             {data.map((e, i) => {
                 return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
-                    <span className='text-sm relative' title={e.text}>{e.icon} {toRead.length > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</span>
+                    <span className='text-sm relative' title={e.text}>{e.icon} {toRead.length > 0 || user.recieveRequests.length > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</span>
                     {!isChatSection && <h3 className='capitalize'>{e.text}</h3>}
                 </button> : <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
                     <span className='text-sm' title={e.text}>{e.icon}</span>

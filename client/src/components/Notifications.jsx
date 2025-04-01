@@ -52,11 +52,12 @@ function Notifications() {
                         <button
                             key={i}
                             onClick={() => setActiveTab(e)}
-                            className={`flex items-center py-2 border-b-2 font-medium text-sm transition-colors ${activeTab === e
+                            className={`flex items-center py-2 border-b-2 relative font-medium text-sm transition-colors ${activeTab === e
                                 ? 'border-blue-500 text-blue-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700'
                                 }`}
                         >
+                            {e === 'requests' && user.recieveRequests.length > 0 && <span className='absolute top-[-2px] right-[-4px] h-2 w-2 bg-red-600 rounded-full'></span>}
                             <span className="uppercase">{e}</span>
                         </button>
                     ))}
@@ -115,36 +116,6 @@ function Notifications() {
                             </div>
                         }) : 'No notifications'}
                     </div> : 'loading'}
-
-                    {/* {activeTab === 'alerts' && (
-                        <div className="border-b border-gray-100">
-                            <div className="flex items-center justify-between py-4">
-                                <div className="flex items-center space-x-3">
-                                    <div className="flex -space-x-2">
-                                        <img
-                                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces"
-                                            alt="Profile 1"
-                                            className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                                        />
-                                        <img
-                                            src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces"
-                                            alt="Profile 2"
-                                            className="w-10 h-10 rounded-full border-2 border-white object-cover"
-                                        />
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">anupamra1 and others</p>
-                                        <p className="text-sm text-gray-500">liked your post <span className="text-gray-400">3h</span></p>
-                                    </div>
-                                </div>
-                                <img
-                                    src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=100&h=100&fit=crop"
-                                    alt="Post thumbnail"
-                                    className="w-12 h-12 rounded object-cover"
-                                />
-                            </div>
-                        </div>
-                    )} */}
                 </div>
             </div>
         </div>
