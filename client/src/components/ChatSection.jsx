@@ -6,16 +6,15 @@ import ChatMessages from './chatBoxPartials.jsx/ChatMessages';
 import MessageInput from './chatBoxPartials.jsx/MessageInput';
 import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
 import { useDispatch, useSelector } from 'react-redux';
-import { setMessages, setSelectedUser } from '@/store/chatSlice';
+import { filterUnreadChats, setMessages, setSelectedUser } from '@/store/chatSlice';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
-    const [newMessage, setNewMessage] = useState('')
     const [suggestedUsers, setsuggestedUsers] = useState([])
-    const inputRef = useRef(null)
     const dispatch = useDispatch()
     const { selectedUser, onlineUsers, messages } = useSelector((state) => state.chat)
     const navigate = useNavigate()
+    const { unreadChats } = useSelector(store => store.chat)
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
@@ -31,8 +30,15 @@ const ChatSection = () => {
     }
 
     const handleSetSelectedUser = async (user) => {
-        dispatch(setSelectedUser(null))
-        dispatch(setSelectedUser(user))
+        try {
+            dispatch(setSelectedUser(null))
+            dispatch(setSelectedUser(user))
+            dispatch(filterUnreadChats(user._id))
+            const res = await apiClient(`/user/markMsgsAsRead/${user._id}`, "POST")
+            console.log(res)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     useEffect(() => {
@@ -96,8 +102,11 @@ const ChatSection = () => {
 
                 {/* user List */}
                 <div className="overflow-y-auto">
-                    {suggestedUsers.map((user) => (
-                        <Link
+
+                    {suggestedUsers.map((user) => {
+                        const count = unreadChats.find(chat => chat.senderId === user._id)?.msgs;
+
+                        return <Link
                             to={`/chat/${user.username}`}
                             onClick={() => handleSetSelectedUser(user)}
                             key={user._id}
@@ -110,11 +119,11 @@ const ChatSection = () => {
                             />
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold">{user.username}</h3>
-                                <p className="text-xs text-gray-500 truncate">click to see messages</p>
+                                <p className="text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : 'click to see messages'}</p>
                             </div>
                             <span className="text-xs text-gray-400">10:29</span>
                         </Link>
-                    ))}
+                    })}
                 </div>
             </div>
 

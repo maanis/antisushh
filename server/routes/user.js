@@ -2,6 +2,7 @@ var express = require('express');
 const { suggestedUser, editProfile, updateProfile, userProfile, searchQuerry, declineRequest, acceptRequest, updatePfp, updatecoverPhoto, sendOrRemoveRequest, getUser, getNotifications, markNotificationsAsRead } = require('../controllers/auth');
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const upload = require('../config/multer');
+const { markMsgsAsRead } = require('../controllers/messageController');
 var router = express.Router();
 
 router.get('/', function (req, res) {
@@ -21,6 +22,8 @@ router.get('/searchQuerry/:username', isAuthenticated, searchQuerry);
 
 router.get('/getNotifications', isAuthenticated, getNotifications);
 router.post('/markNotificationsAsRead', isAuthenticated, markNotificationsAsRead);
+
+router.post('/markMsgsAsRead/:id', isAuthenticated, markMsgsAsRead);
 
 router.post('/updateProfile', isAuthenticated, upload.single('profilePic'), updateProfile);
 

@@ -86,11 +86,28 @@ const msgsToRead = async (req, res) => {
     try {
         const recieverId = req.id
         if (!recieverId) return res.status(404).json({ message: 'user not found' });
-        const unreadMsgs = await messageModel.find({ recieverId })
+        const unreadMsgs = await messageModel.find({ recieverId, isRead: false })
         res.status(200).json({ success: true, unreadMsgs })
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
 
-module.exports = { sendMessage, getMessages, deleteMessage, msgsToRead };
+const markMsgsAsRead = async (req, res) => {
+    try {
+        const recieverId = req.id
+        const senderId = req.params.id
+
+        await messageModel.updateMany(
+            { senderId, recieverId },  // Find all messages from sender to receiver
+            { $set: { isRead: true } } // Mark all as read
+        );
+
+        res.status(200).json({ message: "msgs marked as read", success: true });
+    } catch (error) {
+        console.error("Error updating notifications:", error);
+        res.status(500).json({ message: "Internal server error", success: false });
+    }
+};
+
+module.exports = { sendMessage, getMessages, deleteMessage, msgsToRead, markMsgsAsRead };
