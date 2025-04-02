@@ -98,8 +98,12 @@ const App = () => {
     return () => {
       socketIo?.off('newNotification')
       socketIo?.off('deleteNotifications')
+      socketIo?.off('sendReq')
+      socketIo?.off('removeReq')
+      socketIo?.off('acceptReq')
+      socketIo?.off('declineReq')
     }
-  }, [dispatch, notifications, setNotifications])
+  }, [dispatch, notifications, setNotifications, removeNotification, addRecieveReq, removeRecieveReq, acceptReq, removeSentReq])
 
   return (
     <>
