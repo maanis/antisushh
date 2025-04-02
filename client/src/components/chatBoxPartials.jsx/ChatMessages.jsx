@@ -14,7 +14,6 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const handleUnsend = async (msgId) => {
         try {
             const res = await apiClient(`/chat/unsend/${msgId}`, "POST")
-            console.log(res)
             if (res.success) {
                 dispatch(handleUnsendMsg(msgId))
             }

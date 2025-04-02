@@ -34,7 +34,6 @@ function ProfilePage() {
     const currentUser = useSelector(state => state.userInfo.user)
 
     const posts = activeTab === 'posts' ? useSelector(state => state.posts.activeProfilePosts) : useSelector(state => state.posts.activeBookmarkPosts)
-    console.log(user)
     const { username } = useParams()
 
     const fetchUserProfile = async () => {
@@ -59,16 +58,13 @@ function ProfilePage() {
     }
 
     const handlePrimaryButton = async (e) => {
-        console.log(e.currentTarget.innerText)
         if (username === currentUser?.username) {
             seteditDialog(true)
         } else if (e.currentTarget.innerText === 'Pals') {
-            console.log('what')
         }
         else if (e.currentTarget.innerText === 'Accept') {
             try {
                 const res = await apiClient(`/user/acceptRequest/${user._id}`, "POST")
-                console.log(res)
                 if (res.success) {
                     dispatch(removeRecieveReq(res.data))
                     dispatch(addToPal(res.data))
@@ -79,7 +75,6 @@ function ProfilePage() {
         }
         else {
             const data = await apiClient(`/user/sendOrRemoveRequest`, "POST", { recieverId: user._id })
-            console.log(data)
             if (data.success) {
                 dispatch(addOrRemoveSentReq({ data: data.data, type: data.message }))
                 toast.success(data.message)
@@ -133,8 +128,6 @@ function ProfilePage() {
             setprofilePic(file)
             const url = fileToUrl(file);
             setpreview(url);
-            console.log(preview)
-            console.log(profilePic)
         }
     }
 
@@ -143,7 +136,6 @@ function ProfilePage() {
         // if (!preview) return toast.error('Please upload an image')
         try {
             const formData = new FormData();
-            console.log(profilePic)
             formData.append("profilePic", profilePic);
 
             const data = await fetch('http://localhost:3000/user/updatePfp', {
@@ -152,7 +144,6 @@ function ProfilePage() {
                 body: formData,
             })
             const res = await data.json()
-            console.log(res)
             if (res.success) {
                 toast.success(res.message)
                 dispatch(setUser(res.user))

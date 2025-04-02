@@ -45,10 +45,8 @@ const App = () => {
         transports: ['websocket'],
       });
       dispatch(setSocket(socket));
-      console.log('connected to socket:', socket);
 
       socket.on('getOnlineUsers', (users) => {
-        console.log('Online users:', users);
         dispatch(setOnlineUsers(users));
       });
 
@@ -74,14 +72,12 @@ const App = () => {
   useEffect(() => {
     if (socketIo) {
       socketIo.on('newNotification', (notification) => {
-        console.log(notification)
         dispatch(setNotifications([notification, ...notifications]))
       })
       socketIo.on('deleteNotifications', (id) => {
         dispatch(removeNotification(id))
       })
       socketIo.on('sendReq', (data) => {
-        console.log(data)
         dispatch(addRecieveReq(data))
       })
       socketIo.on('removeReq', (data) => {
@@ -91,7 +87,6 @@ const App = () => {
         dispatch(acceptReq(data))
       })
       socketIo.on('declineReq', (data) => {
-        console.log(data)
         dispatch(removeSentReq(data))
       })
     }

@@ -43,7 +43,6 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                     return e._id === post._id ? { ...e, comments: [...e.comments, { text: data.commentText, user: data.user }] } : e
                 })
                 dispatch(setposts(updatedPosts))
-                console.log(data)
                 toast.success(data.message)
 
             }

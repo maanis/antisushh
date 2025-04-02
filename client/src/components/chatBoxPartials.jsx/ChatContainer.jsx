@@ -23,7 +23,6 @@ const ChatContainer = () => {
             if (res.success) {
                 dispatch(setMessages([...messages, res.msg]))
                 setNewMessage('')
-                // console.log(res)
             }
         } catch (error) {
             console.log(error)
@@ -31,16 +30,13 @@ const ChatContainer = () => {
     }
     const { selectedUser } = useSelector((state) => state.chat)
     const { username } = useParams()
-    console.log(username)
     const fetchUser = async () => {
         const res = await apiClient(`/user/getUser/${username}`)
-        console.log(res.user)
         dispatch(setSelectedUser(res.user))
     }
 
     const fetchMessages = async () => {
         const res = await apiClient(`/chat/getMessages/${selectedUser?._id}`)
-        console.log(res)
         if (res.success) {
             dispatch(setMessages(res.messages))
         }

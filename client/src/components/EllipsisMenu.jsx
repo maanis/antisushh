@@ -29,7 +29,6 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
                 if (data.message === 'added to bookmark') {
                     dispatch(addBookmark(posts._id))
                     setdata((data) => data.map(e => e === 'add to bookmarks' ? 'remove from bookmarks' : e))
-                    console.log(data)
                 } else {
                     dispatch(removeBookmark(posts._id))
                     setdata((data) => data.map(e => e === 'remove from bookmarks' ? 'add to bookmarks' : e))

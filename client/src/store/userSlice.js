@@ -29,7 +29,6 @@ const userSlice = createSlice({
             }
         },
         addOrRemoveSentReq: (state, action) => {
-            console.log(action.payload)
             if (action.payload.type === 'Request removed') {
                 state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.data.toString())
             } else {
@@ -37,24 +36,19 @@ const userSlice = createSlice({
             }
         },
         addRecieveReq: (state, action) => {
-            console.log(action.payload)
             state.user.recieveRequests.push(action.payload)
         },
         removeRecieveReq: (state, action) => {
-            console.log(action.payload)
             state.user.recieveRequests = state.user.recieveRequests.filter(e => e.user._id.toString() != action.payload.toString())
         },
         addToPal: (state, action) => {
-            console.log(action.payload)
             state.user.pals.push(action.payload)
         },
         acceptReq: (state, action) => {
-            console.log(action.payload)
             state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.toString())
             state.user.pals.push(action.payload.toString())
         },
         removeSentReq: (state, action) => {
-            console.log(action.payload)
             state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.toString())
         },
 

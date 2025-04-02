@@ -41,10 +41,8 @@ function Register() {
                 //login
                 const userData = { username, password }
                 const data = await apiClient("/login", "POST", userData);
-                console.log(data)
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
-                console.log(data.user)
                 dispatch(setUser(data.user))
                 navigate('/feed')
             }

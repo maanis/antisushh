@@ -13,7 +13,6 @@ function Notifications() {
     const { user } = useSelector(store => store.userInfo);
     const [notificationsData, setNotificationsData] = useState([]);  // Start with empty array
 
-    console.log(notificationsData);
 
     useEffect(() => {
         setNotificationsData(activeTab === 'alerts' ? notifications : user?.recieveRequests || []);
@@ -24,7 +23,6 @@ function Notifications() {
         try {
             const unreadNotifications = notifications.filter(e => !e.isRead).map(e => e._id);
             const res = await apiClient('/user/markNotificationsAsRead', "POST", { notificationIds: unreadNotifications })
-            console.log(res)
             if (res.success) {
                 dispatch(markNotificationsAsRead(unreadNotifications))
             }
@@ -36,7 +34,6 @@ function Notifications() {
     const handleAcceptRequest = async (id) => {
         try {
             const res = await apiClient(`/user/acceptRequest/${id}`, "POST")
-            console.log(res)
             if (res.success) {
                 dispatch(removeRecieveReq(res.data))
                 dispatch(addToPal(res.data))
@@ -49,7 +46,6 @@ function Notifications() {
     const handleDeleteRequest = async (id) => {
         try {
             const res = await apiClient(`/user/declineRequest/${id}`, "POST")
-            console.log(res)
             if (res.success) {
                 dispatch(removeRecieveReq(res.senderId))
             }
