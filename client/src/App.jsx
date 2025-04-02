@@ -10,7 +10,7 @@ import ProtectedUpdateProfile from './utils/ProtectedUpdateProfile'
 import ChatSection from './components/ChatSection'
 import { io } from 'socket.io-client'
 import { useDispatch, useSelector } from 'react-redux'
-import { setOnlineUsers } from './store/chatSlice'
+import { setOnlineUsers, setUnreadChats } from './store/chatSlice'
 import { setSocket } from './store/socketSlice'
 import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 import apiClient from './utils/apiClient'
@@ -89,6 +89,9 @@ const App = () => {
       socketIo.on('declineReq', (data) => {
         dispatch(removeSentReq(data))
       })
+      socketIo.on('newMsg', (data) => {
+        dispatch(setUnreadChats(data.senderId))
+      })
     }
     return () => {
       socketIo?.off('newNotification')
@@ -97,6 +100,7 @@ const App = () => {
       socketIo?.off('removeReq')
       socketIo?.off('acceptReq')
       socketIo?.off('declineReq')
+      socketIo?.off('newMsg')
     }
   }, [dispatch, notifications, setNotifications, removeNotification, addRecieveReq, removeRecieveReq, acceptReq, removeSentReq])
 

@@ -50,6 +50,7 @@ const Sidebar = () => {
         { icon: <PlusSquare size={'26px'} />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
+    const { unreadChats } = useSelector(state => state.chat)
     const handleLogout = async () => {
         const data = await apiClient('/logout')
         if (data.success) {
@@ -154,7 +155,7 @@ const Sidebar = () => {
                     {!isChatSection && <h3 className='capitalize'>{e.text}</h3>}
                 </button> : <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
                     <span className='text-sm' title={e.text}>{e.icon}</span>
-                    {!isChatSection && <h3 className='capitalize'>{e.text}</h3>}
+                    {!isChatSection && <h3 className='capitalize flex items-center gap-2'>{e.text} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 rounded-t-full rounded-br-full h-[20px] w-[20px] text-xs flex items-center justify-center '>{unreadChats.length}</span>}</h3>}
                 </button>
             })}
             <div className='mt-auto'>

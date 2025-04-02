@@ -6,6 +6,7 @@ const chatSlice = createSlice({
         selectedUser: null,
         messages: null,
         onlineUsers: [],
+        unreadChats: []
     },
     reducers: {
         setSelectedUser: (state, action) => {
@@ -24,9 +25,18 @@ const chatSlice = createSlice({
             state.messages = state.messages.filter(
                 (msg) => msg._id !== action.payload
             );
+        },
+        setUnreadChats: (state, action) => {
+            console.log(action.payload)
+            const index = state.unreadChats.findIndex(e => e.senderId.toString() === action.payload.toString())
+            if (index === -1) {
+                state.unreadChats.push({ senderId: action.payload, msgs: 1 });
+            } else {
+                state.unreadChats[index].msgs += 1;
+            }
         }
     },
 })
 
 export default chatSlice.reducer;
-export const { setSelectedUser, setMessages, addMessage, setOnlineUsers, handleUnsendMsg } = chatSlice.actions;
+export const { setSelectedUser, setUnreadChats, setMessages, addMessage, setOnlineUsers, handleUnsendMsg } = chatSlice.actions;
