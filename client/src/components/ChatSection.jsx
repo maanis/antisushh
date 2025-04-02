@@ -11,6 +11,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
     const [suggestedUsers, setsuggestedUsers] = useState([])
+    const [lastMsgs, setlastMsgs] = useState([])
     const dispatch = useDispatch()
     const { selectedUser, onlineUsers, messages } = useSelector((state) => state.chat)
     const navigate = useNavigate()
@@ -29,6 +30,21 @@ const ChatSection = () => {
         }
     }
 
+    const fetchLastMsg = async () => {
+        try {
+            if (suggestedUsers?.length > 0) {
+                console.log("Sender IDs before API call:", suggestedUsers?.map(e => e._id));
+                const res = await apiClient('/user/getLastMessages', "POST", { senderIds: suggestedUsers.map(e => e._id) });
+                console.log(res)
+                if (res.success) {
+                    setlastMsgs(res.filteredMessages)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const handleSetSelectedUser = async (user) => {
         try {
             dispatch(setSelectedUser(null))
@@ -36,6 +52,7 @@ const ChatSection = () => {
             dispatch(filterUnreadChats(user._id))
             const res = await apiClient(`/user/markMsgsAsRead/${user._id}`, "POST")
             console.log(res)
+
         } catch (error) {
             console.log(error)
         }
@@ -46,6 +63,8 @@ const ChatSection = () => {
     }, [searchQuerry])
 
     useEffect(() => {
+        // fetchsuggestedUsers()
+        // fetchLastMsg()
         navigate('/chat')
         localStorage.setItem('chatSection', true)
         return () => {
@@ -53,6 +72,12 @@ const ChatSection = () => {
             dispatch(setSelectedUser(null))
         }
     }, [])
+
+    useEffect(() => {
+        if (suggestedUsers?.length > 0) {
+            fetchLastMsg()
+        }
+    }, [suggestedUsers]);
     return (
         <div className="flex h-screen w-full bg-zinc-900">
             {/* Left Sidebar */}
@@ -105,6 +130,7 @@ const ChatSection = () => {
 
                     {suggestedUsers.map((user) => {
                         const count = unreadChats.find(chat => chat.senderId === user._id)?.msgs;
+                        const index = lastMsgs?.findIndex(e => e.senderId === user._id)
 
                         return <Link
                             to={`/chat/${user.username}`}
@@ -119,7 +145,7 @@ const ChatSection = () => {
                             />
                             <div className="flex-1 min-w-0">
                                 <h3 className="font-semibold">{user.username}</h3>
-                                <p className="text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : 'click to see messages'}</p>
+                                <p className="text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsgs?.some(e => e.senderId === user._id) ? lastMsgs[index].msg : 'Tap to chat'}</p>
                             </div>
                             <span className="text-xs text-gray-400">10:29</span>
                         </Link>

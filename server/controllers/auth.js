@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const postModel = require("../model/postModel");
 const notificationModel = require('../model/notificationModel');
 const { userSocketId, io } = require("../socket/socket.io");
+const messageModel = require("../model/messageModel");
 
 const register = async function (req, res) {
     const { name, username, password } = req.body;
@@ -404,5 +405,35 @@ const markNotificationsAsRead = async (req, res) => {
     }
 };
 
+const getLastMessages = async (req, res) => {
+    try {
+        const recieverId = req.id; // Logged-in user ID
+        const { senderIds } = req.body; // Array of sender IDs from request body
+        if (!Array.isArray(senderIds) || senderIds.length === 0) {
+            return res.status(400).json({ error: "Invalid senderIds array" });
+        }
 
-module.exports = { register, updateProfile, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+        // Fetch the last message for each sender
+        const lastMessages = await Promise.all(
+            senderIds.map(async (senderId) => {
+                const lastMsg = await messageModel.findOne({ senderId, recieverId })
+                    .sort({ createdAt: -1 }) // Sort by latest message
+                    .select("senderId message") // Select only required fields
+                    .lean(); // Convert to plain JavaScript object
+
+                return lastMsg ? { senderId: lastMsg.senderId, msg: lastMsg.message } : null;
+            })
+        );
+
+        // Remove null values (if a sender has no messages)
+        const filteredMessages = lastMessages.filter(msg => msg !== null);
+
+        return res.status(200).json({ success: true, filteredMessages });
+    } catch (error) {
+        console.error("Error fetching last messages:", error);
+        return res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+module.exports = { register, updateProfile, getLastMessages, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
