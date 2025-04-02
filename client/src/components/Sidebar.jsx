@@ -23,6 +23,7 @@ import apiClient from '@/utils/apiClient'
 import { clearUnreadChats, setOnlineUsers } from '@/store/chatSlice'
 import NotificationDialog from './NotificationDialog'
 import { setNotifications } from '@/store/notificationsSlice'
+import { useMediaQuery } from 'react-responsive'
 
 
 const Sidebar = () => {
@@ -43,12 +44,12 @@ const Sidebar = () => {
     const toRead = notifications?.filter(e => !e.isRead)
 
     const data = [
-        { icon: <Home size={'26px'} />, text: 'home' },
-        { icon: <Search size={'26px'} />, text: 'search' },
-        { icon: <Globe size={'26px'} />, text: 'explore' },
-        { icon: <MessageCircle size={'26px'} />, text: 'messages' },
-        { icon: <HeartIcon size={'26px'} />, text: 'notifications' },
-        { icon: <PlusSquare size={'26px'} />, text: 'create' },
+        { icon: <Home size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'home' },
+        { icon: <Search size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'search' },
+        { icon: <Globe size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'explore' },
+        { icon: <MessageCircle size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'messages' },
+        { icon: <HeartIcon size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'notifications' },
+        { icon: <PlusSquare size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'create' },
     ]
     const { user } = useSelector(state => state.userInfo)
     const { unreadChats } = useSelector(state => state.chat)
@@ -149,27 +150,28 @@ const Sidebar = () => {
         fetchData(); // Call the async function
 
     }, [input]);
+    const isSidebarLogo = useMediaQuery({ query: "(max-width: 900px)" });
     return (
-        <div className={`${isChatSection ? 'w-[5%]' : 'w-[18%]'}  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full`}>
-            <h2 className={`font-extralight text-3xl logoText my-5 mb-8 ${isChatSection && 'text-center'}`}>{isChatSection ? 'A' : 'AntiSush'}</h2>
+        <div className={`${isChatSection ? 'w-[70px]' : 'w-[250px] max-[900px]:w-[70px]'} max-[768px]:absolute max-md:z-[9000] max-[768px]:bottom-0 max-[768px]:flex-row  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full max-[768px]:w-full max-[768px]:h-[65px] max-[768px]:justify-around max-[768px]:items-center max-md:bg-black max-md:bg-border-t max-md:bg-border-zinc-700 `}>
+            <h2 className={`font-extralight text-3xl logoText my-5 mb-8 max-[900px]:text-center max-md:hidden ${isChatSection || isSidebarLogo && 'text-center'}`}>{isChatSection || isSidebarLogo ? 'A' : 'AntiSush'}</h2>
             {data.map((e, i) => {
-                return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
+                return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className={`flex max-md:hidden cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 `} key={i}>
                     <span className='text-sm relative' title={e.text}>{e.icon} {(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</span>
-                    {!isChatSection && <h3 className='capitalize'>{e.text}</h3>}
-                </button> : <button onClick={() => handleMenuClick(e.text)} className='flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ' key={i}>
-                    <span className='text-sm' title={e.text}>{e.icon}</span>
-                    {!isChatSection && <h3 className='capitalize flex items-center gap-2'>{e.text} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 rounded-t-full rounded-br-full h-[20px] w-[20px] text-xs flex items-center justify-center '>{unreadChats.length}</span>}</h3>}
+                    {!isChatSection && <h3 className='capitalize max-[970px]:text-sm max-[900px]:hidden'>{e.text}</h3>}
+                </button> : <button onClick={() => handleMenuClick(e.text)} className={`flex cursor-pointer gap-2 my-2 font-medium items-center hover:bg-zinc-800 rounded-md px-3 py-3 ${e.text === 'search' && 'max-md:hidden'} ${e.text === 'home' ? 'max-md:order-[-5]' : e.text === 'explore' ? 'max-md:order-[-0]' : e.text === 'create' ? 'max-md:order-[-3]' : e.text === 'messages' ? 'max-md:order-[-5]' : 'order-6'}`} key={i}>
+                    <span className='text-sm relative' title={e.text}>{e.icon} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 hidden max-[900px]:flex  absolute rounded-full top-[-8px] right-[-8px] h-[20px] w-[20px] text-xs items-center justify-center '>{unreadChats.length}</span>}</span>
+                    {!isChatSection && <h3 className='capitalize flex items-center gap-2 max-[970px]:text-sm max-[900px]:hidden'>{e.text} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 rounded-t-full rounded-br-full h-[20px] w-[20px] text-xs flex items-center justify-center '>{unreadChats.length}</span>}</h3>}
                 </button>
             })}
-            <div className='mt-auto'>
-                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center hover:bg-zinc-800 rounded-md px-2  py-3 gap-2 ${isChatSection && 'justify-center'}`}>
-                    <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 object-cover rounded-full ' alt="" />
-                    {!isChatSection && <h3>{user?.name}</h3>}
+            <div className='mt-auto max-[768px]:m-0 max-md:p-3'>
+                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
+                    <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 max-[970px]:h-6 max-[970px]:w-6 max-[900px]:h-7 max-[900px]:w-7 object-cover rounded-full ' alt="" />
+                    {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>{user?.name}</h3>}
                 </Link>
                 <AlertDialog>
-                    <AlertDialogTrigger className='w-full'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
-                        <LogOut size={'26px'} />
-                        {!isChatSection && <h3>Logout</h3>}
+                    <AlertDialogTrigger className='w-full max-[768px]:hidden'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
+                        <LogOut size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px]' />
+                        {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>Logout</h3>}
                     </div></AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>

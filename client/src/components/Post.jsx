@@ -104,10 +104,10 @@ const Post = ({ posts }) => {
     }
     return (
         <div>
-            <div className="post flex flex-col w-[60%] pb-8 px-1 mx-auto mb-2 mt-4">
-                <div className="box-a flex items-center gap-2">
+            <div className="post flex flex-col w-[60%] max-[768px]:w-[75%] max-[480px]:w-full max-[480px]:p-0 pb-8 px-1 mx-auto mb-2 mt-4">
+                <div className="box-a flex items-center gap-2 max-[480px]:px-3">
                     <Link to={`/profile/${user?.username}`}><img src={user?.pfp ? user?.pfp : userDefaultPfp}
-                        className="w-10 h-10 object-cover object-top rounded-full" alt="" /></Link>
+                        className="w-10 h-10 max-[480px]:w-8 max-[480px]:h-8 object-cover object-top rounded-full" alt="" /></Link>
                     <div className="dets ml-1">
                         <Link to={`/profile/${user?.username}`}><h3 className="text-[16px]">
                             {user?.username}
@@ -124,15 +124,15 @@ const Post = ({ posts }) => {
                     <img className='select-none' src={image} alt="" />
                 </div>
 
-                <div className="flex pt-3 pb-2 gap-3 items-center">
+                <div className="flex pt-3 pb-2 gap-3 items-center max-[480px]:px-3">
                     {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='cursor-pointer' />}
                     <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
                     <Send size={'20px'} className='cursor-pointer' />
                     {currentUser.bookmarks.includes(posts._id) ? <BookmarkCheck onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} /> : <Bookmark onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} />}
 
                 </div>
-                <h2>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
-                <div className="flex items-center">
+                <h2 className='max-[480px]:px-3'>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
+                <div className="flex items-center max-[480px]:px-3">
                     <h2 className='font-semibold'>{user?.username}</h2>
                     <p className='ml-2 text-zinc-300 font-light'>{caption}</p>
                 </div>
