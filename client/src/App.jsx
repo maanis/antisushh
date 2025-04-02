@@ -118,7 +118,7 @@ const App = () => {
 
   return (
     <>
-      <div className='h-screen flex bg-zinc-950 w-full'>
+      <div className='h-full md:h-screen flex bg-zinc-950 w-full'>
         {location.pathname !== '/' && location.pathname !== '/update-profile' && <Sidebar />}
         <Routes>
           <Route path='/' element={<Register />} />

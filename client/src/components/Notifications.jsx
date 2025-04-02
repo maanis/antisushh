@@ -2,12 +2,14 @@ import { markNotificationsAsRead } from '@/store/notificationsSlice';
 import { addToPal, removeRecieveReq } from '@/store/userSlice';
 import apiClient from '@/utils/apiClient';
 import { timeAgo } from '@/utils/constant';
+import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Notifications() {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState('alerts');
     const { notifications } = useSelector(store => store.notifications);
     const { user } = useSelector(store => store.userInfo);
@@ -62,10 +64,13 @@ function Notifications() {
 
 
     return notificationsData ? (
-        <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="min-h-screen w-full mx-auto overflow-hidden text-white">
-            <div className="container max-w-4xl mx-auto px-4 h-full py-6">
-                <h1 className="text-2xl font-bold mb-4">Notifications</h1>
+        <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-[90vh] md:h-screen w-full mx-auto overflow-y-hidden text-white">
+            <div className="max-w-4xl mx-auto px-4 h-full overflow-hidden pt-7 pb-[75px]">
+                <div className="flex gap-3 mb-4 items-center">
+                    <ChevronLeft onClick={() => navigate(-1)} />
+                    <h1 className="text-2xl font-bold  max-[600px]:text-xl">Notifications</h1>
 
+                </div>
                 {/* Tabs */}
                 <div className="flex border-b border-zinc-800 pb-3 px-3 mb-6 gap-6">
                     {['alerts', 'requests'].map((e, i) => (
@@ -87,7 +92,7 @@ function Notifications() {
                 <div className='h-full'>
                     <h2 className="text-lg font-semibold mb-4 px-3">Today</h2>
 
-                    {notificationsData ? <div className='overflow-y-auto max-h-[75%]  w-full'>
+                    {notificationsData ? <div className='overflow-y-auto h-[80%]  w-full'>
                         {notificationsData.length > 0 ? notificationsData.map((e) => {
                             return activeTab === 'requests' ? (<div className="border-b border-zinc-800">
                                 <div className="flex items-center justify-between py-4">

@@ -12,7 +12,7 @@ const Home = () => {
     const { posts } = useSelector(state => state.posts)
     const { user } = useSelector(state => state.userInfo)
     return posts && user ? (
-        <div className='w-[75%] max-[1020px]:w-full border-r border-zinc-700 max-md:pb-[100px]'>
+        <div className='w-[75%] max-[1020px]:w-full border-r border-zinc-700'>
             <div className='md:hidden w-full fixed top-0 left-0 z-[999] bg-black border-b px-4 border-zinc-700 h-[50px] flex justify-between items-center'>
                 <h2 className='logoText text-2xl'>AntiSush</h2>
                 <div onClick={() => navigate('/notifications')} className='sm:cursor-pointer relative'><HeartIcon size={'25px'} />{(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</div>
