@@ -64,9 +64,10 @@ const App = () => {
     }
   }, [user]);
 
+
+
   useEffect(() => {
     localStorage.setItem('chatSection', false)
-
   }, [])
 
   useEffect(() => {

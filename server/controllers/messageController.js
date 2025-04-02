@@ -82,4 +82,15 @@ const deleteMessage = async (req, res) => {
     }
 }
 
-module.exports = { sendMessage, getMessages, deleteMessage };
+const msgsToRead = async (req, res) => {
+    try {
+        const recieverId = req.id
+        if (!recieverId) return res.status(404).json({ message: 'user not found' });
+        const unreadMsgs = await messageModel.find({ recieverId })
+        res.status(200).json({ success: true, unreadMsgs })
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+module.exports = { sendMessage, getMessages, deleteMessage, msgsToRead };

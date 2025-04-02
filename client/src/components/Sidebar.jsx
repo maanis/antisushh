@@ -20,8 +20,9 @@ import { Button } from './ui/button'
 import { addActiveProfilePosts, setActiveProfilePosts, setposts } from '@/store/postSlice'
 import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
-import { setOnlineUsers } from '@/store/chatSlice'
+import { clearUnreadChats, setOnlineUsers } from '@/store/chatSlice'
 import NotificationDialog from './NotificationDialog'
+import { setNotifications } from '@/store/notificationsSlice'
 
 
 const Sidebar = () => {
@@ -57,6 +58,8 @@ const Sidebar = () => {
             navigate('/')
             dispatch(setUser(null))
             dispatch(setposts([]))
+            dispatch(clearUnreadChats())
+            dispatch(setNotifications([]))
             localStorage.setItem('chatSection', false)
             dispatch(setOnlineUsers(null));
             toast.success(data.message)

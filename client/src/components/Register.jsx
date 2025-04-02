@@ -7,6 +7,7 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/userSlice';
 import apiClient from '@/utils/apiClient';
+import { setUnreadChats } from '@/store/chatSlice';
 
 function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,18 @@ function Register() {
     const [password, setpassword] = useState('');
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
+    const fetchUnreadMsgs = async () => {
+        try {
+            const res = await apiClient('/chat/msgsToRead')
+            console.log(res)
+            if (res.success) {
+                console.log(res.unreadMsgs)
+                res.unreadMsgs.length > 0 && res.unreadMsgs?.map(e => dispatch(setUnreadChats(e.senderId)))
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -44,6 +56,7 @@ function Register() {
                 if (!data.success) return toast.error(data.message)
                 data.success && toast.success(data.message)
                 dispatch(setUser(data.user))
+                fetchUnreadMsgs()
                 navigate('/feed')
             }
         } catch (error) {
