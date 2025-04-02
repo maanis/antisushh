@@ -46,6 +46,18 @@ function Notifications() {
         }
     }
 
+    const handleDeleteRequest = async (id) => {
+        try {
+            const res = await apiClient(`/user/declineRequest/${id}`, "POST")
+            console.log(res)
+            if (res.success) {
+                dispatch(removeRecieveReq(res.senderId))
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     useEffect(() => {
         return () => {
             markAsRead()
@@ -98,7 +110,7 @@ function Notifications() {
                                         <button onClick={() => handleAcceptRequest(e.user?._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
                                             Confirm
                                         </button>
-                                        <button className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors">
+                                        <button onClick={() => handleDeleteRequest(e.user?._id)} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors">
                                             Delete
                                         </button>
                                     </div>

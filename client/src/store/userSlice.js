@@ -48,6 +48,15 @@ const userSlice = createSlice({
             console.log(action.payload)
             state.user.pals.push(action.payload)
         },
+        acceptReq: (state, action) => {
+            console.log(action.payload)
+            state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.toString())
+            state.user.pals.push(action.payload.toString())
+        },
+        removeSentReq: (state, action) => {
+            console.log(action.payload)
+            state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.toString())
+        },
 
 
 
@@ -55,4 +64,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { setUser, addPost, removePost, addToPal, removeRecieveReq, addRecieveReq, addBookmark, addOrRemoveSentReq, removeBookmark } = userSlice.actions
+export const { setUser, addPost, removePost, acceptReq, addToPal, removeRecieveReq, addRecieveReq, addBookmark, addOrRemoveSentReq, removeSentReq, removeBookmark } = userSlice.actions

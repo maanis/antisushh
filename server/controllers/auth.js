@@ -114,7 +114,7 @@ const sendOrRemoveRequest = async (req, res) => {
 
             const recieverSocketId = userSocketId(recieverId)
             if (recieverSocketId) {
-                io.to(recieverSocketId).emit('removeReq',)
+                io.to(recieverSocketId).emit('removeReq', senderId)
             }
 
             return res.status(200).json({ success: true, message: 'Request removed', data: recieverId });
@@ -148,8 +148,8 @@ const sendOrRemoveRequest = async (req, res) => {
 
 const declineRequest = async (req, res) => {
     try {
-        const senderId = req.id;  // Sender is the logged-in user (req.id)
-        const recieverId = req.params.id;  // Reciever is the ID of the user receiving the request
+        const recieverId = req.id;  // Sender is the logged-in user (req.id)
+        const senderId = req.params.id;  // Reciever is the ID of the user receiving the request
 
         // Check if sender is trying to send a request to themselves
         if (senderId === recieverId) {
@@ -173,7 +173,12 @@ const declineRequest = async (req, res) => {
         await sender.save();
         await receiver.save();
 
-        res.status(200).json({ message: 'Friend request declined' });
+        const senderSocketId = userSocketId(senderId)
+        if (senderSocketId) {
+            io.to(senderSocketId).emit('declineReq', recieverId)
+        }
+
+        res.status(200).json({ success: true, message: 'Friend request declined', senderId });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', success: false });
@@ -220,6 +225,10 @@ const acceptRequest = async (req, res) => {
         await sender.save();
         await receiver.save();
 
+        const senderSocketId = userSocketId(senderId)
+        if (senderSocketId) {
+            io.to(senderSocketId).emit('acceptReq', recieverId)
+        }
         // Send response
         res.status(200).json({ success: true, message: 'Friend request accepted', data: senderId });
     } catch (error) {

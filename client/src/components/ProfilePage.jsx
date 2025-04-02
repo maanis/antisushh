@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
 import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
-import { addOrRemoveSentReq, setUser } from '@/store/userSlice';
+import { addOrRemoveSentReq, addToPal, removeRecieveReq, setUser } from '@/store/userSlice';
 import { Button } from './ui/button';
 
 function ProfilePage() {
@@ -34,7 +34,7 @@ function ProfilePage() {
     const currentUser = useSelector(state => state.userInfo.user)
 
     const posts = activeTab === 'posts' ? useSelector(state => state.posts.activeProfilePosts) : useSelector(state => state.posts.activeBookmarkPosts)
-
+    console.log(user)
     const { username } = useParams()
 
     const fetchUserProfile = async () => {
@@ -58,10 +58,26 @@ function ProfilePage() {
         }
     }
 
-    const handlePrimaryButton = async () => {
+    const handlePrimaryButton = async (e) => {
+        console.log(e.currentTarget.innerText)
         if (username === currentUser?.username) {
             seteditDialog(true)
-        } else {
+        } else if (e.currentTarget.innerText === 'Pals') {
+            console.log('what')
+        }
+        else if (e.currentTarget.innerText === 'Accept') {
+            try {
+                const res = await apiClient(`/user/acceptRequest/${user._id}`, "POST")
+                console.log(res)
+                if (res.success) {
+                    dispatch(removeRecieveReq(res.data))
+                    dispatch(addToPal(res.data))
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        else {
             const data = await apiClient(`/user/sendOrRemoveRequest`, "POST", { recieverId: user._id })
             console.log(data)
             if (data.success) {
@@ -195,9 +211,9 @@ function ProfilePage() {
                                 </div>
                             </div>
                         </div>
-                        <button onClick={handlePrimaryButton} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            {currentUser.username === username ? <Pencil className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                            {currentUser.username === username ? 'Edit Profile' : currentUser.recieveRequests.some(e => e.user?._id === user._id) ? 'Accept' : (currentUser.sentRequests.some(e => e.user === user._id) ? 'cancel' : 'Add pal')}
+                        <button onClick={(e) => handlePrimaryButton(e)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            {currentUser.username === username ? <Pencil className="w-4 h-4 pointer-events-none" /> : <UserPlus className="w-4 h-4 pointer-events-none" />}
+                            {currentUser.username === username ? 'Edit Profile' : currentUser.pals.some(e => e === user._id) ? 'Pals' : currentUser.recieveRequests.some(e => e.user?._id === user._id) ? 'Accept' : (currentUser.sentRequests.some(e => e.user === user._id) ? 'cancel' : 'Add pal')}
                         </button>
                     </div>
                     {/* Stats Bar */}
