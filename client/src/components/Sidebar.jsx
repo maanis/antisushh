@@ -1,6 +1,8 @@
 import { Cross, CrossIcon, Globe, HeartIcon, Home, Loader2, LogOut, LucideCross, MessageCircle, PlusSquare, Search, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { FaFacebookMessenger } from "react-icons/fa";
+
 import { toast } from 'sonner'
 import {
     AlertDialog,
@@ -47,7 +49,7 @@ const Sidebar = () => {
         { icon: <Home size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'home' },
         { icon: <Search size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'search' },
         { icon: <Globe size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'explore' },
-        { icon: <MessageCircle size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'messages' },
+        { icon: <FaFacebookMessenger size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'messages' },
         { icon: <HeartIcon size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'notifications' },
         { icon: <PlusSquare size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'create' },
     ]

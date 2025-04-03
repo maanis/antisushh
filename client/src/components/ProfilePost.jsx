@@ -18,7 +18,7 @@ const ProfilePost = ({ posts }) => {
 
                 src={posts.image}
                 alt={`Posts ${posts.id}`}
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-md max-sm:rounded-xs"
             />
             <div className="absolute hidden text-white inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 group-hover:flex transition-opacity rounded-lg">
                 <div className="flex justify-center gap-8 items-center h-full w-full">

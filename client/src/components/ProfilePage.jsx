@@ -165,9 +165,9 @@ function ProfilePage() {
     }, [username])
 
     return user ? (
-        <div style={{ scrollbarWidth: 'none' }} className="min-h-screen w-[55%] overflow-y-auto  mx-auto text-white">
+        <div style={{ scrollbarWidth: 'none' }} className="min-h-screen max-md:pb-[70px] w-[55%]  max-sm:w-full max-[900px]:w-[65%] max-md:w-[75%]  overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
-            <div className="w-full h-48 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+            <div className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <img src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
                 {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
@@ -179,36 +179,36 @@ function ProfilePage() {
                     <img
                         src={user.pfp ? user.pfp : userDefaultPfp}
                         alt="Profile"
-                        className="w-40 select-none h-40 rounded-full object-cover border-4 border-white shadow-lg"
+                        className="w-40 select-none h-40 max-md:h-32 max-md:w-32 max-sm:h-28 max-sm:w-28 rounded-full object-cover border-4 border-white shadow-lg"
                     />
                 </div>
             </div>
 
             {/* Profile Content */}
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8">
-                <div className=" rounded-xl shadow-sm p-6 mb-8">
+                <div className=" rounded-xl shadow-sm p-6 max-md:p-4 max-sm:px-4 max-sm:py-1 mb-8 max-md:mb-4">
                     {/* Profile Header */}
                     <div className="flex justify-between items-start mb-6">
                         <div>
                             <div className="flex items-center gap-2">
-                                <h1 className="text-2xl font-bold">{user.name}</h1>
-                                <Verified className="w-5 h-5 text-blue-500" />
+                                <h1 className="text-2xl font-bold max-md:text-xl">{user.name}</h1>
+                                <Verified className="w-5 h-5 max-md:h-4 max-md:w-4 text-blue-500" />
                             </div>
-                            <p className="text-gray-600 mt-1">{user.profileTitle}</p>
-                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                            <p className="text-gray-600 mt-1 max-md:text-sm">{user.profileTitle}</p>
+                            <div className="flex items-center gap-4 mt-1 text-sm max-md:text-xs text-gray-500">
                                 <div className="flex items-center gap-1">
-                                    <Mail className="w-4 h-4" />
-                                    <span>{user.email}</span>
+                                    <Mail className="w-4 h-4 max-md:h-3 max-md:w-3" />
+                                    <span className=''>{user.email}</span>
                                 </div>
                             </div>
                         </div>
-                        <button onClick={(e) => handlePrimaryButton(e)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            {currentUser.username === username ? <Pencil className="w-4 h-4 pointer-events-none" /> : <UserPlus className="w-4 h-4 pointer-events-none" />}
+                        <button onClick={(e) => handlePrimaryButton(e)} className="px-4 py-2 max-md:text-xs max-md:rounded-sm max-md:px-2 max-md:py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            {currentUser.username === username ? <Pencil className="w-4 h-4 pointer-events-none max-md:size-3" /> : <UserPlus className="w-4 h-4 pointer-events-none max-md:size-3" />}
                             {currentUser.username === username ? 'Edit Profile' : currentUser.pals.some(e => e === user._id) ? 'Pals' : currentUser.recieveRequests.some(e => e.user?._id === user._id) ? 'Accept' : (currentUser.sentRequests.some(e => e.user === user._id) ? 'cancel' : 'Add pal')}
                         </button>
                     </div>
                     {/* Stats Bar */}
-                    <div className="flex gap-8 mb-4 py-2">
+                    <div className="flex gap-8 mb-4 max-md:mb-2 py-2">
                         <div className="text-center flex items-center gap-2">
                             <span className="block font-bold text-xl text-white">{countPosts?.length}</span>
                             <span className="text-sm text-gray-500">Posts</span>
@@ -267,7 +267,7 @@ function ProfilePage() {
 
                     {/* Grid of Posts */}
                     <div className="p-4">
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-4 max-sm:gap-1">
                             {posts?.slice().reverse().map((post) => (
                                 <>
 
