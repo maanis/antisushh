@@ -65,12 +65,11 @@ function Notifications() {
 
     return notificationsData ? (
         <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-screen bg-zinc-950 md:h-screen w-full mx-auto overflow-y-hidden text-white">
-            <div className="max-w-4xl mx-auto px-4 h-full overflow-hidden pt-7 pb-[75px]">
-                <div className="flex gap-3 mb-4 items-center">
-                    <ChevronLeft onClick={() => navigate(-1)} />
-                    <h1 className="text-2xl font-bold  max-[600px]:text-xl">Notifications</h1>
-
-                </div>
+            <div className="flex sm:gap-3 max-w-4xl mx-auto mb-4 items-center max-sm:border-b max-sm:border-zinc-700 sm:px-4 sm:pt-10 max-sm:py-3 max-sm:px-5">
+                <ChevronLeft onClick={() => navigate(-1)} />
+                <h1 className="text-2xl font-bold  max-sm:text-lg max-sm:text-center w-full">Notifications</h1>
+            </div>
+            <div className="max-w-4xl mx-auto px-4 h-full overflow-hidden pb-[75px]">
                 {/* Tabs */}
                 <div className="flex border-b border-zinc-800 pb-3 px-3 mb-6 gap-6">
                     {['alerts', 'requests'].map((e, i) => (
