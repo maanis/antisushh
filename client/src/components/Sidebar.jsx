@@ -44,6 +44,9 @@ const Sidebar = () => {
     const [isChatSection, setisChatSection] = useState(localStorage.getItem('chatSection') === 'true' ? true : false)
     const { notifications } = useSelector(store => store.notifications);
     const toRead = notifications?.filter(e => !e.isRead)
+    const isSidebarLogo = useMediaQuery({ query: "(max-width: 900px)" });
+    const isMd = useMediaQuery({ query: "(max-width: 768px)" });
+
 
     const data = [
         { icon: <Home size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px] max-[768px]:size-[26px]' />, text: 'home' },
@@ -152,7 +155,27 @@ const Sidebar = () => {
         fetchData(); // Call the async function
 
     }, [input]);
-    const isSidebarLogo = useMediaQuery({ query: "(max-width: 900px)" });
+
+    useEffect(() => {
+        const handleBackButton = (event) => {
+            event.preventDefault(); // Prevents default back behavior (only works for certain cases)
+
+            if (isMd && createDialog) {
+                setcreateDialog(false);
+            }
+
+            history.pushState(null, "", window.location.href); // Re-add history entry
+        };
+
+        // Push a fake history state when the component mounts
+        history.pushState(null, "", window.location.href);
+
+        window.addEventListener("popstate", handleBackButton);
+
+        return () => {
+            window.removeEventListener("popstate", handleBackButton);
+        };
+    }, [isMd, createDialog, setcreateDialog]);
     return (
         <div className={`${isChatSection ? 'w-[70px]' : 'w-[250px] max-[900px]:w-[70px]'} max-[768px]:fixed max-md:z-[9000] max-[768px]:bottom-0 max-[768px]:flex-row  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full max-[768px]:w-full max-[768px]:h-[65px] max-[768px]:justify-around max-[768px]:items-center max-md:bg-black max-md:bg-border-t max-md:bg-border-zinc-700 `}>
             <h2 className={`font-extralight text-3xl logoText my-5 mb-8 max-[900px]:text-center max-md:hidden ${isChatSection || isSidebarLogo && 'text-center'}`}>{isChatSection || isSidebarLogo ? 'A' : 'AntiSush'}</h2>
@@ -166,7 +189,7 @@ const Sidebar = () => {
                 </button>
             })}
             <div className='mt-auto max-[768px]:m-0 max-md:p-3'>
-                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
+                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center max-[900px]:justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
                     <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 max-[970px]:h-6 max-[970px]:w-6 max-[900px]:h-7 max-[900px]:w-7 object-cover rounded-full ' alt="" />
                     {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>{user?.name}</h3>}
                 </Link>
@@ -188,18 +211,18 @@ const Sidebar = () => {
                 </AlertDialog>
 
                 <Dialog open={createDialog}>
-                    <DialogContent onInteractOutside={() => setcreateDialog(false)} className='w-[35rem] bg-zinc-300 rounded-lg outline-none border-none'>
+                    <DialogContent onInteractOutside={() => setcreateDialog(false)} className='w-[35rem] max-md:w-[20rem] max-[500px]:w-[19rem] max-[900px]:p-5 max-[900px]:w-[25rem] bg-zinc-300 rounded-lg outline-none border-none'>
                         <DialogTitle className='hidden'>title</DialogTitle>
-                        <div className='text-neutral-900  text-center text-xl font-semibold'>Create a Post</div>
-                        <textarea value={caption} onChange={(e) => setcaption(e.target.value)} className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2' placeholder='Enter a caption...'></textarea>
+                        <div className='text-neutral-900  text-center text-xl max-[900px]:text-lg font-semibold'>Create a Post</div>
+                        <textarea value={caption} onChange={(e) => setcaption(e.target.value)} className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2 max-[900px]:text-sm' placeholder='Enter a caption...'></textarea>
                         <input onChange={handleImageUpload} ref={imgRef} type="file" className='hidden' />
-                        {preview && <div className='w-full relative flex items-center justify-center'><img src={preview} className='rounded-md max-h-[45vh] w-full object-cover' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
-                        <button onClick={() => imgRef.current.click()} className='bg-blue-600 shadow-lg inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
+                        {preview && <div className='w-full relative flex items-center justify-center'><img src={preview} className='rounded-md max-h-[45vh] max-md:max-h-[30vh] md:w-full object-cover' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
+                        <button onClick={() => imgRef.current.click()} className='bg-blue-600 shadow-lg max-[900px]:text-sm inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
 
                         <button
                             onClick={handleCreatePost}
                             type="submit"
-                            className="w-full bg-gradient-to-r from-neutral-800 to-neutral-900 transition-colors text-white rounded-lg p-3 mt-6 font-medium hover:from-neutral-500 hover:to-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 focus:ring-offset-purple-900"
+                            className="w-full bg-gradient-to-r from-neutral-800 to-neutral-900 transition-colors text-white rounded-lg p-3 mt-6 font-medium hover:from-neutral-500 hover:to-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-400 focus:ring-offset-2 max-[900px]:mt-2 max-[900px]:py-2 focus:ring-offset-purple-900"
                         >
                             {loading ? (<h2 className='flex w-full justify-center gap-1'><Loader2 className='animate-spin font-bold' /><span>Please wait...</span></h2>) : 'Post'}
                         </button>

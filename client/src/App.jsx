@@ -123,6 +123,19 @@ const App = () => {
     }
   }, [dispatch, notifications, setNotifications, removeNotification, addRecieveReq, removeRecieveReq, acceptReq, removeSentReq])
 
+  // useEffect(() => {
+  //   const handlePopState = (event) => {
+  //     console.log("Back button pressed!");
+  //     alert("Back button detected!");
+  //     // You can also navigate or prevent certain actions here.
+  //   };
+
+  //   window.addEventListener("popstate", handlePopState);
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, []);
   return (
     <>
       <div className='h-full md:h-screen flex bg-zinc-950 w-full'>
