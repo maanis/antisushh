@@ -4,11 +4,12 @@ import ChatMessages from './ChatMessages';
 import MessageInput from './MessageInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { handleUnsendMsg, setMessages, setSelectedUser } from '@/store/chatSlice';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 
 const ChatContainer = () => {
     const bottomRef = useRef(null);
+    const { setShowChat } = useOutletContext();
     const { messages } = useSelector((state) => state.chat)
     const { socketIo } = useSelector((state) => state.socket)
     const inputRef = useRef(null)
@@ -52,8 +53,15 @@ const ChatContainer = () => {
         }
         inputRef.current.focus()
 
-    }, [username])
 
+    }, [username])
+    useEffect(() => {
+        return () => {
+            setShowChat(false)
+            dispatch(setSelectedUser(null))
+            dispatch(setMessages(null))
+        }
+    }, [])
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollTop = bottomRef.current.scrollHeight;

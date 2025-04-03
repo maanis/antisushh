@@ -8,6 +8,7 @@ import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
 import { useDispatch, useSelector } from 'react-redux';
 import { filterUnreadChats, setMessages, setSelectedUser } from '@/store/chatSlice';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
     const [suggestedUsers, setsuggestedUsers] = useState([])
@@ -16,6 +17,9 @@ const ChatSection = () => {
     const { selectedUser, onlineUsers, messages } = useSelector((state) => state.chat)
     const navigate = useNavigate()
     const { unreadChats } = useSelector(store => store.chat)
+
+    const isMobile = useMediaQuery({ maxWidth: 900 }); // Detect screen width
+    const [showChat, setShowChat] = useState(false);
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
@@ -81,9 +85,9 @@ const ChatSection = () => {
     return (
         <div className="flex h-screen w-full bg-zinc-900">
             {/* Left Sidebar */}
-            <div className="w-[360px] text-white border-zinc-600 border-r">
+            {!(isMobile && showChat) && <div className="w-[360px] max-[900px]:w-[90px] text-white border-zinc-600 border-r">
                 {/* Header */}
-                <div className="p-4 border-zinc-600 border-b">
+                <div className="p-4 border-zinc-600 border-b max-[900px]:hidden">
                     <div className="flex items-center justify-between">
                         <h1 className="text-2xl font-bold">Messages</h1>
                         <div className="flex gap-2">
@@ -134,29 +138,32 @@ const ChatSection = () => {
 
                         return <Link
                             to={`/chat/${user.username}`}
-                            onClick={() => handleSetSelectedUser(user)}
+                            onClick={() => {
+                                handleSetSelectedUser(user)
+                                setShowChat(true)
+                            }}
                             key={user._id}
-                            className={`flex border-b border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
+                            className={`flex border-b max-[900px]:border-none max-[900px]:gap-0 max-[900px]:justify-center border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
                         >
                             <img
                                 src={user.pfp}
                                 alt={user.name}
-                                className={`w-12 h-12 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
+                                className={`w-12 h-12 max-[900px]:h-14 max-[900px]:w-14 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
                             />
-                            <div className="flex-1 min-w-0">
+                            <div className="flex-1 min-w-0 max-[900px]:hidden">
                                 <h3 className="font-semibold">{user.username}</h3>
                                 <p className="text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsgs?.some(e => e.senderId === user._id) ? lastMsgs[index].msg : 'Tap to chat'}</p>
                             </div>
-                            <span className="text-xs text-gray-400">10:29</span>
+                            <span className="text-xs text-gray-400 max-[900px]:hidden">10:29</span>
                         </Link>
                     })}
                 </div>
-            </div>
+            </div>}
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col items-center justify-center bg-zinc-900 text-white">
                 {selectedUser ? (
-                    <Outlet />
+                    <Outlet context={{ setShowChat }} />
                 ) : (
                     <DefaultChat />
                 )}
