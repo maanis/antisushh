@@ -6,7 +6,8 @@ const chatSlice = createSlice({
         selectedUser: null,
         messages: null,
         onlineUsers: [],
-        unreadChats: []
+        unreadChats: [],
+        showChatPage: false
     },
     reducers: {
         setSelectedUser: (state, action) => {
@@ -40,9 +41,12 @@ const chatSlice = createSlice({
         },
         clearUnreadChats: (state, action) => {
             state.unreadChats = []
+        },
+        setShowChatPage: (state, action) => {
+            state.showChatPage = action.payload
         }
     },
 })
 
 export default chatSlice.reducer;
-export const { setSelectedUser, setUnreadChats, filterUnreadChats, clearUnreadChats, setMessages, addMessage, setOnlineUsers, handleUnsendMsg } = chatSlice.actions;
+export const { setSelectedUser, setUnreadChats, setShowChatPage, filterUnreadChats, clearUnreadChats, setMessages, addMessage, setOnlineUsers, handleUnsendMsg } = chatSlice.actions;

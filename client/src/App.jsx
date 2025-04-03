@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Register from './components/Register'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Feed from './components/Feed'
@@ -17,6 +17,7 @@ import apiClient from './utils/apiClient'
 import { removeNotification, setNotifications } from './store/notificationsSlice'
 import Notifications from './components/Notifications'
 import { acceptReq, addRecieveReq, removeRecieveReq, removeSentReq } from './store/userSlice'
+import { useMediaQuery } from 'react-responsive'
 
 const App = () => {
   const location = useLocation();
@@ -81,6 +82,12 @@ const App = () => {
     fetchUnreadMsgs()
   }, [])
 
+  const { showChatPage } = useSelector(e => e.chat)
+  console.log(showChatPage)
+  const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect screen width
+
+
+
   useEffect(() => {
     if (socketIo) {
       socketIo.on('newNotification', (notification) => {
@@ -119,7 +126,9 @@ const App = () => {
   return (
     <>
       <div className='h-full md:h-screen flex bg-zinc-950 w-full'>
-        {location.pathname !== '/' && location.pathname !== '/update-profile' && <Sidebar />}
+        {(location.pathname !== '/' && location.pathname !== '/update-profile' && (!isMobile || location.pathname !== '/chat' && showChatPage === false)) && <Sidebar />}
+
+
         <Routes>
           <Route path='/' element={<Register />} />
           <Route path='/feed' element={<ProtectedRoute><Feed /></ProtectedRoute>} />

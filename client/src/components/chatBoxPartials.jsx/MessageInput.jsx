@@ -3,8 +3,8 @@ import React from 'react'
 
 const MessageInput = ({ newMessage, inputRef, setNewMessage, handleSendMessage }) => {
     return (
-        <div className="p-4 border-t border-zinc-600 w-full bg-zinc-950">
-            <form onSubmit={handleSendMessage} className="flex items-center gap-4">
+        <div className="p-4 border-t max-[500px]:px-4 max-[500px]:p-0 max-[500px]:h-[58px] flex items-center justify-between border-zinc-600 w-full bg-zinc-950">
+            <form onSubmit={handleSendMessage} className="flex items-center max-[500px]:justify-between w-full gap-4 max-[500px]:gap-2">
                 <button type="button" className="p-2 hover:bg-gray-100 rounded-full">
                     <Smile className="w-6 h-6 text-gray-500" />
                 </button>
@@ -14,14 +14,14 @@ const MessageInput = ({ newMessage, inputRef, setNewMessage, handleSendMessage }
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Message..."
-                    className="flex-1 px-4 py-2 bg-zinc-800 rounded-full focus:outline-none"
+                    className="flex-1 px-4 py-2 max-[500px]:py-2 max-[500px]:text-sm bg-zinc-800 rounded-full  focus:outline-none"
                 />
                 <button
                     type="submit"
-                    className={`p-2 rounded-full ${newMessage.trim() ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-100'
+                    className={`p-2 max-[500px]:p-1 flex justify-center items-center rounded-full ${newMessage.trim() ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-100'
                         }`}
                 >
-                    <Send className={`w-6 h-6 ${newMessage.trim() ? 'text-white' : 'text-gray-500'}`} />
+                    <Send className={`w-6 h-6 max-[500px]:size-5 max-[500px]:p-[2px] ${newMessage.trim() ? 'text-white' : 'text-gray-500'}`} />
                 </button>
             </form>
         </div>

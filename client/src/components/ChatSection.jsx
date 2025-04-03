@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import apiClient from '@/utils/apiClient'
-import { Search, Settings, Edit2, } from 'lucide-react';
+import { Search, Settings, Edit2, ChevronLeft, } from 'lucide-react';
 import ChatHeader from './chatBoxPartials.jsx/ChatHeader';
 import ChatMessages from './chatBoxPartials.jsx/ChatMessages';
 import MessageInput from './chatBoxPartials.jsx/MessageInput';
 import DefaultChat from './chatBoxPartials.jsx/DefaultChat';
 import { useDispatch, useSelector } from 'react-redux';
-import { filterUnreadChats, setMessages, setSelectedUser } from '@/store/chatSlice';
+import { filterUnreadChats, setMessages, setSelectedUser, setShowChatPage } from '@/store/chatSlice';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 const ChatSection = () => {
@@ -18,7 +18,8 @@ const ChatSection = () => {
     const navigate = useNavigate()
     const { unreadChats } = useSelector(store => store.chat)
 
-    const isMobile = useMediaQuery({ maxWidth: 900 }); // Detect screen width
+    const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect screen width
+    const isSmall = useMediaQuery({ maxWidth: 600 }); // Detect screen width
     const [showChat, setShowChat] = useState(false);
 
     const handleSearch = (e) => {
@@ -54,8 +55,10 @@ const ChatSection = () => {
             dispatch(setSelectedUser(null))
             dispatch(setSelectedUser(user))
             dispatch(filterUnreadChats(user._id))
-            const res = await apiClient(`/user/markMsgsAsRead/${user._id}`, "POST")
-            console.log(res)
+            if (unreadChats.some(e => e.senderId === user._id)) {
+                const res = await apiClient(`/user/markMsgsAsRead/${user._id}`, "POST")
+                console.log(res)
+            }
 
         } catch (error) {
             console.log(error)
@@ -83,13 +86,16 @@ const ChatSection = () => {
         }
     }, [suggestedUsers]);
     return (
-        <div className="flex h-screen w-full bg-zinc-900">
+        <div className="flex h-screen overflow-hidden w-full bg-zinc-900">
             {/* Left Sidebar */}
-            {!(isMobile && showChat) && <div className="w-[360px] max-[900px]:w-[90px] text-white border-zinc-600 border-r">
+            {!(isMobile && showChat) && <div className={`w-[360px] max-[900px]:w-[90px] overflow-hidden text-white border-zinc-600 border-r max-[600px]:w-full`}>
                 {/* Header */}
-                <div className="p-4 border-zinc-600 border-b max-[900px]:hidden">
+                <div className="p-4 border-zinc-600 border-b max-[900px]:hidden max-[600px]:block max-[600px]:h-[20%] ">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold">Messages</h1>
+                        <div className="flex gap-2 items-center">
+                            <ChevronLeft className='hidden max-[600px]:block size-5' onClick={() => navigate('/feed')} />
+                            <h1 className="text-2xl font-bold max-[600px]:text-lg max-[600px]:font-medium">Messages</h1>
+                        </div>
                         <div className="flex gap-2">
                             <button className="p-2 hover:bg-gray-100 rounded-full">
                                 <Settings className="w-5 h-5" />
@@ -100,7 +106,7 @@ const ChatSection = () => {
                         </div>
                     </div>
                     <div className="mt-4 relative">
-                        <Search className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" />
+                        <Search className="w-5 h-5  absolute left-3 top-2.5 text-gray-400" />
                         <input
                             value={searchQuerry}
                             onChange={handleSearch}
@@ -130,7 +136,7 @@ const ChatSection = () => {
                 </div> */}
 
                 {/* user List */}
-                <div className="overflow-y-auto">
+                <div className="overflow-y-auto h-[80%]">
 
                     {suggestedUsers.map((user) => {
                         const count = unreadChats.find(chat => chat.senderId === user._id)?.msgs;
@@ -141,31 +147,32 @@ const ChatSection = () => {
                             onClick={() => {
                                 handleSetSelectedUser(user)
                                 setShowChat(true)
+                                dispatch(setShowChatPage(true))
                             }}
                             key={user._id}
-                            className={`flex border-b max-[900px]:border-none max-[900px]:gap-0 max-[900px]:justify-center border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
+                            className={`flex border-b max-[900px]:border-none max-[900px]:gap-0 max-[600px]:gap-3  max-[900px]:justify-center border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
                         >
                             <img
-                                src={user.pfp}
-                                alt={user.name}
+                                src={user?.pfp}
+                                alt={user?.name}
                                 className={`w-12 h-12 max-[900px]:h-14 max-[900px]:w-14 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
                             />
-                            <div className="flex-1 min-w-0 max-[900px]:hidden">
+                            <div className="flex-1 min-w-0 max-[900px]:hidden max-[600px]:block">
                                 <h3 className="font-semibold">{user.username}</h3>
-                                <p className="text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsgs?.some(e => e.senderId === user._id) ? lastMsgs[index].msg : 'Tap to chat'}</p>
+                                <p className="text-xs max-[600px]:text-sm text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsgs?.some(e => e.senderId === user._id) ? lastMsgs[index].msg : 'Tap to chat'}</p>
                             </div>
-                            <span className="text-xs text-gray-400 max-[900px]:hidden">10:29</span>
+                            <span className="text-xs text-gray-400 max-[900px]:hidden max-[600px]:block">10:29</span>
                         </Link>
                     })}
                 </div>
             </div>}
 
             {/* Main Content */}
-            <div className="flex-1 flex flex-col items-center justify-center bg-zinc-900 text-white">
+            <div className="flex-1 flex flex-col items-center h-full overflow-hidden justify-center bg-zinc-900 text-white">
                 {selectedUser ? (
                     <Outlet context={{ setShowChat }} />
                 ) : (
-                    <DefaultChat />
+                    !isSmall && <DefaultChat />
                 )}
             </div>
         </div>

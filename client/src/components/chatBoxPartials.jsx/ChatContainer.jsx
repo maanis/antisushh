@@ -3,7 +3,7 @@ import ChatHeader from './ChatHeader';
 import ChatMessages from './ChatMessages';
 import MessageInput from './MessageInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { handleUnsendMsg, setMessages, setSelectedUser } from '@/store/chatSlice';
+import { handleUnsendMsg, setMessages, setSelectedUser, setShowChatPage } from '@/store/chatSlice';
 import { useOutletContext, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 
@@ -58,6 +58,7 @@ const ChatContainer = () => {
     useEffect(() => {
         return () => {
             setShowChat(false)
+            dispatch(setShowChatPage(false))
             dispatch(setSelectedUser(null))
             dispatch(setMessages(null))
         }
