@@ -4,6 +4,7 @@ import { userDefaultPfp } from '@/utils/constant'
 import { HeartIcon, Loader2 } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import PostsSkeleton from './PostsSkeleton'
 
 const Home = () => {
     const navigate = useNavigate()
@@ -11,7 +12,7 @@ const Home = () => {
     const toRead = notifications?.filter(e => !e.isRead)
     const { posts } = useSelector(state => state.posts)
     const { user } = useSelector(state => state.userInfo)
-    return posts && user ? (
+    return user ? (
         <div className='w-[75%] max-[1020px]:w-full border-r border-zinc-700'>
             <div className='md:hidden w-full fixed top-0 left-0 z-[999] bg-black border-b px-4 border-zinc-700 h-[50px] flex justify-between items-center'>
                 <h2 className='logoText text-2xl'>AntiSush</h2>
@@ -44,11 +45,11 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className='max-w-screen-md mx-auto max-md:mt-[65px] max-md:pb-[80px]'>
+            {posts ? <div className='max-w-screen-md mx-auto max-md:mt-[65px] max-md:pb-[80px]'>
                 {posts.slice().reverse().map((e, i) => {
                     return <Post posts={e} key={i} />
                 })}
-            </div>
+            </div> : <PostsSkeleton />}
         </div>
 
     ) : <h2 className='text-white'>Loading</h2>

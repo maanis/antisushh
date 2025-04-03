@@ -64,7 +64,7 @@ function Notifications() {
 
 
     return notificationsData ? (
-        <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-[90vh] md:h-screen w-full mx-auto overflow-y-hidden text-white">
+        <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-screen bg-zinc-950 md:h-screen w-full mx-auto overflow-y-hidden text-white">
             <div className="max-w-4xl mx-auto px-4 h-full overflow-hidden pt-7 pb-[75px]">
                 <div className="flex gap-3 mb-4 items-center">
                     <ChevronLeft onClick={() => navigate(-1)} />
@@ -100,7 +100,7 @@ function Notifications() {
                                         <Link to={`/profile/${e.user?.username}`}><img
                                             src={e.user?.pfp}
                                             alt="Profile"
-                                            className="w-10 h-10 rounded-full object-cover"
+                                            className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full object-cover"
                                         /></Link>
                                         <div>
                                             <p className="font-medium">{e.user?.username}</p>
@@ -124,18 +124,18 @@ function Notifications() {
                                             <Link to={`/profile/${e.sender?.username}`}><img
                                                 src={e.sender?.pfp}
                                                 alt="Profile 1"
-                                                className="w-10 h-10 rounded-full border-2 border-white object-cover"
+                                                className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full border-2 border-white object-cover"
                                             /></Link>
                                         </div>
                                         <div>
-                                            <p className="font-medium">{e.sender?.username}</p>
-                                            <p className="text-[16px]  text-gray-500">{e.type === 'like' ? 'liked your post' : 'commented on your post'} <span className="text-zinc-500 text-[12px] ml-1">{timeAgo(e.createdAt)}</span></p>
+                                            <p className="font-medium max-sm:text-sm">{e.sender?.username}</p>
+                                            <p className="text-[16px] max-md:text-[14px] max-sm:text-[12px] text-gray-500">{e.type === 'like' ? 'liked your post' : 'commented on your post'} <span className="text-zinc-500 text-[12px] max-md:text-[10px] max-sm:text-[8px] ml-1">{timeAgo(e.createdAt)}</span></p>
                                         </div>
                                     </div>
                                     <img
                                         src={e.post?.image}
                                         alt="Post thumbnail"
-                                        className="w-12 h-12 rounded object-cover"
+                                        className="w-12 h-12 max-sm:w-10 max-sm:h-10 rounded object-cover"
                                     />
                                 </div>
                             </div>
