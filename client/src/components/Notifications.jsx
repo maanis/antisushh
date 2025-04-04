@@ -6,6 +6,7 @@ import { ChevronLeft } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { Skeleton } from './ui/skeleton';
 
 function Notifications() {
     const dispatch = useDispatch()
@@ -63,7 +64,7 @@ function Notifications() {
     }, [])
 
 
-    return notificationsData ? (
+    return (
         <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-screen bg-zinc-950 md:h-screen w-full mx-auto overflow-hidden text-white">
             <div className="flex sm:gap-3 max-w-4xl mx-auto mb-4 items-center max-sm:border-b max-sm:border-zinc-700 sm:px-4 sm:pt-10 max-sm:py-3 max-sm:px-5">
                 <ChevronLeft onClick={() => navigate(-1)} />
@@ -139,11 +140,30 @@ function Notifications() {
                                 </div>
                             </div>
                         }) : 'No notifications'}
-                    </div> : 'loading'}
+                    </div> : <div className="space-y-4 p-4">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <div key={index} className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
+                                    {/* Profile Picture */}
+                                    <Skeleton className="w-10 h-10 rounded-full" />
+                                    <div className="space-y-2">
+                                        {/* Name and Action */}
+                                        <Skeleton className="h-4 w-32" />
+                                        <Skeleton className="h-3 w-48" />
+                                    </div>
+                                </div>
+                                {/* Time & Post Thumbnail */}
+                                <div className="flex items-center space-x-3">
+                                    <Skeleton className="h-3 w-16" />
+                                    <Skeleton className="w-12 h-12 rounded-lg" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>}
                 </div>
             </div>
         </div>
-    ) : 'loading'
+    )
 }
 
 export default Notifications;

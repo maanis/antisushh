@@ -6,6 +6,7 @@ import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '../ui/conte
 import { handleUnsendMsg } from '@/store/chatSlice';
 import apiClient from '@/utils/apiClient';
 import { extractTime } from '@/utils/constant';
+import { Skeleton } from '../ui/skeleton';
 
 const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
     const { user } = useSelector((state) => state.userInfo);
@@ -109,7 +110,19 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                         </>
                     ))
                 ) : (
-                    'loading...'
+                    <div className="space-y-4 p-4 max-[500px]:p-0">
+                        {Array.from({ length: 4 }).map((_, index) => (
+                            <div
+                                key={index}
+                                className={`flex ${index % 2 === 0 ? "justify-start" : "justify-end"}`}
+                            >
+                                <div className="space-y-1">
+                                    <Skeleton className="h-8 w-32 rounded-lg" />
+                                    <Skeleton className="h-3 w-16" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

@@ -8,7 +8,7 @@ import apiClient from '@/utils/apiClient'
 
 const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, delDialog, posts, setdelDialog }) => {
     const currentUser = useSelector(state => state.userInfo.user)
-    const [data, setdata] = useState(['unfollow', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'copy link', 'about this account', 'cancel'])
+    const [data, setdata] = useState(['unfollow', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'about this account', 'cancel'])
     const dispatch = useDispatch()
     const handleMenuClick = (e) => {
         if (e === 'cancel') {
@@ -60,7 +60,7 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
     return (
         <>
             <Dialog open={ismenuopen}>
-                <DialogContent className='p-0 border-none outline-none rounded-lg w-[380px] bg-neutral-900' onInteractOutside={() => setismenuopen(false)}>
+                <DialogContent className='p-0 border-none outline-none rounded-lg w-[380px] max-[490px]:w-[320px] bg-neutral-900' onInteractOutside={() => setismenuopen(false)}>
                     <DialogTitle className="hidden">Comment Dialog</DialogTitle>
 
                     <div className="w-full overflow-hidden rounded-lg bg-neutral-900">

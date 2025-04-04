@@ -25,7 +25,7 @@ function Explore() {
                 headers: { 'Content-Type': 'application/json' },
                 data: {
                     contents: [
-                        { role: "user", parts: [{ text: input }] }
+                        { role: "user", parts: [{ text: input.length > 10 ? `${input}; max to max 100 words` : input }] }
                     ]
                 }
 
@@ -70,8 +70,8 @@ function Explore() {
             <main ref={bottomRef} className="flex-1 overflow-y-auto p-4 space-y-8">
                 {/* Welcome Section */}
                 <div className="max-w-2xl mx-auto text-center space-y-4 max-md:space-y-2 max-[480px]:space-y-1 mb-8">
-                    <h2 className="text-white text-2xl max-md:text-lg font-bold max-[450px]:text-sm">Welcome to Script</h2>
-                    <p className="text-neutral-400 text-sm  max-md:text-[10px] max-[450px]:text-[8px]">Get started by Script a task and Chat can do the rest. Not sure where to start?</p>
+                    <h2 className="text-white text-2xl max-md:text-lg font-bold max-[450px]:text-sm">Welcome to AntiSush-Bot</h2>
+                    <p className="text-neutral-400 text-sm  max-md:text-[10px] max-[450px]:text-[9px]">I know you don't have anyone to talk, so do I</p>
                 </div>
 
                 {/* CTA Buttons Grid */}
@@ -108,7 +108,7 @@ function Explore() {
                         <div key={i} className="space-y-5">
                             {/* User Message */}
                             <div className="flex w-full justify-end mt-5">
-                                <div className="flex items-start max-w-[70%] flex-row-reverse ">
+                                <div className="flex items-start max-w-[70%] max-[500px]:max-w-[85%] flex-row-reverse ">
                                     <div className="bg-neutral-700 ml-2 rounded-full">
                                         <img src={user?.pfp ? user?.pfp : userDefaultPfp} className='w-8 h-8 max-[500px]:w-5 max-[500px]:h-5 object-cover rounded-full' alt="" />
                                     </div>
@@ -120,7 +120,7 @@ function Explore() {
 
                             {/* AI Message */}
                             <div className="flex w-full justify-start">
-                                <div className="flex items-start max-w-[70%] ">
+                                <div className="flex items-start max-w-[70%] max-[500px]:max-w-[85%] ">
                                     <div className="bg-blue-600 rounded-full mr-2 p-2 max-[500px]:p-[3px]">
                                         <FaRobot className="w-6 h-6 max-[500px]:w-4 max-[500px]:h-4 text-white" />
                                     </div>

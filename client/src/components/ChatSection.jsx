@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { filterUnreadChats, setMessages, setSelectedUser, setShowChatPage } from '@/store/chatSlice';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { Skeleton } from './ui/skeleton';
 const ChatSection = () => {
     const [searchQuerry, setSearchQuery] = useState('')
     const [suggestedUsers, setsuggestedUsers] = useState([])
@@ -138,7 +139,7 @@ const ChatSection = () => {
                 {/* user List */}
                 <div className="overflow-y-auto h-[80%]">
 
-                    {suggestedUsers.map((user) => {
+                    {suggestedUsers?.length > 0 ? suggestedUsers.map((user) => {
                         const count = unreadChats.find(chat => chat.senderId === user._id)?.msgs;
                         const index = lastMsgs?.findIndex(e => e.senderId === user._id)
 
@@ -163,7 +164,22 @@ const ChatSection = () => {
                             </div>
                             <span className="text-xs text-gray-400 max-[900px]:hidden max-[600px]:block">10:29</span>
                         </Link>
-                    })}
+                    }) : <div className="space-y-4 p-4">
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <div key={index} className="flex items-center justify-between">
+                                {/* Profile Picture */}
+                                <div className="flex items-center  space-x-3">
+                                    <Skeleton className="w-12 h-12 rounded-full" />
+                                    <div className="space-y-2 max-[900px]:hidden max-[600px]:block">
+                                        <Skeleton className="h-4 w-24" />
+                                        <Skeleton className="h-3 w-32" />
+                                    </div>
+                                </div>
+                                {/* Timestamp */}
+                                <Skeleton className="h-3 w-10 max-[900px]:hidden max-[600px]:block" />
+                            </div>
+                        ))}
+                    </div>}
                 </div>
             </div>}
 
