@@ -88,7 +88,10 @@ const Sidebar = () => {
             setisChatSection(true)
         } else if (e === 'notifications') {
             navigate('/notifications')
+        } else if (e === 'explore') {
+            navigate('/explore')
         }
+
     }
 
     const handleImageUpload = () => {
