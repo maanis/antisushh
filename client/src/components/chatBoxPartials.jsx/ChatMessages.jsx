@@ -63,7 +63,7 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                                     className={`flex gap-3 relative items-center ${msg.senderId === user._id ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <ContextMenuTrigger
-                                        className={`max-w-[70%] px-4 py-1 rounded-2xl ${msg.senderId === user._id
+                                        className={`max-w-[70%] select-none px-4 py-1 rounded-2xl ${msg.senderId === user._id
                                             ? 'bg-blue-500 text-white order-2 rounded-br-none'
                                             : 'bg-gray-200 text-gray-900 order-1 rounded-bl-none'
                                             }`}
@@ -100,10 +100,10 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                                         <span>Copy</span>
                                     </button>
 
-                                    <button onClick={() => handleUnsend(msg._id)} className="w-full px-4 py-2 text-left flex items-center gap-3 text-red-400 hover:bg-neutral-700">
+                                    {msg.senderId === user._id && <button onClick={() => handleUnsend(msg._id)} className="w-full px-4 py-2 text-left flex items-center gap-3 text-red-400 hover:bg-neutral-700">
                                         <Undo size={18} />
                                         <span>Unsend</span>
-                                    </button>
+                                    </button>}
                                 </ContextMenuContent>
                             </ContextMenu>
                         </>

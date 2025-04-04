@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     posts: null,
     activeProfilePosts: null,
-    activeBookmarkPosts: null
+    activeBookmarkPosts: null,
+    searchDialog: false,
 }
 const postSlice = createSlice({
     name: "posts",
@@ -20,10 +21,12 @@ const postSlice = createSlice({
         },
         setActiveBookmarkPosts: (state, action) => {
             state.activeBookmarkPosts = action.payload
-        }
-
+        },
+        setSearchDialog: (state, action) => {
+            state.searchDialog = action.payload
+        },
     }
 })
 
 export default postSlice.reducer
-export const { setposts, setActiveProfilePosts, addActiveProfilePosts, setActiveBookmarkPosts } = postSlice.actions
+export const { setposts, setActiveProfilePosts, addActiveProfilePosts, setSearchDialog, setActiveBookmarkPosts } = postSlice.actions

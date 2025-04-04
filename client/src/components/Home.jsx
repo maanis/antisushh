@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Post from './Post'
 import { userDefaultPfp } from '@/utils/constant'
-import { HeartIcon, Loader2 } from 'lucide-react'
-import { useSelector } from 'react-redux'
+import { HeartIcon, Loader2, Search } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import PostsSkeleton from './PostsSkeleton'
+import { setSearchDialog } from '@/store/postSlice'
 
 const Home = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const { notifications } = useSelector(store => store.notifications);
     const toRead = notifications?.filter(e => !e.isRead)
     const { posts } = useSelector(state => state.posts)
@@ -16,7 +18,8 @@ const Home = () => {
         <div className='w-[75%] max-[1020px]:w-full border-r border-zinc-700'>
             <div className='md:hidden w-full fixed top-0 left-0 z-[999] bg-black border-b px-4 border-zinc-700 h-[50px] flex justify-between items-center'>
                 <h2 className='logoText text-2xl'>AntiSush</h2>
-                <div onClick={() => navigate('/notifications')} className='sm:cursor-pointer relative'><HeartIcon size={'25px'} />{(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</div>
+                <div className='flex gap-2 items-center'><Search onClick={() => dispatch(setSearchDialog(true))} size={'25px'} />
+                    <div onClick={() => navigate('/notifications')} className='sm:cursor-pointer relative'><HeartIcon size={'25px'} />{(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</div></div>
             </div>
             <div className="pb-3 flex flex-col border-b max-md:hidden border-zinc-700 max-lg:bg-zinc-950
                 w-full bg-zinc-950 ">
