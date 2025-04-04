@@ -139,8 +139,13 @@ const App = () => {
   // }, []);
   return (
     <>
-      <div className='h-full md:h-screen flex bg-zinc-950 w-full'>
-        {(location.pathname !== '/' && location.pathname !== '/update-profile' && (!isMobile || location.pathname !== '/chat' && showChatPage === false)) && <Sidebar />}
+      <div className='h-full md:h-screen flex overflow-hidden bg-zinc-950 w-full'>
+        {(location.pathname !== '/' &&
+          location.pathname !== '/update-profile' &&
+          (!isMobile || (location.pathname !== '/chat' && showChatPage === false)) &&
+          !(isMobile && location.pathname === '/explore') // Hide sidebar on explore in mobile
+        ) && <Sidebar />}
+
 
 
         <Routes>
