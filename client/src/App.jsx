@@ -16,7 +16,7 @@ import ChatContainer from './components/chatBoxPartials.jsx/ChatContainer'
 import apiClient from './utils/apiClient'
 import { removeNotification, setNotifications } from './store/notificationsSlice'
 import Notifications from './components/Notifications'
-import { acceptReq, addRecieveReq, removeRecieveReq, removeSentReq } from './store/userSlice'
+import { acceptReq, addRecieveReq, removePal, removeRecieveReq, removeSentReq } from './store/userSlice'
 import { useMediaQuery } from 'react-responsive'
 import Explore from './components/Explore'
 import SingleProfilePost from './components/SingleProfilePost'
@@ -113,6 +113,9 @@ const App = () => {
       socketIo.on('newMsg', (data) => {
         dispatch(setUnreadChats(data.senderId))
       })
+      socketIo.on('unPal', (data) => {
+        dispatch(removePal(data))
+      })
     }
     return () => {
       socketIo?.off('newNotification')
@@ -122,6 +125,7 @@ const App = () => {
       socketIo?.off('acceptReq')
       socketIo?.off('declineReq')
       socketIo?.off('newMsg')
+      socketIo?.off('unPal')
     }
   }, [dispatch, notifications, setNotifications, removeNotification, addRecieveReq, removeRecieveReq, acceptReq, removeSentReq])
 

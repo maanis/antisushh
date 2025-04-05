@@ -6,25 +6,36 @@ import { toast } from 'sonner'
 import { addBookmark, removeBookmark, removePost } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
 import { useNavigate } from 'react-router-dom'
+import { addPal, handleUnpal } from '@/utils/func'
 
 const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, delDialog, posts, setdelDialog }) => {
     const currentUser = useSelector(state => state.userInfo.user)
     const isOwnProfile = currentUser?._id === user?._id;
     const isPal = currentUser?.pals.includes(user._id);
     const isBookmarked = currentUser?.bookmarks.includes(posts._id);
+    const hasSentReq = currentUser?.sentRequests.some(req => req.user === user._id);
     // const [data, setdata] = useState([currentUser?.pals.includes(user._id) ? 'un-pal' : 'add pal', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'about this account', 'cancel'])
     const data = [
-        ...(!isOwnProfile ? [isPal ? 'un-pal' : 'add pal'] : []),
+        ...(!isOwnProfile
+            ? [
+                isPal
+                    ? 'un-pal'
+                    : hasSentReq
+                        ? 'cancel req'
+                        : 'add pal'
+            ]
+            : []
+        ),
         ...(isOwnProfile ? ['delete'] : []),
         isBookmarked ? 'remove from bookmarks' : 'add to bookmarks',
         'go to post',
         'about this account',
-        'cancel',
+        'cancel', // This is the "close menu" option
     ];
     const dispatch = useDispatch()
     const navigate = useNavigate()
     console.log(ismenuopen)
-    const handleMenuClick = (e) => {
+    const handleMenuClick = async (e) => {
         if (e === 'cancel') {
             setismenuopen(false)
         } else if (e === 'delete') {
@@ -38,6 +49,11 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
         } else if (e === 'about this account') {
             navigate(`/profile/${posts.user?.username}`)
             setismenuopen(false)
+        } else if (e === 'add pal' || e === 'cancel req') {
+            const res = await addPal(user, dispatch, setismenuopen);
+        }
+        else if (e === 'un-pal') {
+            await handleUnpal(user, dispatch, setismenuopen);
         }
     }
 

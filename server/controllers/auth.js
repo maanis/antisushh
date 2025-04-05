@@ -181,41 +181,58 @@ const acceptRequest = async (req, res) => {
     try {
         const recieverId = req.id;
         const senderId = req.params.id;
-
         if (senderId === recieverId) {
             return res.status(400).json({ message: "You can't send a request to yourself" });
         }
-
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
-
         console.log('running')
-        // Check if both users exist
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         const requestIndex = receiver.recieveRequests.findIndex(request => request.user.toString() === senderId.toString());
         if (requestIndex === -1) {
             return res.status(400).json({ message: 'No friend request found' });
         }
-
         receiver.pals.push(senderId);
         sender.pals.push(recieverId);
-
         receiver.recieveRequests.splice(requestIndex, 1);
         const senderRequestIndex = sender.sentRequests.findIndex(request => request.user.toString() === recieverId.toString());
         sender.sentRequests.splice(senderRequestIndex, 1);
-
         await sender.save();
         await receiver.save();
-
         const senderSocketId = userSocketId(senderId)
         if (senderSocketId) {
             io.to(senderSocketId).emit('acceptReq', recieverId)
         }
-        // Send response
         res.status(200).json({ success: true, message: 'Friend request accepted', data: senderId });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+};
+
+const removePal = async (req, res) => {
+    try {
+        const currentUserId = req.id;
+        const palId = req.params.id; // ID of the pal to be removed 
+        if (currentUserId === palId) {
+            return res.status(400).json({ message: "You can't remove yourself" });
+        }
+        const currentUser = await userModel.findById(currentUserId);
+        const pal = await userModel.findById(palId);
+        if (!currentUser || !pal) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        currentUser.pals = currentUser.pals.filter(pal => pal.toString() !== palId.toString());
+        pal.pals = pal.pals.filter(pal => pal.toString() !== currentUserId.toString());
+        await currentUser.save();
+        await pal.save();
+        const palSocketId = userSocketId(palId)
+        if (palSocketId) {
+            io.to(palSocketId).emit('unPal', currentUserId)
+        }
+        res.status(200).json({ success: true, message: 'Unfriended successfully', data: palId });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error', success: false });
@@ -448,4 +465,4 @@ const getLastMessages = async (req, res) => {
 };
 
 
-module.exports = { register, updateProfile, getLastMessages, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+module.exports = { register, updateProfile, getLastMessages, removePal, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };

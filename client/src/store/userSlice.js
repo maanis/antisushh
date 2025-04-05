@@ -51,6 +51,9 @@ const userSlice = createSlice({
         removeSentReq: (state, action) => {
             state.user.sentRequests = state.user.sentRequests.filter(e => e.user.toString() != action.payload.toString())
         },
+        removePal: (state, action) => {
+            state.user.pals = state.user.pals.filter(e => e.toString() != action.payload.toString())
+        }
 
 
 
@@ -58,4 +61,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer
-export const { setUser, addPost, removePost, acceptReq, addToPal, removeRecieveReq, addRecieveReq, addBookmark, addOrRemoveSentReq, removeSentReq, removeBookmark } = userSlice.actions
+export const { setUser, addPost, removePost, removePal, acceptReq, addToPal, removeRecieveReq, addRecieveReq, addBookmark, addOrRemoveSentReq, removeSentReq, removeBookmark } = userSlice.actions
