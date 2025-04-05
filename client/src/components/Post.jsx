@@ -121,7 +121,7 @@ const Post = ({ posts }) => {
                     </div>
                 </div>
                 <div className="box-b w-full border mt-2 flex justify-center border-zinc-800  ">
-                    <img className='select-none' src={image} alt="" />
+                    <img loading='lazy' className='select-none' src={image} alt="" />
                 </div>
 
                 <div className="flex pt-3 pb-2 gap-3 items-center max-[480px]:px-3">

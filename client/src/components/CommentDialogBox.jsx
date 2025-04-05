@@ -78,7 +78,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
 
                 <div className="flex">
                     <div className="flex flex-1 max-[600px]:hidden">
-                        <img src={image} className="object-cover w-full flex flex-grow-0" alt="" />
+                        <img src={image} loading='lazy' className="object-cover w-full flex flex-grow-0" alt="" />
 
                     </div>
                     <div className="flex h-[35rem] max-[1000px]:h-[28rem] max-[600px]:relative max-[600px]:bottom-0 max-md:h-[22rem] max-[600px]:h-[31rem] w-[35%] max-[600px]:w-full max-md:w-[40%] flex-col">

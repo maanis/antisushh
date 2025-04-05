@@ -12,6 +12,7 @@ const ChatHeader = ({ selectedUser }) => {
                 <ChevronLeft className='max-[900px]:block hidden' onClick={() => navigate(-1)} />
                 <Link to={`/profile/${selectedUser?.username}`} className="flex items-center gap-3">
                     <img
+                    loading='lazy'
                         src={selectedUser?.pfp}
                         alt={selectedUser?.name}
                         className="w-10 h-10 max-[600px]:h-8 max-[600px]:w-8 rounded-full object-cover"

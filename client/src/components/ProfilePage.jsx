@@ -168,7 +168,7 @@ function ProfilePage() {
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen max-md:pb-[70px] w-[55%]  max-sm:w-full max-[900px]:w-[65%] max-md:w-[75%]  overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
             <div className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
-                <img src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
+                <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
                 {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
                     onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
@@ -177,6 +177,7 @@ function ProfilePage() {
                     </div>}
 
                     <img
+                    loading='lazy'
                         src={user.pfp ? user.pfp : userDefaultPfp}
                         alt="Profile"
                         className="w-40 select-none h-40 max-md:h-32 max-md:w-32 max-sm:h-28 max-sm:w-28 rounded-full object-cover border-4 border-white shadow-lg"
@@ -380,7 +381,7 @@ function ProfilePage() {
                         <DialogContent className='max-w-md' onInteractOutside={handlePfpinteractionOutside}>
                             <DialogTitle className='hidden'></DialogTitle>
                             <form onSubmit={(e) => e.preventDefault()} className=' flex flex-col items-center gap-4'>
-                                <img src={preview ? preview : user.pfp ? user.pfp : userDefaultPfp} className='w-36 h-36 object-cover rounded-full' alt="" />
+                                <img loading='lazy' src={preview ? preview : user.pfp ? user.pfp : userDefaultPfp} className='w-36 h-36 object-cover rounded-full' alt="" />
                                 <input type="file" onChange={handleFileChange} ref={fileInputRef} className='hidden' />
                                 <div className="flex border-b pb-3 border-zinc-600 gap-4">
                                     <Button onClick={() => fileInputRef.current.click()}>Upload Image</Button>

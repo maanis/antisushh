@@ -156,6 +156,7 @@ const ChatSection = () => {
                             <img
                                 src={user?.pfp}
                                 alt={user?.name}
+                                loading='lazy'
                                 className={`w-12 h-12 max-[900px]:h-14 max-[900px]:w-14 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
                             />
                             <div className="flex-1 min-w-0 max-[900px]:hidden max-[600px]:block">

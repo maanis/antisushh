@@ -110,7 +110,7 @@ function Explore() {
                             <div className="flex w-full justify-end mt-5">
                                 <div className="flex items-start max-w-[70%] max-[500px]:max-w-[85%] flex-row-reverse ">
                                     <div className="bg-neutral-700 ml-2 rounded-full">
-                                        <img src={user?.pfp ? user?.pfp : userDefaultPfp} className='w-8 h-8 max-[500px]:w-5 max-[500px]:h-5 object-cover rounded-full' alt="" />
+                                        <img src={user?.pfp ? user?.pfp : userDefaultPfp} loading='lazy' className='w-8 h-8 max-[500px]:w-5 max-[500px]:h-5 object-cover rounded-full' alt="" />
                                     </div>
                                     <div className="flex-1 bg-neutral-700 rounded-lg px-4 py-3 max-[480px]:py-[6px] max-[480px]:px-[10px]">
                                         <p className="text-white text-sm max-[480px]:text-xs ">{e.question}</p>

@@ -15,7 +15,7 @@ const ProfilePost = ({ posts }) => {
 
         <div onClick={() => setopen(true)} className="aspect-square cursor-pointer relative">
             <img
-
+                loading='lazy'
                 src={posts.image}
                 alt={`Posts ${posts.id}`}
                 className="w-full h-full object-cover rounded-md max-sm:rounded-xs"

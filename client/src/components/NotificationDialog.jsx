@@ -49,6 +49,7 @@ const NotificationDialog = ({ open, setOpen }) => {
                                 {activeTab === 'requests' ? <div className="flex items-center gap-4 py-4 px-6 hover:bg-gray-50">
                                     <div className="flex">
                                         <img
+                                            loading='lazy'
                                             src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"
                                             alt="raju_ansari0786"
                                             className="w-12 h-12 object-cover flex-1 flex rounded-full border-2 border-white"

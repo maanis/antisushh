@@ -198,7 +198,7 @@ const Sidebar = () => {
             })}
             <div className='mt-auto max-[768px]:m-0 max-md:p-3'>
                 <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center max-[900px]:justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
-                    <img src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 max-[970px]:h-6 max-[970px]:w-6 max-[900px]:h-7 max-[900px]:w-7 object-cover rounded-full ' alt="" />
+                    <img loading='lazy' src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 max-[970px]:h-6 max-[970px]:w-6 max-[900px]:h-7 max-[900px]:w-7 object-cover rounded-full ' alt="" />
                     {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>{user?.name}</h3>}
                 </Link>
                 <AlertDialog>
@@ -224,7 +224,7 @@ const Sidebar = () => {
                         <div className='text-neutral-900  text-center text-xl max-[900px]:text-lg font-semibold'>Create a Post</div>
                         <textarea value={caption} onChange={(e) => setcaption(e.target.value)} className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2 max-[900px]:text-sm' placeholder='Enter a caption...'></textarea>
                         <input onChange={handleImageUpload} ref={imgRef} type="file" className='hidden' />
-                        {preview && <div className='w-full relative flex items-center justify-center'><img src={preview} className='rounded-md max-h-[45vh] max-md:max-h-[30vh] md:w-full object-cover' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
+                        {preview && <div className='w-full relative flex items-center justify-center'><img loading='lazy' src={preview} className='rounded-md max-h-[45vh] max-md:max-h-[30vh] md:w-full object-cover' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
                         <button onClick={() => imgRef.current.click()} className='bg-blue-600 shadow-lg max-[900px]:text-sm inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
 
                         <button

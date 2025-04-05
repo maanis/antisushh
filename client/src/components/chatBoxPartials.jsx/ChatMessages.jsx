@@ -36,6 +36,7 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                             {/* Profile Image */}
                             <div className="w-28 h-28 rounded-full overflow-hidden mb-4">
                                 <img
+                                loading='lazy'
                                     src={selectedUser?.pfp}
                                     alt="Profile"
                                     className="w-full h-full object-cover"

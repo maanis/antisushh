@@ -122,6 +122,7 @@ function Notifications() {
                                         <div className="flex">
 
                                             <Link to={`/profile/${e.sender?.username}`}><img
+                                                loading='lazy'
                                                 src={e.sender?.pfp}
                                                 alt="Profile 1"
                                                 className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full border-2 border-white object-cover"
