@@ -27,6 +27,7 @@ import NotificationDialog from './NotificationDialog'
 import { setNotifications } from '@/store/notificationsSlice'
 import { useMediaQuery } from 'react-responsive'
 import imageCompression from 'browser-image-compression';
+import { addPal } from '@/utils/func';
 
 
 const Sidebar = () => {
@@ -174,6 +175,12 @@ const Sidebar = () => {
         }
     };
 
+    const handleSearchPrimaryBtnClick = async (e, user) => {
+        if (e.target.innerText === 'Add pal' || e.target.innerText === 'Cancel') {
+            await addPal(user, dispatch)
+        }
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             await searchQuerry();
@@ -212,7 +219,7 @@ const Sidebar = () => {
     }, [isMd, createDialog, setcreateDialog, searchDialog, setinput]);
     return (
         <div className={`${isChatSection ? 'w-[70px]' : 'w-[250px] max-[900px]:w-[70px]'} max-[768px]:fixed max-md:z-[9000] max-[768px]:bottom-0 max-[768px]:flex-row  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full max-[768px]:w-full max-[768px]:h-[65px] max-[768px]:justify-around max-[768px]:items-center max-md:bg-black max-md:bg-border-t max-md:bg-border-zinc-700 `}>
-            <h2 className={`font-extralight text-3xl logoText my-5 mb-8 max-[900px]:text-center max-md:hidden ${isChatSection || isSidebarLogo && 'text-center'}`}>{isChatSection || isSidebarLogo ? 'A' : 'AntiSush'}</h2>
+            <h2 className={`font-extralight text-3xl logoText my-5 mb-8 max-[900px]:text-center max-md:hidden ${(isChatSection || isSidebarLogo) && 'text-center'}`}>{isChatSection || isSidebarLogo ? 'A' : 'AntiSush'}</h2>
             {data.map((e, i) => {
                 return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className={`flex max-md:hidden sm:cursor-pointer gap-2 my-2 font-medium items-center md:hover:bg-zinc-800 rounded-md px-3 py-3 `} key={i}>
                     <span className='text-sm relative' title={e.text}>{e.icon} {(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</span>
@@ -264,7 +271,7 @@ const Sidebar = () => {
                 </Dialog>
 
                 <Dialog open={searchDialog}>
-                    <DialogContent className='h-[24rem] max-[500px]:rounded-md w-[35rem] max-md:w-[20rem] max-[500px]:w-[19rem] max-[900px]:p-5 max-[900px]:w-[25rem] p-20' onInteractOutside={() => {
+                    <DialogContent className='h-[24rem] max-[500px]:rounded-md w-[35rem] max-md:w-[20rem] max-[500px]:w-[19rem] max-[900px]:p-2 max-[900px]:w-[25rem] p-2' onInteractOutside={() => {
                         dispatch(setSearchDialog(false))
                         setinput('')
                     }}>
@@ -278,13 +285,13 @@ const Sidebar = () => {
                             <hr />
                             <hr />
                             <div className='flex flex-col p-3 gap-3 overflow-y-auto h-[17rem]'>
-                                {querryResults.length > 0 ? querryResults.map((e) => <div className='w-full flex items-center gap-3'>
+                                {querryResults.length > 0 ? querryResults.map((querryUser) => <div className='w-full flex items-center gap-3'>
                                     <Link onClick={() => {
                                         dispatch(setSearchDialog(false))
                                         setinput('')
-                                    }} to={`/profile/${e.username}`} className='flex items-center gap-3'><img src={e.pfp ? e.pfp : userDefaultPfp} className='w-10 h-10 max-[500px]:h-7 max-[500px]:w-7 rounded-full object-cover' alt="" />
-                                        <span className='max-[500px]:text-sm'>{e.username}</span></Link>
-                                    <button className='ml-auto py-[2px] px-4 bg-blue-500 rounded-md text-white max-[500px]:py-[1px] max-[500px]:px-2 max-[500px]:text-xs max-[500px]:font-light max-[500px]:rounded-sm hover:bg-blue-700 transition-all '>Alias</button>
+                                    }} to={`/profile/${querryUser.username}`} className='flex items-center gap-3'><img src={querryUser.pfp ? querryUser.pfp : userDefaultPfp} className='w-10 h-10 max-[500px]:h-7 max-[500px]:w-7 rounded-full object-cover' alt="" />
+                                        <span className='max-[500px]:text-sm'>{querryUser.username}</span></Link>
+                                    <button onClick={(e) => handleSearchPrimaryBtnClick(e, querryUser)} className='ml-auto py-[2px] px-4 bg-blue-500 rounded-md text-white max-[500px]:py-[1px] max-[500px]:px-2 max-[500px]:text-xs max-[500px]:font-light max-[500px]:rounded-sm w-24 sm:hover:bg-blue-700 transition-all '>{user?.pals.includes(querryUser._id) ? 'Pals' : user?.sentRequests?.some(e => e.user === querryUser._id) ? 'Cancel' : 'Add pal'}</button>
                                 </div>) : <h2 className='text-center text-zinc-400 max-[500px]:text-xs'>No user</h2>
                                 }
                             </div>

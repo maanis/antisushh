@@ -40,8 +40,9 @@ const ChatSection = () => {
         try {
             if (suggestedUsers?.length > 0) {
                 const res = await apiClient('/user/getLastMessages', "POST", { senderIds: suggestedUsers.map(e => e._id) });
+                console.log(res)
                 if (res.success) {
-                    setlastMsgs(res.filteredMessages)
+                    setlastMsgs(res.messages)
                 }
             }
         } catch (error) {
@@ -138,7 +139,14 @@ const ChatSection = () => {
 
                     {suggestedUsers?.length > 0 ? suggestedUsers.map((user) => {
                         const count = unreadChats.find(chat => chat.senderId === user._id)?.msgs;
-                        const index = lastMsgs?.findIndex(e => e.senderId === user._id)
+                        const index = lastMsgs?.findIndex(
+                            e => e.senderId === user._id || e.recieverId === user._id
+                        );
+                        const lastMsg = lastMsgs?.find(
+                            (e) => e.senderId === user._id || e.recieverId === user._id
+                        );
+
+
 
                         return <Link
                             to={`/chat/${user.username}`}
@@ -158,7 +166,7 @@ const ChatSection = () => {
                             />
                             <div className="flex-1 min-w-0 max-[900px]:hidden max-[600px]:block">
                                 <h3 className="font-semibold">{user.username}</h3>
-                                <p className="text-xs max-[600px]:text-sm text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsgs?.some(e => e.senderId === user._id) ? lastMsgs[index].msg : 'Tap to chat'}</p>
+                                <p className="text-xs max-[600px]:text-sm text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsg ? lastMsg.msg : 'Tap to chat'}</p>
                             </div>
                             <span className="text-xs text-gray-400 max-[900px]:hidden max-[600px]:block">10:29</span>
                         </Link>

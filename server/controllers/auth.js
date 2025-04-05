@@ -89,15 +89,11 @@ const sendOrRemoveRequest = async (req, res) => {
 
         }
 
-        console.log('Sender Sent Requests:', sender.sentRequests);
-        console.log('Receiver Receive Requests:', receiver.recieveRequests);
 
         const alreadySent = sender.sentRequests.some(request => request.user && request.user.toString() === recieverId.toString());
         const alreadyReceived = receiver.recieveRequests?.some(request => request.user && request.user.toString() === senderId.toString());
 
         // Debugging logs to verify if we found any requests
-        console.log('Already Sent:', alreadySent);
-        console.log('Already Received:', alreadyReceived);
 
         if (alreadySent || alreadyReceived) {
             // If request is already sent or received, remove it
@@ -442,27 +438,36 @@ const getLastMessages = async (req, res) => {
             return res.status(400).json({ error: "Invalid senderIds array" });
         }
 
-        // Fetch the last message for each sender
         const lastMessages = await Promise.all(
             senderIds.map(async (senderId) => {
-                const lastMsg = await messageModel.findOne({ senderId, recieverId })
-                    .sort({ createdAt: -1 }) // Sort by latest message
-                    .select("senderId message") // Select only required fields
-                    .lean(); // Convert to plain JavaScript object
+                const lastMsg = await messageModel.findOne({
+                    $or: [
+                        { senderId, recieverId },
+                        { senderId: recieverId, recieverId: senderId }
+                    ]
+                })
+                    .sort({ createdAt: -1 }) // Latest message
+                    .select("senderId recieverId message createdAt")
+                    .lean();
 
-                return lastMsg ? { senderId: lastMsg.senderId, msg: lastMsg.message } : null;
+                return lastMsg ? {
+                    senderId: lastMsg.senderId,
+                    recieverId: lastMsg.recieverId,
+                    msg: lastMsg.message,
+                    time: lastMsg.createdAt
+                } : null;
             })
         );
 
-        // Remove null values (if a sender has no messages)
         const filteredMessages = lastMessages.filter(msg => msg !== null);
 
-        return res.status(200).json({ success: true, filteredMessages });
+        return res.status(200).json({ success: true, messages: filteredMessages });
     } catch (error) {
         console.error("Error fetching last messages:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 
 module.exports = { register, updateProfile, getLastMessages, removePal, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
