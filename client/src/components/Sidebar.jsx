@@ -108,13 +108,10 @@ const Sidebar = () => {
             };
             setpreview(URL.createObjectURL(file))
             const compressedImage = await imageCompression(file, options);
-            console.log("Original:", (file.size / 1024 / 1024).toFixed(2), "MB");
-            console.log("Compressed:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
 
             // 🔥 Store in state
             setimage(compressedImage);
         } catch (error) {
-            console.error("Compression error:", error);
             toast.error("Image compression failed");
         }
     };
@@ -130,14 +127,8 @@ const Sidebar = () => {
             formData.append('caption', caption);
 
             // 🧠 This MUST be compressed file
-            console.log("Appending image:", image.name, (image.size / 1024 / 1024).toFixed(2), "MB");
             formData.append('image', image);
 
-            for (let [key, value] of formData.entries()) {
-                if (key === "image") {
-                    console.log("FormData Image Size:", (value.size / 1024 / 1024).toFixed(2), "MB");
-                }
-            }
 
 
             const res = await fetch("http://localhost:3000/post/create", {
@@ -161,7 +152,6 @@ const Sidebar = () => {
                 toast.error(data.message);
             }
         } catch (err) {
-            console.error("Create post error:", err);
             toast.error("Something went wrong");
         } finally {
             setloading(false);
@@ -224,21 +214,21 @@ const Sidebar = () => {
         <div className={`${isChatSection ? 'w-[70px]' : 'w-[250px] max-[900px]:w-[70px]'} max-[768px]:fixed max-md:z-[9000] max-[768px]:bottom-0 max-[768px]:flex-row  flex flex-col px-3 py-4 border-r text-white jusce border-zinc-700 h-full max-[768px]:w-full max-[768px]:h-[65px] max-[768px]:justify-around max-[768px]:items-center max-md:bg-black max-md:bg-border-t max-md:bg-border-zinc-700 `}>
             <h2 className={`font-extralight text-3xl logoText my-5 mb-8 max-[900px]:text-center max-md:hidden ${isChatSection || isSidebarLogo && 'text-center'}`}>{isChatSection || isSidebarLogo ? 'A' : 'AntiSush'}</h2>
             {data.map((e, i) => {
-                return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className={`flex max-md:hidden cursor-pointer gap-2 my-2 font-medium items-center md:hover:bg-zinc-800 rounded-md px-3 py-3 `} key={i}>
+                return e.text === 'notifications' ? <button onClick={() => handleMenuClick(e.text)} className={`flex max-md:hidden sm:cursor-pointer gap-2 my-2 font-medium items-center md:hover:bg-zinc-800 rounded-md px-3 py-3 `} key={i}>
                     <span className='text-sm relative' title={e.text}>{e.icon} {(toRead.length > 0 || user?.recieveRequests?.length) > 0 && <span className='bg-red-600 rounded-full top-[-2px] right-[-2px] h-[9px] w-[9px] absolute'></span>}</span>
                     {!isChatSection && <h3 className='capitalize max-[970px]:text-sm max-[900px]:hidden'>{e.text}</h3>}
-                </button> : <button onClick={() => handleMenuClick(e.text)} className={`flex cursor-pointer gap-2 my-2 font-medium items-center md:hover:bg-zinc-800 rounded-md px-3 py-3 ${e.text === 'search' && 'max-md:hidden'} ${e.text === 'home' ? 'max-md:order-[-5]' : e.text === 'explore' ? 'max-md:order-[-0]' : e.text === 'create' ? 'max-md:order-[-3]' : e.text === 'messages' ? 'max-md:order-[-5]' : 'max-md:order-6'}`} key={i}>
+                </button> : <button onClick={() => handleMenuClick(e.text)} className={`flex sm:cursor-pointer gap-2 my-2 font-medium items-center md:hover:bg-zinc-800 rounded-md px-3 py-3 ${e.text === 'search' && 'max-md:hidden'} ${e.text === 'home' ? 'max-md:order-[-5]' : e.text === 'explore' ? 'max-md:order-[-0]' : e.text === 'create' ? 'max-md:order-[-3]' : e.text === 'messages' ? 'max-md:order-[-5]' : 'max-md:order-6'}`} key={i}>
                     <span className='text-sm relative' title={e.text}>{e.icon} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 hidden max-[900px]:flex  absolute rounded-full top-[-8px] right-[-8px] h-[20px] w-[20px] text-xs items-center justify-center '>{unreadChats.length}</span>}</span>
                     {!isChatSection && <h3 className='capitalize flex items-center gap-2 max-[970px]:text-sm max-[900px]:hidden'>{e.text} {(e.text === 'messages' && unreadChats.length > 0) && <span className='bg-red-600 rounded-t-full rounded-br-full h-[20px] w-[20px] text-xs flex items-center justify-center '>{unreadChats.length}</span>}</h3>}
                 </button>
             })}
             <div className='mt-auto max-[768px]:m-0 max-md:p-3'>
-                <Link to={`/profile/${user?.username}`} className={`flex cursor-pointer items-center max-[900px]:justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
+                <Link to={`/profile/${user?.username}`} className={`flex sm:cursor-pointer items-center max-[900px]:justify-center hover:bg-zinc-800 rounded-md px-2 max-[768px]:p-0 max-[768px]:   py-3 gap-2 ${isChatSection && 'justify-center'}`}>
                     <img loading='lazy' src={user?.pfp ? user.pfp : userDefaultPfp} className='w-8 h-8 max-[970px]:h-6 max-[970px]:w-6 max-[900px]:h-7 max-[900px]:w-7 object-cover rounded-full ' alt="" />
                     {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>{user?.name}</h3>}
                 </Link>
                 <AlertDialog>
-                    <AlertDialogTrigger className='w-full max-[768px]:hidden'><div className="flex cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
+                    <AlertDialogTrigger className='w-full max-[768px]:hidden'><div className="flex sm:cursor-pointer w-full mt-2 items-center hover:bg-zinc-800 rounded-md px-3 py-3 gap-2">
                         <LogOut size={'26px'} className='max-[970px]:size-[18px] max-[900px]:size-[24px]' />
                         {!isChatSection && <h3 className='max-[970px]:text-sm max-[900px]:hidden'>Logout</h3>}
                     </div></AlertDialogTrigger>
@@ -260,7 +250,7 @@ const Sidebar = () => {
                         <div className='text-neutral-900  text-center text-xl max-[900px]:text-lg font-semibold'>Create a Post</div>
                         <textarea value={caption} onChange={(e) => setcaption(e.target.value)} className='rounded-md max-h-20 outline-none text-black min-h-12 px-3 py-2 max-[900px]:text-sm' placeholder='Enter a caption...'></textarea>
                         <input onChange={handleImageUpload} ref={imgRef} type="file" className='hidden' />
-                        {preview && <div className='w-full relative flex items-center justify-center'><img loading='lazy' src={preview} className='rounded-md max-h-[45vh] max-md:max-h-[30vh] md:w-full object-cover' /><X className='absolute top-0 p-0 right-0 cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
+                        {preview && <div className='w-full relative flex items-center justify-center'><img loading='lazy' src={preview} className='rounded-md max-h-[45vh] max-md:max-h-[30vh] md:w-full object-cover' /><X className='absolute top-0 p-0 right-0 sm:cursor-pointer text-red-500' onClick={() => setpreview(null)} /></div>}
                         <button onClick={() => imgRef.current.click()} className='bg-blue-600 shadow-lg max-[900px]:text-sm inline-block w-fit px-3 py-1 rounded-md text-white font-semibold hover:bg-blue-700 transition-all'>Upload an image</button>
 
                         <button
@@ -283,7 +273,7 @@ const Sidebar = () => {
                             <h2 className='text-center font-semibold mb-2 text-2xl max-[500px]:text-lg'>Search</h2>
                             <div className='w-full mb-2 max-[500px]:mb-1 relative'>
                                 <input value={input} onChange={(e) => setinput(e.target.value)} type="text" className='w-full max-[500px]:text-xs max-[500px]:px-1 rounded-md px-3 py-1 border-none outline-none' placeholder='enter a username...' />
-                                {input.trim() != '' && <X onClick={() => setinput('')} className='absolute max-[500px]:size-4 right-2 top-1/2 -translate-y-1/2 cursor-pointer' />}
+                                {input.trim() != '' && <X onClick={() => setinput('')} className='absolute max-[500px]:size-4 right-2 top-1/2 -translate-y-1/2 sm:cursor-pointer' />}
                             </div>
                             <hr />
                             <hr />

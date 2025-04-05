@@ -28,7 +28,6 @@ const chatSlice = createSlice({
             );
         },
         setUnreadChats: (state, action) => {
-            console.log(action.payload)
             const index = state.unreadChats.findIndex(e => e.senderId.toString() === action.payload.toString())
             if (index === -1) {
                 state.unreadChats.push({ senderId: action.payload, msgs: 1 });

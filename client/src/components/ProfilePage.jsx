@@ -146,12 +146,9 @@ function ProfilePage() {
                 setpreview(URL.createObjectURL(file));
 
                 const compressedImage = await imageCompression(file, options);
-                console.log("Original size:", (file.size / 1024 / 1024).toFixed(2), "MB");
-                console.log("Compressed size:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
 
                 setprofilePic(compressedImage); // store compressed
             } catch (err) {
-                console.error("Compression failed:", err);
                 toast.error("Image compression failed");
             }
         }
@@ -178,7 +175,6 @@ function ProfilePage() {
                 setpfpDialog(false);
             }
         } catch (error) {
-            console.log("Update PFP error:", error);
             toast.error("Something went wrong");
         }
     };
@@ -226,17 +222,17 @@ function ProfilePage() {
             <div ref={menuRef} className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full select-none w-full object-cover' alt="" />
 
-                <EllipsisVertical onClick={() => setEllipsisMenu(!EllipsisMenu)} className='absolute text-white top-3 right-3 rounded-full cursor-pointer size-8 hover:bg-zinc-600 p-1' />
+                <EllipsisVertical onClick={() => setEllipsisMenu(!EllipsisMenu)} className='absolute text-white top-3 right-3 rounded-full sm:sm:cursor-pointer size-8 hover:bg-zinc-600 p-1' />
                 {EllipsisMenu && <div className="absolute top-3 select-none bg-zinc-800 transition-all right-12   rounded-md flex flex-col overflow-hidden items-center w-[125px] max-[500px]:w-[100px]">
                     {(currentUser.username !== username && currentUser.pals.some(e => e === user._id)) && <button onClick={() => handleUnpal(user, dispatch)} className='py-1 border-b border-zinc-700 w-full'>Remove Pal</button>}
                     {currentUser?.username === username && <button onClick={handleLogout} className='py-1 text-red-600 border-b border-zinc-700 max-[500px]:text-sm gap-1 flex items-center px-2 w-full'><LogOut className='max-[500px]:size-[16px]' size={'22px'} /> Logout</button>}
                 </div>}
 
-                {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
+                {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 sm:cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
                     onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
                     {currentUser.username === username && <div onClick={() => setpfpDialog(true)} className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
-                        <ImageIcon className='cursor-pointer text-black' />
+                        <ImageIcon className='sm:cursor-pointer text-black' />
                     </div>}
 
                     <img
@@ -430,7 +426,7 @@ function ProfilePage() {
                                     <button
                                         type="submit"
                                         // disabled={isSaving}
-                                        className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                        className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:sm:cursor-not-allowed transition-colors"
                                     >
                                         <Save className="w-4 h-4 mr-2" />
                                         save changes
@@ -457,7 +453,7 @@ function ProfilePage() {
                                 <Button
                                     onClick={handlePfpUpdate}
                                     disabled={loading}
-                                    className={`bg-blue-500 hover:bg-blue-700 text-white ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    className={`bg-blue-500 hover:bg-blue-700 text-white ${loading ? 'opacity-50 sm:cursor-not-allowed' : ''}`}
                                 >
                                     {loading ? 'Uploading...' : 'Save Changes'}
                                 </Button>

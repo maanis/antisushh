@@ -17,11 +17,10 @@ const ProfilePost = ({ posts }) => {
     useEffect(() => {
         setopen(false)
     }, [isSmallMobile])
-    console.log(posts)
     return (
 
         <Link to={isSmallMobile ? `/post/${posts._id}` : undefined}
-            onClick={!isSmallMobile ? () => setopen(true) : undefined} className="aspect-square cursor-pointer relative">
+            onClick={!isSmallMobile ? () => setopen(true) : undefined} className="aspect-square sm:cursor-pointer relative">
             <img
                 loading='lazy'
                 src={posts.image}

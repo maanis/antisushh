@@ -97,7 +97,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                                 </div>
                                 <p className="text-[10px] max-[1000px]:text-[8px] max-[600px]:text-[10px] text-zinc-400">{formattedTime}</p>
                             </div>
-                            <div className="ml-auto relative dot cursor-pointer">
+                            <div className="ml-auto relative dot sm:cursor-pointer">
                                 <Ellipsis onClick={() => setismenuopen(true)} className="max-[1000px]:size-4" />
                             </div>
                         </div>

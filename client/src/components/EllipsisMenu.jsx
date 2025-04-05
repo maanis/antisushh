@@ -34,7 +34,6 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
     ];
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    console.log(ismenuopen)
     const handleMenuClick = async (e) => {
         if (e === 'cancel') {
             setismenuopen(false)

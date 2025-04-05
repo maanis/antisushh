@@ -39,9 +39,7 @@ const ChatSection = () => {
     const fetchLastMsg = async () => {
         try {
             if (suggestedUsers?.length > 0) {
-                console.log("Sender IDs before API call:", suggestedUsers?.map(e => e._id));
                 const res = await apiClient('/user/getLastMessages', "POST", { senderIds: suggestedUsers.map(e => e._id) });
-                console.log(res)
                 if (res.success) {
                     setlastMsgs(res.filteredMessages)
                 }
@@ -58,7 +56,6 @@ const ChatSection = () => {
             dispatch(filterUnreadChats(user._id))
             if (unreadChats.some(e => e.senderId === user._id)) {
                 const res = await apiClient(`/user/markMsgsAsRead/${user._id}`, "POST")
-                console.log(res)
             }
 
         } catch (error) {
@@ -151,7 +148,7 @@ const ChatSection = () => {
                                 dispatch(setShowChatPage(true))
                             }}
                             key={user._id}
-                            className={`flex border-b max-[900px]:border-none max-[900px]:gap-0 max-[600px]:gap-3  max-[900px]:justify-center border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
+                            className={`flex border-b max-[900px]:border-none max-[900px]:gap-0 max-[600px]:gap-3  max-[900px]:justify-center border-neutral-700 items-center gap-3 p-3 hover:bg-zinc-800 sm:cursor-pointer ${user.username === selectedUser?.username && 'bg-zinc-800'}`}
                         >
                             <img
                                 src={user?.pfp}

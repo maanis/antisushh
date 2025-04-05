@@ -26,16 +26,12 @@ function SingleProfilePost() {
     const currentUser = useSelector(state => state.userInfo.user)
     const { id } = useParams();
     const navigate = useNavigate()
-    console.log(id)
     const isSmallMobile = useMediaQuery({ maxWidth: 600 }); // Detect screen width
     const [likeCounter, setlikeCounter] = useState(0)
-    console.log(post)
 
-    console.log(liked)
     const fetchPost = async () => {
         try {
             const res = await apiClient(`/post/getPost/${id}`);
-            console.log(res)
             if (res.success) {
                 setPost(res.post);
             } else {
@@ -79,9 +75,6 @@ function SingleProfilePost() {
         }
     }
 
-    console.log(likeCounter)
-    console.log(post)
-    // const isSmallMobile = useMediaQuery({ minWidth: 600 }); // Detect screen width
     useEffect(() => {
         fetchPost()
         if (!isSmallMobile) {
@@ -106,7 +99,7 @@ function SingleProfilePost() {
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-gray-700">
                 <div className="flex items-center  w-full space-x-4">
-                    <div onClick={() => navigate(`/profile/${post.user.username}`)} className="absolute z-50 cursor-pointer">
+                    <div onClick={() => navigate(`/profile/${post.user.username}`)} className="absolute z-50 sm:cursor-pointer">
                         <ChevronLeft className="w-6 h-6" />
                     </div>
                     <h2 className="text-lg text-center w-full">Post</h2>
@@ -142,7 +135,7 @@ function SingleProfilePost() {
             {/* Interaction Bar */}
             <div className="flex items-center justify-between px-4 pt-4">
                 <div className="flex items-center space-x-4">
-                    {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='cursor-pointer' />}
+                    {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='sm:cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='sm:cursor-pointer' />}
                     <MessageCircle onClick={() => setopen(true)} className="w-6 h-6" />
                 </div>
             </div>

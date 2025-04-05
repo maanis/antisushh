@@ -104,7 +104,7 @@ export default function UpdateProfile() {
                                 <div className="flex justify-between w-full items-center">
                                     <img loading='lazy' src={preview ? preview : userDefaultPfp} className='w-24 h-24 rounded-full object-cover ' alt="" />
                                     <input onChange={handleFileChange} type="file" ref={fileInput} className='hidden' />
-                                    <div className='px-4 cursor-pointer py-2 rounded-lg bg-black text-white font-semibold' onClick={() => fileInput.current.click()}>Upload Profile</div>
+                                    <div className='px-4 sm:cursor-pointer py-2 rounded-lg bg-black text-white font-semibold' onClick={() => fileInput.current.click()}>Upload Profile</div>
                                 </div>
                                 <div>
                                     <label htmlFor="profileTitle" className="block text-sm font-medium ">

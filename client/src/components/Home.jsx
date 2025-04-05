@@ -40,7 +40,7 @@ const Home = () => {
                     <div className="select flex gap-1">
                         <p className="text-nowrap text-zinc-400 ml-1 max-lg:text-[11px]">sort by:</p>
                         <select id="viewToggle" name="viewToggle"
-                            className="bg-transparent cursor-pointer max-lg:text-[13px] text-white border-none outline-none focus:ring-0 focus:border-transparent">
+                            className="bg-transparent sm:cursor-pointer max-lg:text-[13px] text-white border-none outline-none focus:ring-0 focus:border-transparent">
                             <option className="bg-black text-white">Following</option>
                             <option className="bg-black text-white">Everyone</option>
                         </select>

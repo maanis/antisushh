@@ -41,7 +41,6 @@ function Explore() {
 
             setInput("");
         } catch (error) {
-            console.error("Error:", error);
 
             setQna((prev) =>
                 prev.map((qna, index) =>

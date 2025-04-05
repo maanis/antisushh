@@ -21,7 +21,6 @@ export const addPal = async (user, dispatch, setIsMenuOpen) => {
 export const handleUnpal = async (user, dispatch, setIsMenuOpen) => {
     try {
         const data = await apiClient(`/user/unfriend/${user._id}`, "POST");
-        console.log(data)
         if (data.success) {
             dispatch(removePal(data.data));
             toast.success(data.message);

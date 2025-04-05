@@ -21,9 +21,7 @@ function Register() {
     const fetchUnreadMsgs = async () => {
         try {
             const res = await apiClient('/chat/msgsToRead')
-            console.log(res)
             if (res.success) {
-                console.log(res.unreadMsgs)
                 res.unreadMsgs.length > 0 && res.unreadMsgs?.map(e => dispatch(setUnreadChats(e.senderId)))
             }
         } catch (error) {
@@ -144,7 +142,7 @@ function Register() {
 
                         </div>
 
-                        {isSignUp ? <p className='text-white mt-3'>Already have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 cursor-pointer hover:underline font-semibold'>Sign In</span></p> : <p className='text-white mt-3'>Don't have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 cursor-pointer hover:underline font-semibold'>Sign Up</span></p>}
+                        {isSignUp ? <p className='text-white mt-3'>Already have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign In</span></p> : <p className='text-white mt-3'>Don't have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign Up</span></p>}
 
                         <button
                             onClick={handleSubmit}

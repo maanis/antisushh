@@ -71,7 +71,6 @@ const App = () => {
     try {
       const res = await apiClient('/chat/msgsToRead')
       if (res.success) {
-        console.log(res.unreadMsgs)
         res.unreadMsgs.length > 0 && res.unreadMsgs?.map(e => dispatch(setUnreadChats(e.senderId)))
       }
     } catch (error) {
@@ -85,7 +84,6 @@ const App = () => {
   }, [])
 
   const { showChatPage } = useSelector(e => e.chat)
-  console.log(showChatPage)
   const isMobile = useMediaQuery({ maxWidth: 768 }); // Detect screen width
 
 

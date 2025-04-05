@@ -90,7 +90,7 @@ const Post = ({ posts }) => {
                             {formattedTime}
                         </p>
                     </div>
-                    <div className="ml-auto relative dot cursor-pointer">
+                    <div className="ml-auto relative dot sm:cursor-pointer">
                         <Ellipsis onClick={() => setismenuopen(true)} />
                     </div>
                 </div>
@@ -99,10 +99,10 @@ const Post = ({ posts }) => {
                 </div>
 
                 <div className="flex pt-3 pb-2 gap-3 items-center max-[480px]:px-3">
-                    {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='cursor-pointer' />}
-                    <MessageCircle onClick={() => setopen(true)} size={'20px'} className='cursor-pointer' />
-                    <Send size={'20px'} className='cursor-pointer' />
-                    {currentUser.bookmarks.includes(posts._id) ? <BookmarkCheck onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} /> : <Bookmark onClick={handleBookmark} className='ml-auto cursor-pointer' size={'20px'} />}
+                    {liked ? <IoMdHeart onClick={handleLike} size={'24px'} className='sm:cursor-pointer text-red-600' /> : <IoMdHeartEmpty onClick={handleLike} size={'24px'} className='sm:cursor-pointer' />}
+                    <MessageCircle onClick={() => setopen(true)} size={'20px'} className='sm:cursor-pointer' />
+                    <Send size={'20px'} className='sm:cursor-pointer' />
+                    {currentUser.bookmarks.includes(posts._id) ? <BookmarkCheck onClick={handleBookmark} className='ml-auto sm:cursor-pointer' size={'20px'} /> : <Bookmark onClick={handleBookmark} className='ml-auto sm:cursor-pointer' size={'20px'} />}
 
                 </div>
                 <h2 className='max-[480px]:px-3'>{likeCounter.length} {likeCounter.length <= 1 ? 'like' : 'likes'}</h2>
