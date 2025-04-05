@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, Save, } from 'lucide-react';
+import { Mail, Pencil, Verified, Image, Edit2, ImageIcon, UserPlus, Save, EllipsisVertical, LogOut, } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fileToUrl, userCoverPfp, userDefaultPfp } from '@/utils/constant';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -7,11 +7,15 @@ import apiClient from '@/utils/apiClient';
 import ProfileSkeleton from './ProfileSkeleton';
 import { toast } from 'sonner';
 import ProfilePost from './ProfilePost';
-import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice';
+import { setActiveBookmarkPosts, setActiveProfilePosts, setposts } from '@/store/postSlice';
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { addOrRemoveSentReq, addToPal, removeRecieveReq, setUser } from '@/store/userSlice';
 import { Button } from './ui/button';
 import imageCompression from 'browser-image-compression';
+import { handleUnpal } from '@/utils/func';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import { clearUnreadChats, setOnlineUsers } from '@/store/chatSlice';
+import { setNotifications } from '@/store/notificationsSlice';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -21,6 +25,7 @@ function ProfilePage() {
         email: '',
         bio: ''
     })
+    const menuRef = useRef(null);
     const countPosts = useSelector(state => state.posts.activeProfilePosts)
     const [profilePic, setprofilePic] = useState("")
     const [preview, setpreview] = useState(null)
@@ -32,7 +37,7 @@ function ProfilePage() {
     const [showEditIcon, setshowEditIcon] = useState(false)
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
-
+    const [EllipsisMenu, setEllipsisMenu] = useState(false)
 
     const currentUser = useSelector(state => state.userInfo.user)
 
@@ -178,7 +183,21 @@ function ProfilePage() {
         }
     };
 
-    // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
+    const handleLogout = async () => {
+        const data = await apiClient('/logout')
+        console.log(data)
+        if (data.success) {
+            navigate('/')
+            dispatch(setUser(null))
+            dispatch(setposts([]))
+            dispatch(clearUnreadChats())
+            dispatch(setNotifications([]))
+            localStorage.setItem('chatSection', false)
+            dispatch(setOnlineUsers(null));
+            toast.success(data.message)
+        }
+    }
+
     useEffect(() => {
         fetchUserProfile()
         return () => {
@@ -187,11 +206,32 @@ function ProfilePage() {
         }
     }, [username])
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setEllipsisMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+
     return user ? (
         <div style={{ scrollbarWidth: 'none' }} className="min-h-screen max-md:pb-[70px] w-[55%]  max-sm:w-full max-[900px]:w-[65%] max-md:w-[75%]  overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
-            <div className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
-                <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full w-full object-cover' alt="" />
+            <div ref={menuRef} className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+                <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full select-none w-full object-cover' alt="" />
+
+                <EllipsisVertical onClick={() => setEllipsisMenu(!EllipsisMenu)} className='absolute text-white top-3 right-3 rounded-full cursor-pointer size-8 hover:bg-zinc-600 p-1' />
+                {EllipsisMenu && <div className="absolute top-3 select-none bg-zinc-800 transition-all right-12   rounded-md flex flex-col overflow-hidden items-center w-[125px] max-[500px]:w-[100px]">
+                    {(currentUser.username !== username && currentUser.pals.some(e => e === user._id)) && <button onClick={() => handleUnpal(user, dispatch)} className='py-1 border-b border-zinc-700 w-full'>Remove Pal</button>}
+                    {currentUser?.username === username && <button onClick={handleLogout} className='py-1 text-red-600 border-b border-zinc-700 max-[500px]:text-sm gap-1 flex items-center px-2 w-full'><LogOut className='max-[500px]:size-[16px]' size={'22px'} /> Logout</button>}
+                </div>}
+
                 {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
                     onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">

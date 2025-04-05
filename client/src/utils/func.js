@@ -25,7 +25,7 @@ export const handleUnpal = async (user, dispatch, setIsMenuOpen) => {
         if (data.success) {
             dispatch(removePal(data.data));
             toast.success(data.message);
-            setIsMenuOpen(false);
+            if (setIsMenuOpen) setIsMenuOpen(false);
             return data.message;
         } else {
             return data.message;
