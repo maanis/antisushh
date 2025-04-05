@@ -18,7 +18,7 @@ const postSlice = createSlice({
             state.activeProfilePosts = action.payload
         },
         addActiveProfilePosts: (state, action) => {
-            state.activeProfilePosts.push(action.payload)
+            state.activeProfilePosts?.push(action.payload)
         },
         setActiveBookmarkPosts: (state, action) => {
             state.activeBookmarkPosts = action.payload

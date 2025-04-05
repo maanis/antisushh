@@ -11,6 +11,7 @@ import { setActiveBookmarkPosts, setActiveProfilePosts } from '@/store/postSlice
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog';
 import { addOrRemoveSentReq, addToPal, removeRecieveReq, setUser } from '@/store/userSlice';
 import { Button } from './ui/button';
+import imageCompression from 'browser-image-compression';
 
 function ProfilePage() {
     const [activeTab, setActiveTab] = useState('posts');
@@ -30,6 +31,7 @@ function ProfilePage() {
     const navigate = useNavigate()
     const [showEditIcon, setshowEditIcon] = useState(false)
     const dispatch = useDispatch()
+    const [loading, setloading] = useState(false);
 
     const currentUser = useSelector(state => state.userInfo.user)
 
@@ -102,6 +104,7 @@ function ProfilePage() {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
+            setloading(true)
             const data = await apiClient('/user/editProfile', 'POST', updatedData)
             if (data.success) {
                 toast.success(data.message)
@@ -114,6 +117,8 @@ function ProfilePage() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setloading(false)
         }
     };
 
@@ -122,38 +127,55 @@ function ProfilePage() {
         setpreview(null)
     }
 
-    const handleFileChange = (e) => {
-        const file = fileInputRef.current.files[0]
+    const handleFileChange = async (e) => {
+        const file = fileInputRef.current.files[0];
         if (file) {
-            setprofilePic(file)
-            const url = fileToUrl(file);
-            setpreview(url);
+            try {
+                const options = {
+                    maxSizeMB: 0.5,
+                    maxWidthOrHeight: 600,
+                    useWebWorker: true,
+                };
+
+                const compressedImage = await imageCompression(file, options);
+                console.log("Original size:", (file.size / 1024 / 1024).toFixed(2), "MB");
+                console.log("Compressed size:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
+
+                setprofilePic(compressedImage); // store compressed
+                const url = fileToUrl(compressedImage);
+                setpreview(url); // preview
+            } catch (err) {
+                console.error("Compression failed:", err);
+                toast.error("Image compression failed");
+            }
         }
-    }
+    };
 
     const handlePfpUpdate = async (e) => {
-        e.preventDefault()
-        // if (!preview) return toast.error('Please upload an image')
+        e.preventDefault();
         try {
             const formData = new FormData();
-            formData.append("profilePic", profilePic);
+            formData.append("profilePic", profilePic); // already compressed
 
             const data = await fetch('http://localhost:3000/user/updatePfp', {
                 credentials: 'include',
                 method: 'POST',
                 body: formData,
-            })
-            const res = await data.json()
+            });
+
+            const res = await data.json();
+
             if (res.success) {
-                toast.success(res.message)
-                dispatch(setUser(res.user))
-                setuser({ ...user, pfp: res.user.pfp })
-                setpfpDialog(false)
+                toast.success(res.message);
+                dispatch(setUser(res.user));
+                setuser({ ...user, pfp: res.user.pfp });
+                setpfpDialog(false);
             }
         } catch (error) {
-            console.log(error)
+            console.log("Update PFP error:", error);
+            toast.error("Something went wrong");
         }
-    }
+    };
 
     // const posts = activeTab === 'posts' ? user?.posts : user?.bookmarks
     useEffect(() => {
@@ -177,7 +199,7 @@ function ProfilePage() {
                     </div>}
 
                     <img
-                    loading='lazy'
+                        loading='lazy'
                         src={user.pfp ? user.pfp : userDefaultPfp}
                         alt="Profile"
                         className="w-40 select-none h-40 max-md:h-32 max-md:w-32 max-sm:h-28 max-sm:w-28 rounded-full object-cover border-4 border-white shadow-lg"
@@ -391,7 +413,14 @@ function ProfilePage() {
                                     }} className='bg-red-600 hover:bg-red-800'>Remove</Button>
                                 </div>
 
-                                <Button onClick={handlePfpUpdate} className='bg-blue-500 hover:bg-blue-700'>Save Changes</Button>
+                                <Button
+                                    onClick={handlePfpUpdate}
+                                    disabled={loading}
+                                    className={`bg-blue-500 hover:bg-blue-700 text-white ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    {loading ? 'Uploading...' : 'Save Changes'}
+                                </Button>
+
                             </form>
                         </DialogContent>
                     </Dialog>

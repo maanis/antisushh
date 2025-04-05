@@ -13,6 +13,7 @@ const Feed = () => {
         try {
             const data = await apiClient('/post/getAllPosts')
             dispatch(setposts(data.posts))
+            console.log(data.posts)
         } catch (error) {
             console.log(error)
         }

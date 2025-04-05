@@ -5,6 +5,7 @@ const postModel = require("../model/postModel");
 const notificationModel = require('../model/notificationModel');
 const { userSocketId, io } = require("../socket/socket.io");
 const messageModel = require("../model/messageModel");
+const uploadToCloudinary = require("../utils/cloudinaryUload");
 
 const register = async function (req, res) {
     const { name, username, password } = req.body;
@@ -76,11 +77,9 @@ const sendOrRemoveRequest = async (req, res) => {
             return res.status(400).json({ message: "You can't send a request to yourself" });
         }
 
-        // Fetch sender and receiver from the database
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
 
-        // Check if both users exist
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -90,11 +89,9 @@ const sendOrRemoveRequest = async (req, res) => {
 
         }
 
-        // Debugging logs to check the structure of requests
         console.log('Sender Sent Requests:', sender.sentRequests);
         console.log('Receiver Receive Requests:', receiver.recieveRequests);
 
-        // Ensure we are correctly accessing the user field in sentRequests and recieveRequests
         const alreadySent = sender.sentRequests.some(request => request.user && request.user.toString() === recieverId.toString());
         const alreadyReceived = receiver.recieveRequests?.some(request => request.user && request.user.toString() === senderId.toString());
 
@@ -105,7 +102,6 @@ const sendOrRemoveRequest = async (req, res) => {
         if (alreadySent || alreadyReceived) {
             // If request is already sent or received, remove it
             if (alreadySent) {
-                // Remove from sender's sentRequests and receiver's recieveRequests
                 sender.sentRequests = sender.sentRequests.filter(request => request.user && request.user.toString() !== recieverId.toString());
                 receiver.recieveRequests = receiver.recieveRequests.filter(request => request.user && request.user.toString() !== senderId.toString());
             }
@@ -120,7 +116,6 @@ const sendOrRemoveRequest = async (req, res) => {
 
             return res.status(200).json({ success: true, message: 'Request removed', data: recieverId });
         } else {
-            // Otherwise, send the request by adding it to both sentRequests and recieveRequests
             sender.sentRequests.unshift({ user: recieverId });
             receiver.recieveRequests.push({ user: senderId });
 
@@ -149,28 +144,23 @@ const sendOrRemoveRequest = async (req, res) => {
 
 const declineRequest = async (req, res) => {
     try {
-        const recieverId = req.id;  // Sender is the logged-in user (req.id)
-        const senderId = req.params.id;  // Reciever is the ID of the user receiving the request
+        const recieverId = req.id;
+        const senderId = req.params.id;
 
-        // Check if sender is trying to send a request to themselves
         if (senderId === recieverId) {
             return res.status(400).json({ message: "You can't send a request to yourself" });
         }
 
-        // Fetch sender and receiver from the database
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
 
-        // Check if both users exist
         if (!sender || !receiver) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Remove the request from receiver's recieveRequests and sender's sentRequests
         receiver.recieveRequests = receiver.recieveRequests.filter(request => request.user.toString() !== senderId.toString());
         sender.sentRequests = sender.sentRequests.filter(request => request.user.toString() !== recieverId.toString());
 
-        // Save the updated sender and receiver objects
         await sender.save();
         await receiver.save();
 
@@ -189,15 +179,13 @@ const declineRequest = async (req, res) => {
 
 const acceptRequest = async (req, res) => {
     try {
-        const recieverId = req.id;  // Sender is the logged-in user (req.id)
-        const senderId = req.params.id;  // Receiver is the ID of the user receiving the request
+        const recieverId = req.id;
+        const senderId = req.params.id;
 
-        // Check if sender is trying to send a request to themselves
         if (senderId === recieverId) {
             return res.status(400).json({ message: "You can't send a request to yourself" });
         }
 
-        // Fetch sender and receiver from the database
         const sender = await userModel.findById(senderId);
         const receiver = await userModel.findById(recieverId);
 
@@ -207,22 +195,18 @@ const acceptRequest = async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Ensure that the receiver has received a friend request from the sender
         const requestIndex = receiver.recieveRequests.findIndex(request => request.user.toString() === senderId.toString());
         if (requestIndex === -1) {
             return res.status(400).json({ message: 'No friend request found' });
         }
 
-        // Add sender and receiver to each other's pals array
         receiver.pals.push(senderId);
         sender.pals.push(recieverId);
 
-        // Remove the request from both the sender's sentRequests and the receiver's recieveRequests
         receiver.recieveRequests.splice(requestIndex, 1);
         const senderRequestIndex = sender.sentRequests.findIndex(request => request.user.toString() === recieverId.toString());
         sender.sentRequests.splice(senderRequestIndex, 1);
 
-        // Save the updated sender and receiver objects
         await sender.save();
         await receiver.save();
 
@@ -250,55 +234,78 @@ const suggestedUser = async (req, res) => {
 
 const editProfile = async (req, res) => {
     try {
-        const id = req.id
-        const currentUser = await userModel.findById(id)
+        const id = req.id;
+        const currentUser = await userModel.findById(id);
         const { name, username, email, profileTitle, bio } = req.body;
-        if (req.file) {
-            const image = req.file.buffer.toString('base64');
-            await userModel.findByIdAndUpdate(req.id, { pfp: image })
-        }
-        if (username != currentUser.username) {
-            const exist = await userModel.findOne({ username })
+
+        if (username && username !== currentUser.username) {
+            const exist = await userModel.findOne({ username });
             if (exist) {
-                res.status(402).json({ success: false, message: 'User already exist with this username' });
-                return
+                return res.status(402).json({ success: false, message: 'User already exists with this username' });
             }
         }
-        await userModel.findByIdAndUpdate(req.id, { name, username, email, profileTitle, bio })
-        const user = await userModel.findById(req.id).select('-password');
+        const update = { name, username, email, profileTitle, bio };
+        if (req.file) {
+            const result = await uploadToCloudinary(req.file.buffer, {
+                resource_type: 'image',
+                folder: 'antisush/pfps'
+            });
+            const optimizedUrl = result.secure_url.replace('/upload/', '/upload/w_600,q_auto,f_auto/');
+            update.pfp = optimizedUrl;
+        }
+        await userModel.findByIdAndUpdate(id, update);
+        const user = await userModel.findById(id).select('-password');
+
         res.status(200).json({ user, success: true, message: 'Profile updated successfully' });
     } catch (error) {
+        console.error('Error editing profile:', error);
         res.status(500).json({ message: 'Internal server error', success: false });
     }
-}
+};
 
 const updateProfile = async (req, res) => {
     try {
-        const { profileTitle, bio, email, githubUrl, linkedinUrl } = req.body
+        const { profileTitle, bio, email, githubUrl, linkedinUrl } = req.body;
+        let updateData = {
+            profileTitle,
+            bio,
+            email,
+            githubUrl,
+            linkedinUrl,
+            hasCompleteProfile: true
+        };
         if (req.file) {
-            const img = req.file.buffer.toString('base64');
-            const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
-            await userModel.findByIdAndUpdate(req.id, { pfp: base64Image })
+            const result = await uploadToCloudinary(req.file.buffer, {
+                resource_type: 'image',
+                folder: 'antisush/pfps'
+            });
+            const optimizedUrl = result.secure_url.replace('/upload/', '/upload/w_600,q_auto,f_auto/');
+            updateData.pfp = optimizedUrl; // ✅ Store just the image URL
         }
-        await userModel.findByIdAndUpdate(req.id, { profileTitle, bio, email, githubUrl, linkedinUrl, hasCompleteProfile: true })
+        await userModel.findByIdAndUpdate(req.id, updateData);
         const user = await userModel.findById(req.id).select('-password');
-        res.status(200).json({ user, message: 'Profile upadated successfully', success: true });
+        res.status(200).json({ user, message: 'Profile updated successfully', success: true });
     } catch (error) {
+        console.error('Update profile error:', error);
         res.status(500).json({ message: 'Internal server error hai', success: false });
     }
-
-}
+};
 
 const updatePfp = async (req, res) => {
     try {
-        let base64Image = null;
-        if (req.file === undefined) {
-            base64Image = "";
+        let update = {};
+        if (!req.file) {
+            update.pfp = "";
         } else {
-            base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+            const result = await uploadToCloudinary(req.file.buffer, {
+                resource_type: 'image',
+                folder: 'antisush/pfps'
+            });
+            const optimizedUrl = result.secure_url.replace('/upload/', '/upload/w_600,q_auto,f_auto/');
+            update.pfp = optimizedUrl;
         }
-        await userModel.findByIdAndUpdate(req.id, { pfp: base64Image });
-        const user = await userModel.findById(req.id);
+        await userModel.findByIdAndUpdate(req.id, update);
+        const user = await userModel.findById(req.id).select('-password');
         return res.status(200).json({ user, message: 'Profile picture updated successfully', success: true });
     } catch (error) {
         console.error("Error updating profile picture:", error);
@@ -309,17 +316,22 @@ const updatePfp = async (req, res) => {
 
 const updatecoverPhoto = async (req, res) => {
     try {
-        console.log(req.file)
-        if (!req.file) return res.status(400).json({ message: 'file required', success: false });
-        const img = req.file.buffer.toString('base64');
-        const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
-        await userModel.findByIdAndUpdate(req.id, { coverPhoto: base64Image })
-        const user = await userModel.findById(req.id)
-        res.status(200).json({ user, message: 'Pfp upadated successfully', success: true });
+        if (!req.file) {
+            return res.status(400).json({ message: 'File required', success: false });
+        }
+        const result = await uploadToCloudinary(req.file.buffer, {
+            resource_type: 'image',
+            folder: 'antisush/coverPhotos',
+        });
+        const optimizedUrl = result.secure_url.replace('/upload/', '/upload/w_1200,q_auto,f_auto/');
+        await userModel.findByIdAndUpdate(req.id, { coverPhoto: optimizedUrl });
+        const user = await userModel.findById(req.id);
+        res.status(200).json({ user, message: 'Cover photo updated successfully', success: true });
     } catch (error) {
+        console.error('Error uploading cover photo:', error);
         res.status(500).json({ message: 'Internal server error hai', success: false });
     }
-}
+};
 
 const userProfile = async (req, res) => {
     try {

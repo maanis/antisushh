@@ -26,6 +26,7 @@ import { clearUnreadChats, setOnlineUsers } from '@/store/chatSlice'
 import NotificationDialog from './NotificationDialog'
 import { setNotifications } from '@/store/notificationsSlice'
 import { useMediaQuery } from 'react-responsive'
+import imageCompression from 'browser-image-compression';
 
 
 const Sidebar = () => {
@@ -94,48 +95,84 @@ const Sidebar = () => {
 
     }
 
-    const handleImageUpload = () => {
-        const file = imgRef.current.files[0]
-        if (file) {
-            setimage(file)
-            const url = fileToUrl(file);
-            setpreview(url);
-        }
-    }
 
-    const handleCreatePost = async () => {
-        if (!caption) return toast.error('Please fill all the fields')
-        if (!preview) return toast.error('Please upload an image')
+    const handleImageUpload = async () => {
+        const file = imgRef.current?.files[0];
+        if (!file) return;
 
         try {
-            setloading(true)
+            const options = {
+                maxSizeMB: 1,
+                maxWidthOrHeight: 1024,
+                useWebWorker: true,
+            };
+
+            const compressedImage = await imageCompression(file, options);
+            console.log("Original:", (file.size / 1024 / 1024).toFixed(2), "MB");
+            console.log("Compressed:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
+
+            // 🔥 Store in state
+            setimage(compressedImage);
+            setpreview(URL.createObjectURL(compressedImage));
+        } catch (error) {
+            console.error("Compression error:", error);
+            toast.error("Image compression failed");
+        }
+    };
+
+    const handleCreatePost = async () => {
+        if (!caption) return toast.error("Please add a caption");
+        if (!image || !preview) return toast.error("Please upload an image");
+
+        try {
+            setloading(true);
+
             const formData = new FormData();
             formData.append('caption', caption);
+
+            // 🧠 This MUST be compressed file
+            console.log("Appending image:", image.name, (image.size / 1024 / 1024).toFixed(2), "MB");
             formData.append('image', image);
-            const data = await fetch('http://localhost:3000/post/create', {
-                credentials: 'include',
-                method: 'POST',
-                body: formData,
-            })
-            const res = await data.json();
-            if (res.success) {
-                toast.success(res.message)
-                setcreateDialog(false)
-                dispatch(setposts([...posts, res.newPost]))
-                dispatch(addPost(res.newPost._id))
-                dispatch(addActiveProfilePosts(res.newPost))
-                setcaption('')
-                setpreview(null)
-                setimage(null)
-            } else {
-                toast.error(res.message)
+
+            for (let [key, value] of formData.entries()) {
+                if (key === "image") {
+                    console.log("FormData Image Size:", (value.size / 1024 / 1024).toFixed(2), "MB");
+                }
             }
-        } catch (error) {
-            toast.error('Something went wrong')
+
+
+            const res = await fetch("http://localhost:3000/post/create", {
+                method: "POST",
+                body: formData,
+                credentials: "include",
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                toast.success(data.message);
+                setcreateDialog(false);
+                dispatch(setposts([...posts, data.newPost]));
+                dispatch(addPost(data.newPost._id));
+                dispatch(addActiveProfilePosts(data.newPost));
+                setcaption("");
+                setpreview(null);
+                setimage(null);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (err) {
+            console.error("Create post error:", err);
+            toast.error("Something went wrong");
         } finally {
-            setloading(false)
+            setloading(false);
         }
-    }
+    };
+
+
+
+
+
 
     const searchQuerry = async () => {
         if (!input.trim()) return; // Prevent empty API calls

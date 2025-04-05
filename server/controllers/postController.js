@@ -4,33 +4,57 @@ const { isValidObjectId } = require('mongoose');
 const createNotification = require('../utils/createNotification');
 const notificationModel = require('../model/notificationModel');
 const { io, userSocketId } = require('../socket/socket.io');
+const uploadToCloudinary = require('../utils/cloudinaryUload');
 
 const createPost = async (req, res) => {
     try {
         const { caption } = req.body;
-        let userId = req.id;
-        if (!caption) return res.status(400).json({ message: 'Please fill all the fields', success: false });
-        if (req.file) {
-            const img = req.file.buffer.toString('base64')
-            const base64Image = img ? `data:image/jpeg;base64,${img}` : null;
-            const post = await postModel.create({
-                caption,
-                image: base64Image,
-                user: userId
-            })
-            const user = await userModel.findById(userId);
-            user.posts.push(post._id);
-            await user.save();
-            const newPost = await post.populate('user', 'username pfp');
-            res.status(200).json({ newPost, message: 'Post created', success: true });
-        } else {
-            res.status(400).json({ message: 'Please upload an image', success: false });
+        const userId = req.id;
+
+        if (!caption) {
+            return res.status(400).json({ message: 'Please fill all the fields', success: false });
         }
+
+        if (!req.file) {
+            return res.status(400).json({ message: 'Please upload an image', success: false });
+        }
+
+        console.log("Received file size:", req.file.size / 1024 / 1024, "MB");
+
+
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        if (!allowedTypes.includes(req.file.mimetype)) {
+            return res.status(400).json({ message: 'Only image files are allowed', success: false });
+        }
+
+        const result = await uploadToCloudinary(req.file.buffer, {
+            resource_type: 'image',
+            folder: 'antisush/posts'
+        });
+
+        const optimizedUrl = result.secure_url.replace('/upload/', '/upload/w_600,q_auto,f_auto/');
+
+        const post = await postModel.create({
+            caption,
+            image: optimizedUrl,
+            user: userId
+        });
+
+        const user = await userModel.findById(userId);
+        user.posts.push(post._id);
+        await user.save();
+
+        const newPost = await post.populate('user', 'username pfp');
+        res.status(200).json({ newPost, message: 'Post created', success: true });
+
     } catch (error) {
+        console.error('Cloudinary upload error:', error);
         res.status(500).json({ message: 'Internal server error', success: false });
     }
+};
 
-}
+
+
 
 const getAllPosts = async (req, res) => {
     try {
