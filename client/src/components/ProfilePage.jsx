@@ -222,13 +222,13 @@ function ProfilePage() {
             <div ref={menuRef} className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full select-none w-full object-cover' alt="" />
 
-                <EllipsisVertical onClick={() => setEllipsisMenu(!EllipsisMenu)} className='absolute text-white top-3 right-3 rounded-full sm:sm:cursor-pointer size-8 hover:bg-zinc-600 p-1' />
-                {EllipsisMenu && <div className="absolute top-3 select-none bg-zinc-800 transition-all right-12   rounded-md flex flex-col overflow-hidden items-center w-[125px] max-[500px]:w-[100px]">
+                <EllipsisVertical onClick={() => setEllipsisMenu(!EllipsisMenu)} className='absolute text-white top-3 right-3 rounded-full sm:sm:cursor-pointer max-[500px]:size-6 size-8 hover:bg-zinc-600 p-1' />
+                {EllipsisMenu && <div className="absolute top-3 max-[500px]:right-10 select-none bg-zinc-800 transition-all right-12   rounded-md flex flex-col overflow-hidden items-center w-[125px] max-[500px]:w-[100px]">
                     {(currentUser.username !== username && currentUser.pals.some(e => e === user._id)) && <button onClick={() => handleUnpal(user, dispatch)} className='py-1 border-b border-zinc-700 w-full'>Remove Pal</button>}
                     {currentUser?.username === username && <button onClick={handleLogout} className='py-1 text-red-600 border-b border-zinc-700 max-[500px]:text-sm gap-1 flex items-center px-2 w-full'><LogOut className='max-[500px]:size-[16px]' size={'22px'} /> Logout</button>}
                 </div>}
 
-                {currentUser.username === username && <Edit2 className='absolute right-4 bottom-4 sm:cursor-pointer' />}
+                {currentUser.username === username && <Edit2 className='absolute right-4 max-md:size-3 max-[500px]:size-4 bottom-4 sm:cursor-pointer' />}
                 <div onMouseEnter={currentUser.username === username ? () => setshowEditIcon(true) : undefined}
                     onMouseLeave={currentUser.username === username ? () => setshowEditIcon(false) : undefined} className="absolute -bottom-16 left-10 overflow-hidden rounded-full">
                     {currentUser.username === username && <div onClick={() => setpfpDialog(true)} className={`flex w-full justify-center transition-all  duration-300 items-center absolute h-10 ${showEditIcon ? 'bottom-0' : '-bottom-full'} bg-zinc-200/65 backdrop-blur-md overflow-hidden`}>
@@ -263,7 +263,7 @@ function ProfilePage() {
                             </div>
                         </div>
                         <button onClick={(e) => handlePrimaryButton(e)} className="px-4 py-2 max-md:text-xs max-md:rounded-sm max-md:px-2 max-md:py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
-                            {currentUser.username === username ? <Pencil className="w-4 h-4 pointer-events-none max-md:size-3" /> : <UserPlus className="w-4 h-4 pointer-events-none max-md:size-3" />}
+                            {currentUser.username === username ? <Pencil className="w-4 h-4 pointer-events-none max-md:size-3:" /> : <UserPlus className="w-4 h-4 pointer-events-none max-md:size-3" />}
                             {currentUser.username === username ? 'Edit Profile' : currentUser.pals.some(e => e === user._id) ? 'Pals' : currentUser.recieveRequests.some(e => e.user?._id === user._id) ? 'Accept' : (currentUser.sentRequests.some(e => e.user === user._id) ? 'cancel' : 'Add pal')}
                         </button>
                     </div>
