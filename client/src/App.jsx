@@ -28,7 +28,7 @@ const App = () => {
   const { socketIo } = useSelector(store => store.socket)
   const dispatch = useDispatch()
   const { notifications } = useSelector(store => store.notifications)
-
+  const isSmallMobile = useMediaQuery({ maxWidth: 600 }); // Detect screen width
   const fetchNotifications = async () => {
     try {
       const res = await apiClient('/user/getNotifications')

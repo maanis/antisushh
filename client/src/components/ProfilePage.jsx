@@ -33,6 +33,7 @@ function ProfilePage() {
     const dispatch = useDispatch()
     const [loading, setloading] = useState(false);
 
+
     const currentUser = useSelector(state => state.userInfo.user)
 
     const posts = activeTab === 'posts' ? useSelector(state => state.posts.activeProfilePosts) : useSelector(state => state.posts.activeBookmarkPosts)

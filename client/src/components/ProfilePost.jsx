@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CommentDialogBox from './CommentDialogBox'
 import { HeartIcon, MessageCircle } from 'lucide-react'
 import EllipsisMenu from './EllipsisMenu'
 import { useSelector } from 'react-redux'
 import { setActiveProfilePosts } from '@/store/postSlice'
+import { Link } from 'react-router-dom'
+import { useMediaQuery } from 'react-responsive'
 
 const ProfilePost = ({ posts }) => {
     const [open, setopen] = useState(false)
-
     const [ismenuopen, setismenuopen] = useState(false)
     const [delDialog, setdelDialog] = useState(false)
+    const isSmallMobile = useMediaQuery({ maxWidth: 600 }); // Detect screen width
+
     const reduxPosts = useSelector(state => state.posts.activeProfilePosts)
+    useEffect(() => {
+        setopen(false)
+    }, [isSmallMobile])
+    console.log(posts)
     return (
 
-        <div onClick={() => setopen(true)} className="aspect-square cursor-pointer relative">
+        <Link to={isSmallMobile ? `/post/${posts._id}` : undefined}
+            onClick={!isSmallMobile ? () => setopen(true) : undefined} className="aspect-square cursor-pointer relative">
             <img
                 loading='lazy'
                 src={posts.image}
@@ -30,7 +38,7 @@ const ProfilePost = ({ posts }) => {
 
 
             <EllipsisMenu setposts={setActiveProfilePosts} reduxPosts={reduxPosts} user={posts.user} posts={posts} delDialog={delDialog} setdelDialog={setdelDialog} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
-        </div>
+        </Link >
     )
 }
 

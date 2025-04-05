@@ -65,6 +65,21 @@ const getAllPosts = async (req, res) => {
     }
 }
 
+const getPost = async (req, res) => {
+    try {
+        const postId = req.params.id
+        
+        if (!isValidObjectId(postId)) {
+            return res.status(400).json({ message: "Invalid Post ID", success: false });
+        }
+        const post = await postModel.findById(postId).populate('user', 'username pfp').populate('comments.user', 'username pfp')
+        if (!post) return res.status(401).json({ message: 'No post found', success: false })
+        res.status(200).json({ post, message: 'Post found', success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
 const getUserPosts = async (req, res) => {
     try {
         const userId = req.id
@@ -200,4 +215,4 @@ const getBookmarks = async (req, res) => {
     }
 }
 
-module.exports = { createPost, getAllPosts, getUserPosts, likeOrDislike, addComments, deletePost, addOrRemoveToBookmark, getBookmarks }
+module.exports = { createPost, getAllPosts, getPost, getUserPosts, likeOrDislike, addComments, deletePost, addOrRemoveToBookmark, getBookmarks }

@@ -29,32 +29,6 @@ const Post = ({ posts }) => {
     const [open, setopen] = useState(false)
     const [ismenuopen, setismenuopen] = useState(false)
     const [delDialog, setdelDialog] = useState(false)
-    const data = ['unfollow', 'delete', 'add to favourites', 'go to post', 'copy link', 'about this account', 'cancel']
-    const handleMenuClick = (e) => {
-        if (e === 'cancel') {
-            setismenuopen(false)
-        } else if (e === 'delete') {
-            setdelDialog(true)
-        }
-    }
-    const handleDelete = async (id) => {
-        try {
-            const res = await fetch(`http://localhost:3000/post/deletePost/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            })
-            const data = await res.json()
-            if (data.success) {
-                setdelDialog(false)
-                toast.success(data.message)
-                dispatch(setposts(reduxPosts.filter(e => e._id !== id)))
-            } else {
-                toast.error(data.message)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
 
     const handleLike = async () => {
         try {
@@ -120,8 +94,8 @@ const Post = ({ posts }) => {
                         <Ellipsis onClick={() => setismenuopen(true)} />
                     </div>
                 </div>
-                <div className="box-b w-full border mt-2 flex justify-center border-zinc-800  ">
-                    <img loading='lazy' className='select-none' src={image} alt="" />
+                <div className="box-b aspect-square h-full w-full border mt-2 flex justify-center border-zinc-800  ">
+                    <img loading='lazy' className='select-none object-cover h-full w-full' src={image} alt="" />
                 </div>
 
                 <div className="flex pt-3 pb-2 gap-3 items-center max-[480px]:px-3">

@@ -1,7 +1,7 @@
 var express = require('express');
 const isAuthenticated = require('../middlewares/isAuthenticated');
 const upload = require('../config/multer');
-const { createPost, getAllPosts, getUserPosts, likeOrDislike, addComments, deletePost, addOrRemoveToBookmark, getBookmarks } = require('../controllers/postController');
+const { createPost, getAllPosts, getUserPosts, likeOrDislike, addComments, deletePost, addOrRemoveToBookmark, getBookmarks, getPost } = require('../controllers/postController');
 var router = express.Router();
 
 router.get('/', function (req, res) {
@@ -11,6 +11,8 @@ router.get('/', function (req, res) {
 router.post('/create', isAuthenticated, upload.single('image'), createPost);
 
 router.get('/getAllPosts', isAuthenticated, getAllPosts);
+
+router.get('/getPost/:id', isAuthenticated, getPost);
 
 router.get('/getUserPosts', isAuthenticated, getUserPosts);
 

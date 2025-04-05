@@ -5,11 +5,25 @@ import { Button } from './ui/button'
 import { toast } from 'sonner'
 import { addBookmark, removeBookmark, removePost } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
+import { useNavigate } from 'react-router-dom'
 
 const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, delDialog, posts, setdelDialog }) => {
     const currentUser = useSelector(state => state.userInfo.user)
-    const [data, setdata] = useState(['unfollow', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'about this account', 'cancel'])
+    const isOwnProfile = currentUser?._id === user?._id;
+    const isPal = currentUser?.pals.includes(user._id);
+    const isBookmarked = currentUser?.bookmarks.includes(posts._id);
+    // const [data, setdata] = useState([currentUser?.pals.includes(user._id) ? 'un-pal' : 'add pal', 'delete', currentUser.bookmarks.includes(posts._id) ? 'remove from bookmarks' : 'add to bookmarks', 'go to post', 'about this account', 'cancel'])
+    const data = [
+        ...(!isOwnProfile ? [isPal ? 'un-pal' : 'add pal'] : []),
+        ...(isOwnProfile ? ['delete'] : []),
+        isBookmarked ? 'remove from bookmarks' : 'add to bookmarks',
+        'go to post',
+        'about this account',
+        'cancel',
+    ];
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    console.log(ismenuopen)
     const handleMenuClick = (e) => {
         if (e === 'cancel') {
             setismenuopen(false)
@@ -17,6 +31,12 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
             setdelDialog(true)
         } else if (e === 'add to bookmarks' || e === 'remove from bookmarks') {
             handleBookmark()
+            setismenuopen(false)
+        } else if (e === 'go to post') {
+            navigate(`/post/${posts._id}`)
+            setismenuopen(false)
+        } else if (e === 'about this account') {
+            navigate(`/profile/${posts.user?.username}`)
             setismenuopen(false)
         }
     }
@@ -65,45 +85,27 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
 
                     <div className="w-full overflow-hidden rounded-lg bg-neutral-900">
                         <div className="flex flex-col">
-                            {data.map((e, i) => {
-                                // Check if the current user is the post user
-                                if (e === 'delete' && currentUser?._id === user?._id) {
-                                    return (
-                                        <button
-                                            key={i}
-                                            onClick={() => handleMenuClick(e)}
-                                            className="w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors text-red-500 capitalize hover:bg-neutral-800"
-                                        >
-                                            {e}
-                                        </button>
-                                    );
-                                } else if (e !== 'delete') {
-                                    return (
-                                        <button
-                                            key={i}
-                                            onClick={() => handleMenuClick(e)}
-                                            className={`w-full py-4 px-6 text-center focus:outline-none border-b border-neutral-800 transition-colors capitalize hover:bg-neutral-800 ${e === 'unfollow' ? 'text-red-500' : 'text-white'}`}
-                                        >
-                                            {e}
-                                        </button>
-                                    );
-                                }
-
-                                return null;
-                            })}
-
+                            {data.map((e, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => handleMenuClick(e)}
+                                    className={` w-full py-4 px-6 text-center border-b border-neutral-800 capitalize transition-colors focus:outline-none ${['delete', 'unfollow', 'un-pal'].includes(e) ? 'text-red-500' : 'text-white'}  hover:bg-neutral-800`}
+                                >
+                                    {e}
+                                </button>
+                            ))}
 
                         </div>
                     </div>
                 </DialogContent>
             </Dialog>
             <Dialog open={delDialog}>
-                <DialogContent className='max-w-lg'>
+                <DialogContent className='max-w-lg max-md:max-w-[400px] max-[550px]:w-[300px] max-[550px]:p-4 max-[500px]:py-5 max-[500px]:rounded-sm'>
                     <DialogTitle className='hidden'>Comment</DialogTitle>
-                    <div className='text-center text-lg font-semibold'>Are you sure you want to delete this post?</div>
+                    <div className='text-center max-md:text-sm text-lg font-semibold max-[550px]:text-xs'>Are you sure you want to delete this post?</div>
                     <div className='flex gap-2  justify-end'>
-                        <Button onClick={() => setdelDialog(false)}>Cancel</Button>
-                        <Button className='bg-red-600 hover:bg-red-700' onClick={() => handleDelete(posts._id)}>Delete</Button>
+                        <button onClick={() => setdelDialog(false)} className='bg-zinc-300 px-2 py-1 rounded-md max-md:text-sm max-[550px]:text-xs max-[550px]:px-2 max-[550px]:py-[2px] max-[550px]:h-7 '>Cancel</button>
+                        <button className='bg-red-600 hover:bg-red-700 max-md:text-[14px] px-2 py-1 rounded-md max-md:text-sm max-[550px]:text-xs max-[550px]:px-2 max-[550px]:py-[2px] text-white max-[550px]:h-7' onClick={() => handleDelete(posts._id)}>Delete</button>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -111,4 +113,4 @@ const EllipsisMenu = ({ ismenuopen, setposts, reduxPosts, setismenuopen, user, d
     )
 }
 
-export default EllipsisMenu
+export default EllipsisMenu;

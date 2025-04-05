@@ -15,7 +15,7 @@ function Notifications() {
     const { notifications } = useSelector(store => store.notifications);
     const { user } = useSelector(store => store.userInfo);
     const [notificationsData, setNotificationsData] = useState([]);  // Start with empty array
-
+    const toRead = notifications?.filter(e => !e.isRead)
 
     useEffect(() => {
         setNotificationsData(activeTab === 'alerts' ? notifications : user?.recieveRequests || []);
@@ -59,7 +59,7 @@ function Notifications() {
 
     useEffect(() => {
         return () => {
-            markAsRead()
+            { toRead.length > 0 && markAsRead() }
         }
     }, [])
 
@@ -67,7 +67,7 @@ function Notifications() {
     return (
         <div style={{ scrollbarWidth: 'thin', scrollbarColor: '#4A90E2 #000000' }} className="h-screen bg-zinc-950 md:h-screen w-full mx-auto overflow-hidden text-white">
             <div className="flex sm:gap-3 max-w-4xl mx-auto mb-4 items-center max-sm:border-b max-sm:border-zinc-700 sm:px-4 sm:pt-10 max-sm:py-3 max-sm:px-5">
-                <ChevronLeft className='absolute' onClick={() => navigate(-1)} />
+                <ChevronLeft className='absolute' onClick={() => navigate(-1 || '/feed')} />
                 <h1 className="text-2xl font-bold  max-sm:text-lg max-sm:text-center w-full">Notifications</h1>
             </div>
             <div className="max-w-4xl mx-auto px-4 h-[92%] pb-[75px]">
@@ -94,52 +94,75 @@ function Notifications() {
 
                     {notificationsData ? <div className='overflow-y-auto h-[80%]  w-full'>
                         {notificationsData.length > 0 ? notificationsData.map((e) => {
-                            return activeTab === 'requests' ? (<div className="border-b border-zinc-800">
-                                <div className="flex items-center justify-between py-4">
-                                    <div className="flex items-center space-x-3">
-                                        <Link to={`/profile/${e.user?.username}`}><img
-                                            src={e.user?.pfp}
-                                            alt="Profile"
-                                            className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full object-cover"
-                                        /></Link>
-                                        <div>
-                                            <p className="font-medium">{e.user?.username}</p>
-                                            <p className="text-[16px] text-gray-500">requested you to become their pal <span className=" text-zinc-500 text-[12px] ml-1">{timeAgo(e.timestamp)}</span></p>
+                            return activeTab === 'requests' ? (
+                                <div className="border-b border-zinc-800 px-3">
+                                    <div className="flex items-center justify-between max-[550px]:flex-col max-[550px]:items-start py-4">
+                                        <div className="flex items-center space-x-3">
+                                            <Link to={`/profile/${e.user?.username}`}>
+                                                <img
+                                                    src={e.user?.pfp}
+                                                    alt="Profile"
+                                                    className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full border-2 border-white object-cover"
+                                                />
+                                            </Link>
+                                            <div>
+                                                <p className="font-medium max-sm:text-sm">{e.user?.username}</p>
+                                                <p className="text-[16px] max-md:text-[14px] max-sm:text-[13px] text-gray-500">
+                                                    requested you to become their pal
+                                                    <span className="text-zinc-500 text-[12px] max-md:text-[10px] max-sm:text-[10px] ml-1">
+                                                        {timeAgo(e.timestamp)}
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="flex space-x-2">
-                                        <button onClick={() => handleAcceptRequest(e.user?._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors">
-                                            Confirm
-                                        </button>
-                                        <button onClick={() => handleDeleteRequest(e.user?._id)} className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors">
-                                            Delete
-                                        </button>
+                                        <div className="flex space-x-2 max-[550px]:mt-3">
+                                            <button
+                                                onClick={() => handleAcceptRequest(e.user?._id)}
+                                                className="bg-blue-500 text-white px-4 py-2 max-sm:px-3 max-sm:py-1 rounded-md text-sm max-sm:text-xs font-medium hover:bg-blue-600 transition-colors"
+                                            >
+                                                Confirm
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteRequest(e.user?._id)}
+                                                className="bg-gray-200 text-gray-800 px-4 py-2 max-sm:px-3 max-sm:py-1 rounded-md text-sm max-sm:text-xs font-medium hover:bg-gray-300 transition-colors"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>) : <div className={`border-b border-zinc-800 px-3 ${!e.isRead && 'bg-zinc-900'}`}>
-                                <div className="flex items-center justify-between  py-4">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="flex">
-
-                                            <Link to={`/profile/${e.sender?.username}`}><img
-                                                loading='lazy'
-                                                src={e.sender?.pfp}
-                                                alt="Profile 1"
-                                                className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full border-2 border-white object-cover"
-                                            /></Link>
+                            ) : (
+                                <div className={`border-b border-zinc-800 px-3 ${!e.isRead && 'bg-zinc-900'}`}>
+                                    <div className="flex items-center justify-between py-4">
+                                        <div className="flex items-center space-x-3">
+                                            <div className="flex">
+                                                <Link to={`/profile/${e.sender?.username}`}>
+                                                    <img
+                                                        loading="lazy"
+                                                        src={e.sender?.pfp}
+                                                        alt="Profile 1"
+                                                        className="w-10 h-10 max-sm:w-8 max-sm:h-8 rounded-full border-2 border-white object-cover"
+                                                    />
+                                                </Link>
+                                            </div>
+                                            <div>
+                                                <p className="font-medium max-sm:text-sm">{e.sender?.username}</p>
+                                                <p className="text-[16px] max-md:text-[14px] max-sm:text-[12px] text-gray-500">
+                                                    {e.type === 'like' ? 'liked your post' : 'commented on your post'}
+                                                    <span className="text-zinc-500 text-[12px] max-md:text-[10px] max-sm:text-[8px] ml-1">
+                                                        {timeAgo(e.createdAt)}
+                                                    </span>
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-medium max-sm:text-sm">{e.sender?.username}</p>
-                                            <p className="text-[16px] max-md:text-[14px] max-sm:text-[12px] text-gray-500">{e.type === 'like' ? 'liked your post' : 'commented on your post'} <span className="text-zinc-500 text-[12px] max-md:text-[10px] max-sm:text-[8px] ml-1">{timeAgo(e.createdAt)}</span></p>
-                                        </div>
+                                        <img
+                                            src={e.post?.image}
+                                            alt="Post thumbnail"
+                                            className="w-12 h-12 max-sm:w-10 max-sm:h-10 rounded object-cover"
+                                        />
                                     </div>
-                                    <img
-                                        src={e.post?.image}
-                                        alt="Post thumbnail"
-                                        className="w-12 h-12 max-sm:w-10 max-sm:h-10 rounded object-cover"
-                                    />
                                 </div>
-                            </div>
+                            );
                         }) : 'No notifications'}
                     </div> : <div className="space-y-4 p-4">
                         {Array.from({ length: 5 }).map((_, index) => (

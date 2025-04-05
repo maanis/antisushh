@@ -77,7 +77,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
                 <DialogTitle className="hidden">Comment Dialog</DialogTitle>
 
                 <div className="flex">
-                    <div className="flex flex-1 max-[600px]:hidden">
+                    <div className="flex  max-[1000px]:h-[28rem] max-md:h-[22rem] max-[600px]:h-[31rem] flex-1 max-[600px]:hidden">
                         <img src={image} loading='lazy' className="object-cover w-full flex flex-grow-0" alt="" />
 
                     </div>
