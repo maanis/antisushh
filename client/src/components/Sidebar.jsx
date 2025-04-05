@@ -106,14 +106,13 @@ const Sidebar = () => {
                 maxWidthOrHeight: 1024,
                 useWebWorker: true,
             };
-
+            setpreview(URL.createObjectURL(file))
             const compressedImage = await imageCompression(file, options);
             console.log("Original:", (file.size / 1024 / 1024).toFixed(2), "MB");
             console.log("Compressed:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
 
             // 🔥 Store in state
             setimage(compressedImage);
-            setpreview(URL.createObjectURL(compressedImage));
         } catch (error) {
             console.error("Compression error:", error);
             toast.error("Image compression failed");

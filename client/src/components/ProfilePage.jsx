@@ -137,13 +137,13 @@ function ProfilePage() {
                     useWebWorker: true,
                 };
 
+                setpreview(URL.createObjectURL(file));
+
                 const compressedImage = await imageCompression(file, options);
                 console.log("Original size:", (file.size / 1024 / 1024).toFixed(2), "MB");
                 console.log("Compressed size:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
 
                 setprofilePic(compressedImage); // store compressed
-                const url = fileToUrl(compressedImage);
-                setpreview(url); // preview
             } catch (err) {
                 console.error("Compression failed:", err);
                 toast.error("Image compression failed");
