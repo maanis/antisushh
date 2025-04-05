@@ -19,6 +19,7 @@ import Notifications from './components/Notifications'
 import { acceptReq, addRecieveReq, removeRecieveReq, removeSentReq } from './store/userSlice'
 import { useMediaQuery } from 'react-responsive'
 import Explore from './components/Explore'
+import SingleProfilePost from './components/SingleProfilePost'
 
 const App = () => {
   const location = useLocation();
@@ -141,6 +142,7 @@ const App = () => {
           <Route path='/notifications' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
           <Route path='/profile/:username' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path='/explore' element={<ProtectedRoute><Explore /></ProtectedRoute>} />
+          <Route path='/post/:id' element={<ProtectedRoute><SingleProfilePost /></ProtectedRoute>} />
           <Route path='/chat' element={<ProtectedRoute><ChatSection /></ProtectedRoute>} >
 
             <Route path='/chat/:username' element={<ProtectedRoute><ChatContainer /></ProtectedRoute>} />
