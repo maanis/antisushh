@@ -160,7 +160,7 @@ function ProfilePage() {
             const formData = new FormData();
             formData.append("profilePic", profilePic); // already compressed
 
-            const data = await fetch('http://localhost:3000/user/updatePfp', {
+            const data = await fetch('https://antisushh.onrender.com/user/updatePfp', {
                 credentials: 'include',
                 method: 'POST',
                 body: formData,

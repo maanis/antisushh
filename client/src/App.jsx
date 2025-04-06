@@ -43,7 +43,7 @@ const App = () => {
     let socket = null;
     if (user) {
       fetchNotifications()
-      socket = io('http://localhost:3000', {
+      socket = io('https://antisushh.onrender.com', {
         query: { userId: user._id },
         transports: ['websocket'],
       });

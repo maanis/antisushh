@@ -82,7 +82,7 @@ export default function UpdateProfile() {
             if (preview) {
                 formData.append("profilePic", profilePic);
             }
-            const data = await fetch('http://localhost:3000/user/updateProfile', {
+            const data = await fetch('https://antisushh.onrender.com/user/updateProfile', {
                 credentials: 'include',
                 method: 'POST',
                 body: formData,

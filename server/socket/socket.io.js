@@ -5,7 +5,7 @@ var app = express();
 var server = http.createServer(app);
 var io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: process.env.URL,
         methods: ["GET", "POST"],
         credentials: true,
     },

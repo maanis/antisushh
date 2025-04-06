@@ -32,7 +32,7 @@ const Post = ({ posts }) => {
 
     const handleLike = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/post/likeOrDislike/${posts._id}`, {
+            const res = await fetch(`https://antisushh.onrender.com/post/likeOrDislike/${posts._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -30,7 +30,7 @@ const CommentDialogBox = ({ post, open, image, setopen, ismenuopen, setismenuope
 
     const handlePostComment = async () => {
         try {
-            const res = await fetch(`http://localhost:3000/post/addComments/${post._id}`, {
+            const res = await fetch(`https://antisushh.onrender.com/post/addComments/${post._id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

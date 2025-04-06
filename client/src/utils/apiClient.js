@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://antisushh.onrender.com";
 
 const apiClient = async (endpoint, method = "GET", body = null) => {
     const options = {
