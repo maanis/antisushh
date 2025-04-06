@@ -1,5 +1,5 @@
 import React, { use, useEffect, useState } from 'react';
-import { ArrowLeft, MoreHorizontal, Bookmark, Heart, ChevronLeft, MessageCircle } from 'lucide-react';
+import { ArrowLeft, MoreHorizontal, Bookmark, Heart, ChevronLeft, MessageCircle, Loader2 } from 'lucide-react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import apiClient from '@/utils/apiClient';
 import { toast } from 'sonner';
@@ -95,7 +95,7 @@ function SingleProfilePost() {
         }
     }, [post, currentUser._id, isSmallMobile]);
     return post ? (
-        <div className="w-full bg-black text-white min-h-screen pb-[80px]">
+        <div className="w-full bg-black text-white min-h-screen pb-[80px] overflow-auto">
             {/* Header */}
             <div className="flex justify-between items-center p-4 border-b border-gray-700">
                 <div className="flex items-center  w-full space-x-4">
@@ -159,7 +159,9 @@ function SingleProfilePost() {
 
             <EllipsisMenu setposts={setActiveProfilePosts} reduxPosts={reduxPosts} user={post.user} posts={post} delDialog={delDialog} setdelDialog={setdelDialog} ismenuopen={ismenuopen} setismenuopen={setismenuopen} />
         </div>
-    ) : 'loading...'
+    ) : <div className='h-full w-full absolute top-0 left-0 flex justify-center items-center'>
+        <Loader2 size={'24px'} className='animate-spin' />
+    </div>
 }
 
 export default SingleProfilePost;
