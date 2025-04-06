@@ -5,10 +5,6 @@ const upload = require('../config/multer');
 const { markMsgsAsRead } = require('../controllers/messageController');
 var router = express.Router();
 
-router.get('/', function (req, res) {
-    res.send('user');
-});
-
 router.post('/sendOrRemoveRequest', isAuthenticated, sendOrRemoveRequest);
 router.post('/declineRequest/:id', isAuthenticated, declineRequest);
 router.post('/acceptRequest/:id', isAuthenticated, acceptRequest);
