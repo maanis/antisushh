@@ -149,11 +149,11 @@ function Explore() {
                             placeholder="what's on your mind?"
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            className="flex-1 bg-transparent text-white w-full max-md:text-sm max-[500px]:text-xs placeholder-neutral-400 outline-none px-2 max-[330px]:py-[6px]"
+                            className="flex-1 bg-transparent text-white w-full max-md:text-sm max-[500px]:text-xs placeholder-neutral-400 outline-none px-2 max-[450px]:py-[6px]"
                         />
                         <div className="flex items-center space-x-2 px-2">
                             <button type='submit' disabled={!input.trim()} className="bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white p-2 max-[500px]:p-[3px] rounded-lg max-[500px]:rounded-sm hover:bg-blue-700 transition">
-                                <Send className="w-5 h-5 max-[500px]:w-3 max-[500px]:h-3 max-[330px]:size-4" />
+                                <Send className="w-5 h-5 max-[500px]:w-3 max-[500px]:h-3 max-[450px]:size-4" />
                             </button>
                         </div>
                     </form>

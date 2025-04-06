@@ -29,7 +29,7 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
             ref={bottomRef}
             className="overflow-y-auto h-full w-full p-4 bg-neutral-900"
         >
-            <div className="w-full px-[24px] max-[330px]:px-0 space-y-4 max-[330px]:space-y-2">
+            <div className="w-full px-[24px] max-[450px]:px-0 space-y-4 max-[450px]:space-y-2">
                 <div className="w-full text-white">
                     <div className="max-w-4xl mx-auto px-4 py-8">
                         <div className="flex flex-col items-center">
@@ -45,8 +45,8 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
 
                             {/* Profile Info */}
                             <div className="text-center mb-7">
-                                <h1 className="text-lg font-semibold max-[330px]:text-sm">{selectedUser?.name}</h1>
-                                <p className="text-gray-400 text-sm mb-3 max-[330px]:text-xs">{selectedUser?.username} · antisush</p>
+                                <h1 className="text-lg font-semibold max-[450px]:text-sm">{selectedUser?.name}</h1>
+                                <p className="text-gray-400 text-sm mb-3 max-[450px]:text-xs">{selectedUser?.username} · antisush</p>
                                 <Link
                                     to={`/profile/${selectedUser?.username}`}
                                     className="bg-zinc-800 text-white px-6 py-2 rounded-lg text-xs font-medium"
@@ -62,10 +62,10 @@ const ChatMessages = ({ messages, selectedUser, bottomRef }) => {
                         <>
                             <ContextMenu key={msg._id}>
                                 <div
-                                    className={`flex gap-3 max-[330px]:mt-1  relative items-center ${msg.senderId === user._id ? 'justify-end' : 'justify-start'}`}
+                                    className={`flex gap-3 max-[450px]:mt-1  relative items-center ${msg.senderId === user._id ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <ContextMenuTrigger
-                                        className={`max-w-[70%] select-none px-4 max-[330px]:text-xs py-1 rounded-2xl ${msg.senderId === user._id
+                                        className={`max-w-[70%] select-none px-4 max-[450px]:text-xs py-1 rounded-2xl ${msg.senderId === user._id
                                             ? 'bg-blue-500 text-white order-2 rounded-br-none'
                                             : 'bg-gray-200 text-gray-900 order-1 rounded-bl-none'
                                             }`}
