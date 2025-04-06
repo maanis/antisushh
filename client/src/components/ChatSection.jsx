@@ -29,7 +29,7 @@ const ChatSection = () => {
     }
     async function fetchsuggestedUsers() {
         try {
-            const data = await apiClient('/user/suggestedUser')
+            const data = await apiClient('/user/alluser')
             setsuggestedUsers(data.suggestedUsers)
         } catch (error) {
             console.log(error)

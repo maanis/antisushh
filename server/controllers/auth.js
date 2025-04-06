@@ -245,6 +245,15 @@ const suggestedUser = async (req, res) => {
     }
 }
 
+const allUser = async (req, res) => {
+    try {
+        const suggestedUsers = await userModel.find({ _id: { $ne: req.id } }).select('pfp username name');
+        res.status(200).json({ suggestedUsers, success: true });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error', success: false });
+    }
+}
+
 const editProfile = async (req, res) => {
     try {
         const id = req.id;
@@ -470,4 +479,4 @@ const getLastMessages = async (req, res) => {
 
 
 
-module.exports = { register, updateProfile, getLastMessages, removePal, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
+module.exports = { register, updateProfile, allUser, getLastMessages, removePal, getNotifications, markNotificationsAsRead, getUser, login, logout, searchQuerry, userProfile, sendOrRemoveRequest, acceptRequest, declineRequest, suggestedUser, editProfile, updatecoverPhoto, updatePfp };
