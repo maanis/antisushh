@@ -1,2 +1,27 @@
+# 🔐 Secrets & keys
+.env
 _maanis
 _maanis.pub
+
+# 📦 Node dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+
+
+# ⚙️ Build output
+dist/
+build/
+client/dist/
+client/build/
+server/dist/
+server/build/
+
+# 🧠 Editor/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+logs/
+*.log

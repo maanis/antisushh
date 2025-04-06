@@ -1,4 +1,4 @@
-import { Cross, CrossIcon, Globe, HeartIcon, Home, Loader2, LogOut, LucideCross, MessageCircle, PlusSquare, Search, X } from 'lucide-react'
+import { Globe, HeartIcon, Home, Loader2, LogOut, PlusSquare, Search, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaFacebookMessenger } from "react-icons/fa";
@@ -11,19 +11,16 @@ import {
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
-    AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "./ui/alert-dialog"
-import { fileToUrl, userDefaultPfp } from '@/utils/constant'
+import { userDefaultPfp } from '@/utils/constant'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dialog, DialogContent, DialogTitle } from './ui/dialog'
-import { Button } from './ui/button'
-import { addActiveProfilePosts, setActiveProfilePosts, setposts, setSearchDialog } from '@/store/postSlice'
+import { addActiveProfilePosts, setposts, setSearchDialog } from '@/store/postSlice'
 import { addPost, setUser } from '@/store/userSlice'
 import apiClient from '@/utils/apiClient'
 import { clearUnreadChats, setOnlineUsers } from '@/store/chatSlice'
-import NotificationDialog from './NotificationDialog'
 import { setNotifications } from '@/store/notificationsSlice'
 import { useMediaQuery } from 'react-responsive'
 import imageCompression from 'browser-image-compression';
@@ -42,7 +39,6 @@ const Sidebar = () => {
     const [preview, setpreview] = useState(false)
     const [caption, setcaption] = useState('')
     const [image, setimage] = useState('')
-    // const [searchDialog, setsearchDialog] = useState(false)
     const [isChatSection, setisChatSection] = useState(localStorage.getItem('chatSection') === 'true' ? true : false)
     const { notifications } = useSelector(store => store.notifications);
     const toRead = notifications?.filter(e => !e.isRead)
@@ -110,7 +106,6 @@ const Sidebar = () => {
             setpreview(URL.createObjectURL(file))
             const compressedImage = await imageCompression(file, options);
 
-            // 🔥 Store in state
             setimage(compressedImage);
         } catch (error) {
             toast.error("Image compression failed");
@@ -127,7 +122,6 @@ const Sidebar = () => {
             const formData = new FormData();
             formData.append('caption', caption);
 
-            // 🧠 This MUST be compressed file
             formData.append('image', image);
 
 

@@ -1,15 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Github, Twitter, Link as LinkIcon, Mail, User, FileText } from 'lucide-react';
+import { Github, Twitter, Link as LinkIcon, Mail, User, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { fileToUrl, userDefaultPfp } from '@/utils/constant';
-import { Button } from './ui/button';
 import { useDispatch } from 'react-redux';
 import { setUser } from '@/store/userSlice';
+import imageCompression from 'browser-image-compression';
 
 
 export default function UpdateProfile() {
     const dispatch = useDispatch()
+    const [loading, setloading] = useState(false)
+    const [imgloading, setimgloading] = useState(false)
     const navigate = useNavigate()
     const [preview, setpreview] = useState('')
     const [profilePic, setprofilePic] = useState('')
@@ -22,19 +24,37 @@ export default function UpdateProfile() {
         linkedinUrl: "",
     });
 
+
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-
-    const handleFileChange = (e) => {
-        const file = fileInput.current.files[0]
+    const handleFileChange = async (e) => {
+        const file = fileInput.current.files[0];
         if (file) {
-            setprofilePic(file)
-            const url = fileToUrl(file);
-            setpreview(url);
+            setimgloading(true); // Show loader while compressing
+            try {
+                const options = {
+                    maxSizeMB: 1,
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                };
+
+                const compressedImage = await imageCompression(file, options);
+                console.log("Original:", (file.size / 1024 / 1024).toFixed(2), "MB");
+                console.log("Compressed:", (compressedImage.size / 1024 / 1024).toFixed(2), "MB");
+
+                setprofilePic(compressedImage); // store compressed file
+                setpreview(fileToUrl(compressedImage)); // show compressed preview
+            } catch (error) {
+                console.error("Compression failed:", error);
+                toast.error("Image compression failed");
+            } finally {
+                setimgloading(false);
+            }
         }
-    }
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -51,6 +71,7 @@ export default function UpdateProfile() {
         }
 
         try {
+            setloading(true)
             const formData = new FormData();
             formData.append("profileTitle", profileTitle);
             formData.append("bio", bio);
@@ -74,6 +95,8 @@ export default function UpdateProfile() {
             }
         } catch (error) {
             console.log(error)
+        } finally {
+            setloading(false)
         }
     }
 
@@ -87,8 +110,8 @@ export default function UpdateProfile() {
         >
             <div className="relative max-w-2xl mx-auto text-white">
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-white">Complete Your Profile</h1>
-                    <p className="mt-2 text-gray-200 text-lg">Let's make your profile stand out</p>
+                    <h1 className="text-4xl font-bold max-[550px]:text-lg text-white">Complete Your Profile</h1>
+                    <p className="mt-2 text-gray-200 text-lg max-[550px]:text-xs">Let's make your profile stand out</p>
                 </div>
 
                 <div className="backdrop-blur-xl bg-zinc-600/45 rounded-2xl shadow-2xl p-8 transition-all duration-300">
@@ -97,14 +120,14 @@ export default function UpdateProfile() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
                                 <User className="w-5 h-5 text-blue-600" />
-                                <h2 className="text-xl font-semibold text-white">Basic Information</h2>
+                                <h2 className="text-xl font-semibold text-white max-[550px]:text-sm">Basic Information</h2>
                             </div>
 
                             <div className="space-y-5">
                                 <div className="flex justify-between w-full items-center">
-                                    <img loading='lazy' src={preview ? preview : userDefaultPfp} className='w-24 h-24 rounded-full object-cover ' alt="" />
+                                    <img loading='lazy' src={preview ? preview : userDefaultPfp} className='w-24 h-24 max-[550px]:w-16 max-[550px]:h-16 rounded-full object-cover ' alt="" />
                                     <input onChange={handleFileChange} type="file" ref={fileInput} className='hidden' />
-                                    <div className='px-4 sm:cursor-pointer py-2 rounded-lg bg-black text-white font-semibold' onClick={() => fileInput.current.click()}>Upload Profile</div>
+                                    <div className='px-4 sm:cursor-pointer py-2 rounded-lg max-[550px]:text-sm bg-black text-white font-semibold' onClick={() => fileInput.current.click()}>{imgloading ? <span className='flex gap-2 items-center'><Loader2 className='animate-spin' />wait</span> : 'upload image'}</div>
                                 </div>
                                 <div>
                                     <label htmlFor="profileTitle" className="block text-sm font-medium ">
@@ -117,7 +140,7 @@ export default function UpdateProfile() {
                                         value={formData.profileTitle}
                                         onChange={handleChange}
                                         placeholder="e.g. Senior Frontend Developer"
-                                        className=" mt-1 block w-full rounded-lg border text-black border-gray-300 px-4 py-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                        className=" mt-1 block w-full rounded-lg border text-black border-gray-300 px-4 py-3 max-[550px]:py-2 max-[550px]:text-sm  shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                         required
                                     />
                                 </div>
@@ -137,7 +160,7 @@ export default function UpdateProfile() {
                                             onChange={handleChange}
                                             rows={4}
                                             placeholder="Tell us about yourself..."
-                                            className=" block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            className=" block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3 max-[550px]:py-2 max-[550px]:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             required
                                         />
                                     </div>
@@ -157,7 +180,7 @@ export default function UpdateProfile() {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className="block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            className="block w-full rounded-lg border text-black border-gray-300 pl-10 pr-4 py-3  max-[550px]:py-2 max-[550px]:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="you@example.com"
                                             required
                                         />
@@ -170,7 +193,7 @@ export default function UpdateProfile() {
                         <div className="space-y-6">
                             <div className="flex items-center gap-2 pb-2 border-b border-gray-200">
                                 <LinkIcon className="w-5 h-5 text-blue-600" />
-                                <h2 className="text-xl font-semibold text-white">Social Links <span className='text-xs'>(optional)</span></h2>
+                                <h2 className="text-xl max-[550px]:text-sm font-semibold text-white">Social Links <span className='text-xs max-[550px]:text-[10px]'>(optional)</span></h2>
                             </div>
 
                             <div className="space-y-5">
@@ -188,7 +211,7 @@ export default function UpdateProfile() {
                                             name="githubUrl"
                                             value={formData.githubUrl}
                                             onChange={handleChange}
-                                            className="block w-full text-black rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            className="block w-full text-black rounded-lg  max-[550px]:py-2 max-[550px]:text-sm border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="https://github.com/username"
                                         />
                                     </div>
@@ -208,7 +231,7 @@ export default function UpdateProfile() {
                                             value={formData.linkedinUrl}
                                             onChange={handleChange}
                                             name="linkedinUrl"
-                                            className="block w-full text-black rounded-lg border border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                                            className="block w-full text-black rounded-lg border max-[550px]:py-2 max-[550px]:text-sm border-gray-300 pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all duration-200"
                                             placeholder="https://linkedin.com/username"
                                         />
                                     </div>
@@ -217,13 +240,13 @@ export default function UpdateProfile() {
                             </div>
                         </div>
 
-                        <div className="pt-6">
+                        <div className="pt-6 max-[550px]:pt-1">
                             <button
                                 type="submit"
                                 onClick={handleSubmit}
-                                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+                                className="w-full flex justify-center py-3 px-4 max-[550px]:py-2 border border-transparent rounded-lg text-sm  font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
                             >
-                                Save Profile
+                                {loading ? <span className='flex gap-2 items-center'><Loader2 className='animate-spin' />wait</span> : 'Save Profile'}
                             </button>
                         </div>
                     </form>

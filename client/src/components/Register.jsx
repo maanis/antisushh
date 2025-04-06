@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Sparkles, Eye, EyeOff, Apple, Facebook, Loader2 } from 'lucide-react';
-import bg from '/bg.jpg'
+import bg from '/bg.webp'
+import logo from '/logo.png'
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
@@ -89,17 +90,15 @@ function Register() {
             </div>
 
             <div className="w-full max-w-md">
-                <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl">
+                <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 max-[550px]:p-5 shadow-2xl">
                     {/* Logo */}
                     <div className="flex justify-center mb-6">
-                        <div className="bg-gradient-to-r from-blue-400 to-blue-300 p-4 rounded-2xl">
-                            <Sparkles className="w-8 h-8 text-white" />
-                        </div>
+                        <img src={logo} className='h-12 w-12 object-cover' alt="" />
                     </div>
 
                     {/* Header */}
-                    <div className="text-center mb-8">
-                        <h1 className="text-2xl font-bold text-white mb-2">Welcome to AntiSush</h1>
+                    <div className="text-center mb-8 max-[550px]:mb-3">
+                        <h1 className="text-2xl font-bold text-white mb-2 max-[550px]:text-lg">Welcome to AntiSush</h1>
 
                     </div>
 
@@ -120,7 +119,7 @@ function Register() {
                                 onChange={(e) => setusername(e.target.value)}
                                 type="text"
                                 placeholder="Username"
-                                className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full bg-white/10 max-[550px]:text-sm max-[550px]:py-2 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
 
                             <div className="relative">
@@ -129,7 +128,7 @@ function Register() {
                                     onChange={(e) => setpassword(e.target.value)}
                                     type={showPassword ? 'text' : 'password'}
                                     placeholder="Password"
-                                    className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    className="w-full bg-white/10 max-[550px]:text-sm max-[550px]:py-2 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 />
                                 <button
                                     type="button"
@@ -142,14 +141,14 @@ function Register() {
 
                         </div>
 
-                        {isSignUp ? <p className='text-white mt-3'>Already have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign In</span></p> : <p className='text-white mt-3'>Don't have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign Up</span></p>}
+                        {isSignUp ? <p className='text-white mt-3 max-[550px]:text-xs'>Already have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign In</span></p> : <p className='text-white mt-3 max-[550px]:text-xs'>Don't have an account? <span onClick={() => setisSignUp(!isSignUp)} className='text-blue-700 sm:cursor-pointer hover:underline font-semibold'>Sign Up</span></p>}
 
                         <button
                             onClick={handleSubmit}
                             type="submit"
                             className="w-full bg-gradient-to-r from-blue-400 to-blue-500 transition-colors text-white rounded-lg p-3 mt-6 font-medium hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-purple-900"
                         >
-                            {loading ? (<h2 className='flex w-full justify-center gap-1'><Loader2 className='animate-spin font-bold' /><span>Please wait...</span></h2>) : isSignUp ? 'Sign Up' : 'Sign In'}
+                            {loading ? (<h2 className='flex w-full justify-center max-[550px]:text-sm gap-1'><Loader2 className='animate-spin font-bold max-[550px]:text-sm' /><span>Please wait...</span></h2>) : isSignUp ? 'Sign Up' : 'Sign In'}
                         </button>
                     </form>
                 </div>

@@ -6,7 +6,7 @@ const apiClient = async (endpoint, method = "GET", body = null) => {
         headers: {
             "Content-Type": "application/json",
         },
-        credentials: "include", // ✅ Automatically includes cookies/sessions
+        credentials: "include",
     };
 
     if (body && method !== "GET") {
@@ -17,14 +17,10 @@ const apiClient = async (endpoint, method = "GET", body = null) => {
         const response = await fetch(`${BASE_URL}${endpoint}`, options);
         const data = await response.json();
 
-        // if (!response.ok) {
-        //     throw new Error(data.message || "Something went wrong");
-        // }
-
         return data;
     } catch (error) {
         console.error("API Error:", error.message);
-        throw error; // Rethrow for handling in the component
+        throw error;
     }
 };
 

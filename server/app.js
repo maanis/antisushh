@@ -6,6 +6,7 @@ var logger = require("morgan");
 var mongoose_connection = require("./config/mongoose-config");
 var cors = require("cors");
 var session = require("express-session");
+var path = require('path')
 
 var indexRouter = require("./routes/index");
 var postsRouter = require("./routes/post");
@@ -15,6 +16,8 @@ const { connection } = require("mongoose");
 const { app } = require("./socket/socket.io");
 
 // var app = express();
+
+console.log(__dirname)
 
 app.use(logger("dev"));
 app.use(express.urlencoded({ extended: false }));
@@ -50,6 +53,12 @@ app.use("/", indexRouter);
 app.use("/user", usersRouter);
 app.use("/post", postsRouter);
 app.use("/chat", chatRouter);
+
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+app.use("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/dist/index.html"));
+})
 
 app.use((req, res, next) => {
   next(createError(404));
