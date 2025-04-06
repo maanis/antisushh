@@ -217,7 +217,7 @@ function ProfilePage() {
 
 
     return user ? (
-        <div style={{ scrollbarWidth: 'none' }} className="min-h-screen max-md:pb-[70px] w-[55%]  max-sm:w-full max-[900px]:w-[65%] max-md:w-[75%]  overflow-y-auto  mx-auto text-white">
+        <div style={{ scrollbarWidth: 'none' }} className="min-h-screen max-[450px]:h-full max-[450px]:absolute max-md:pb-[70px] w-[55%]  max-sm:w-full max-[900px]:w-[65%] max-md:w-[75%]  overflow-y-auto  mx-auto text-white">
             {/* Header/Banner */}
             <div ref={menuRef} className="w-full h-48 max-sm:h-32 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                 <img loading='lazy' src={user?.coverPhoto ? user.coverPhoto : userCoverPfp} className='h-full select-none w-full object-cover' alt="" />

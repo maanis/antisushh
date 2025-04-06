@@ -85,7 +85,7 @@ const ChatSection = () => {
         }
     }, [suggestedUsers]);
     return (
-        <div className="flex h-screen overflow-hidden w-full bg-zinc-900">
+        <div className="flex h-screen max-[450px]:h-full max-[450px]:absolute  overflow-hidden w-full bg-zinc-900">
             {/* Left Sidebar */}
             {!(isMobile && showChat) && <div className={`w-[360px] max-[900px]:w-[90px] overflow-hidden text-white border-zinc-600 border-r max-[600px]:w-full`}>
                 {/* Header */}
@@ -162,11 +162,11 @@ const ChatSection = () => {
                                 src={user?.pfp}
                                 alt={user?.name}
                                 loading='lazy'
-                                className={`w-12 h-12 max-[900px]:h-14 max-[900px]:w-14 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
+                                className={`w-12 h-12 max-[900px]:h-14 max-[900px]:w-14 max-[330px]:h-11 max-[330px]:w-11 ${onlineUsers.includes(user._id) ? 'border-green-600' : 'border-red-600'} border-[3px] p-1 rounded-full object-cover`}
                             />
                             <div className="flex-1 min-w-0 max-[900px]:hidden max-[600px]:block">
-                                <h3 className="font-semibold">{user.username}</h3>
-                                <p className="text-xs max-[600px]:text-sm text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsg ? lastMsg.msg : 'Tap to chat'}</p>
+                                <h3 className="font-semibold max-[330px]:font-medium max-[330px]:text-sm ">{user.username}</h3>
+                                <p className="text-xs max-[600px]:text-sm max-[330px]:text-xs text-gray-500 truncate">{unreadChats?.some(e => e.senderId === user._id) ? <span className='font-semibold text-white'>{count} new {count > 1 ? 'messages' : 'message'}</span> : lastMsg ? lastMsg.msg : 'Tap to chat'}</p>
                             </div>
                             <span className="text-xs text-gray-400 max-[900px]:hidden max-[600px]:block">10:29</span>
                         </Link>

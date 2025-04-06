@@ -12,10 +12,10 @@ const ChatHeader = ({ selectedUser }) => {
                 <ChevronLeft className='max-[900px]:block hidden' onClick={() => navigate(-1)} />
                 <Link to={`/profile/${selectedUser?.username}`} className="flex items-center gap-3">
                     <img
-                    loading='lazy'
+                        loading='lazy'
                         src={selectedUser?.pfp}
                         alt={selectedUser?.name}
-                        className="w-10 h-10 max-[600px]:h-8 max-[600px]:w-8 rounded-full object-cover"
+                        className="w-10 h-10 max-[330px]:h-6 max-[330px]:w-6 max-[600px]:h-8 max-[600px]:w-8 rounded-full object-cover"
                     />
                     <div>
                         <h2 className="font-semibold max-[600px]:text-sm max-[500px]:text-[12px]">{selectedUser?.name}</h2>
@@ -25,13 +25,13 @@ const ChatHeader = ({ selectedUser }) => {
             </div>
             <div className="flex gap-4 max-[600px]:gap-0">
                 <button className="p-2 hover:bg-gray-100 rounded-full  ">
-                    <Phone className="w-5 h-5" />
+                    <Phone className="w-5 h-5 max-[330px]:size-4" />
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-full ">
-                    <Video className="w-5 h-5" />
+                    <Video className="w-5 h-5 max-[330px]:size-4" />
                 </button>
                 <button className="p-2 hover:bg-gray-100 rounded-full ">
-                    <Info className="w-5 h-5" />
+                    <Info className="w-5 h-5 max-[330px]:size-4" />
                 </button>
             </div>
         </div>

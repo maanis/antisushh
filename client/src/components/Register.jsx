@@ -77,7 +77,7 @@ function Register() {
 
 
     return (
-        <div style={{ backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="h-screen w-full bg-gradient-to-b flex items-center justify-center p-4 relative overflow-hidden">
+        <div style={{ backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="h-full absolute w-full bg-gradient-to-b flex items-center justify-center p-4 overflow-hidden">
             <div className="absolute h-full w-full bg-black opacity-45"></div>
             {/* Decorative stars */}
             <div className="absolute inset-0">

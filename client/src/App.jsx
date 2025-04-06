@@ -129,7 +129,7 @@ const App = () => {
 
   return (
     <>
-      <div className='h-full md:h-screen flex overflow-hidden bg-zinc-950 w-full'>
+      <div className='h-full absolute md:h-screen flex overflow-hidden bg-zinc-950 w-full'>
         {(location.pathname !== '/' &&
           location.pathname !== '/update-profile' &&
           (!isMobile || (location.pathname !== '/chat' && showChatPage === false)) &&
