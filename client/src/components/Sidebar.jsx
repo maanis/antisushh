@@ -126,7 +126,7 @@ const Sidebar = () => {
 
 
 
-            const res = await fetch("http://localhost:3000/post/create", {
+            const res = await fetch("https://antisushh.onrender.com/post/create", {
                 method: "POST",
                 body: formData,
                 credentials: "include",
